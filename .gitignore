@@ -14,9 +14,7 @@ build/
 out/
 target/
 *.egg-info/
-.pyc
-*.class
-*.jar
+*.pyc
 *.war
 
 # IDE and Editor files
@@ -73,7 +71,6 @@ temp/
 *.db
 
 # OS files
-.DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
@@ -94,7 +91,6 @@ desktop.ini
 *.dmg
 *.gz
 *.iso
-*.jar
 *.rar
 *.tar
 *.zip
