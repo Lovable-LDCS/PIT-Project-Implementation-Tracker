@@ -418,7 +418,7 @@ function showOperationModal(operationId = null) {
     
     // Set default date
     const today = new Date().toISOString().split('T')[0];
-    document.getElementById('operationDate').value = today;
+    document.getElementById('operationFormDate').value = today;
     
     if (operationId) {
         const operation = currentOperations.find(o => o.id === operationId);
@@ -428,7 +428,7 @@ function showOperationModal(operationId = null) {
             document.getElementById('operationDescription').value = operation.description;
             document.getElementById('operationType').value = operation.type;
             document.getElementById('operationStatus').value = operation.status;
-            document.getElementById('operationDate').value = operation.date;
+            document.getElementById('operationFormDate').value = operation.date;
             document.getElementById('operationAssignedTo').value = operation.assignedTo || '';
             document.getElementById('operationModalTitle').textContent = 'Edit Operation';
         }
@@ -453,7 +453,7 @@ async function saveOperation(event) {
         description: document.getElementById('operationDescription').value,
         type: document.getElementById('operationType').value,
         status: document.getElementById('operationStatus').value,
-        date: document.getElementById('operationDate').value,
+        date: document.getElementById('operationFormDate').value,
         assignedTo: document.getElementById('operationAssignedTo').value
     };
     

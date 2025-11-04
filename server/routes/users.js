@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const dataStore = require('../models/dataStore');
+const { validateEmail, validateUserRole } = require('../middleware/validators');
 
 // Get all users
 router.get('/', (req, res) => {
@@ -34,6 +35,14 @@ router.post('/', (req, res) => {
       return res.status(400).json({ success: false, error: 'Name and email are required' });
     }
     
+    if (!validateEmail(email)) {
+      return res.status(400).json({ success: false, error: 'Invalid email format' });
+    }
+    
+    if (!validateUserRole(role)) {
+      return res.status(400).json({ success: false, error: 'Invalid role. Must be one of: admin, manager, lead, developer' });
+    }
+    
     const user = dataStore.createUser({ name, email, role });
     res.status(201).json({ success: true, data: user });
   } catch (error) {
@@ -44,6 +53,16 @@ router.post('/', (req, res) => {
 // Update user
 router.put('/:id', (req, res) => {
   try {
+    const { email, role } = req.body;
+    
+    if (email && !validateEmail(email)) {
+      return res.status(400).json({ success: false, error: 'Invalid email format' });
+    }
+    
+    if (role && !validateUserRole(role)) {
+      return res.status(400).json({ success: false, error: 'Invalid role. Must be one of: admin, manager, lead, developer' });
+    }
+    
     const user = dataStore.updateUser(req.params.id, req.body);
     if (!user) {
       return res.status(404).json({ success: false, error: 'User not found' });

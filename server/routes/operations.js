@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const dataStore = require('../models/dataStore');
+const { validateOperationType, validateOperationStatus, validateDate } = require('../middleware/validators');
 
 // Get all operations
 router.get('/', (req, res) => {
@@ -42,6 +43,26 @@ router.post('/', (req, res) => {
       return res.status(400).json({ success: false, error: 'Title and description are required' });
     }
     
+    if (!validateOperationType(type)) {
+      return res.status(400).json({ success: false, error: 'Invalid type. Must be one of: maintenance, security, deployment, monitoring, support' });
+    }
+    
+    if (!validateOperationStatus(status)) {
+      return res.status(400).json({ success: false, error: 'Invalid status. Must be one of: pending, in-progress, completed, failed' });
+    }
+    
+    if (!validateDate(date)) {
+      return res.status(400).json({ success: false, error: 'Invalid date format' });
+    }
+    
+    // Validate assignedTo references a valid user if provided
+    if (assignedTo) {
+      const user = dataStore.getUser(assignedTo);
+      if (!user) {
+        return res.status(400).json({ success: false, error: 'Invalid assignedTo user ID' });
+      }
+    }
+    
     const operation = dataStore.createOperation({
       title,
       description,
@@ -60,6 +81,28 @@ router.post('/', (req, res) => {
 // Update operation
 router.put('/:id', (req, res) => {
   try {
+    const { type, status, assignedTo, date } = req.body;
+    
+    if (type && !validateOperationType(type)) {
+      return res.status(400).json({ success: false, error: 'Invalid type. Must be one of: maintenance, security, deployment, monitoring, support' });
+    }
+    
+    if (status && !validateOperationStatus(status)) {
+      return res.status(400).json({ success: false, error: 'Invalid status. Must be one of: pending, in-progress, completed, failed' });
+    }
+    
+    if (!validateDate(date)) {
+      return res.status(400).json({ success: false, error: 'Invalid date format' });
+    }
+    
+    // Validate assignedTo references a valid user if provided
+    if (assignedTo) {
+      const user = dataStore.getUser(assignedTo);
+      if (!user) {
+        return res.status(400).json({ success: false, error: 'Invalid assignedTo user ID' });
+      }
+    }
+    
     const operation = dataStore.updateOperation(req.params.id, req.body);
     if (!operation) {
       return res.status(404).json({ success: false, error: 'Operation not found' });
