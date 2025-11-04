@@ -29,6 +29,8 @@ app.get('/api/health', (req, res) => {
 });
 
 // Serve index.html for root path
+// NOTE: In production, consider adding rate limiting middleware (e.g., express-rate-limit)
+// to protect against abuse and DoS attacks on all endpoints
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
