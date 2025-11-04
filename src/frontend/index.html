@@ -1,0 +1,1583 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project Management Platform</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%231d4ed8'/></svg>">
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app-boot.js"></script>
+  </head>
+  <body>
+    <div data-testid="TID-SHELL-ROOT" role="application" class="layout">
+      <header class="topbar" data-testid="TID-TOPBAR">
+        <div class="brand">
+          <img class="brand-logo" data-testid="TID-BRAND-LOGO" alt="Brand logo" src="assets/APGI Logo.png" />
+          <strong>PM Platform</strong>
+        </div>
+        <div class="inline-flex-center">          <label for="global-search" class="sr-only">Search</label>
+          <input id="global-search" data-testid="TID-GLOBAL-SEARCH" aria-label="Search" placeholder="Search…" />
+          <select data-testid="TID-ORG-SCOPE-SELECTOR" aria-label="Scope">
+            <option>OrgGroup</option>
+            <option>Company</option>
+            <option>Department</option>
+            <option>Person</option>
+            <option>Project</option>
+          </select>
+          <span data-testid="TID-PROBLEMS-INDICATOR" aria-label="Problems">0</span>
+          <button class="btn primary" type="button" data-testid="TID-START-PROJECT-BTN" aria-label="Start a new project" onclick="openProjectSetup()">Start a new project</button>
+          <button class="btn" type="button" data-testid="TID-NOTIFICATIONS-BTN" aria-label="Notifications">🔔</button>
+          <button class="btn" type="button" data-testid="TID-PROFILE-MENU" aria-haspopup="menu" aria-label="Profile">🙂</button>
+        </div>
+      </header>
+      <aside class="sidebar" data-testid="TID-SIDEBAR" role="navigation" aria-label="Main">
+        <div class="mb-12">          <label>
+            Company
+            <select data-testid="TID-COMPANY-FILTER">
+              <option>All Companies</option>
+            </select>
+          </label>
+          <label>
+            Department
+            <select data-testid="TID-DEPT-FILTER">
+              <option>All Departments</option>
+            </select>
+          </label>
+          <span data-testid="TID-SIDEBAR-TL-SELECTOR" hidden></span>
+        </div>
+        <nav class="nav">
+          <a href="#/" data-testid="TID-NAV-DASHBOARD" aria-current="page" onclick="return appNavTo(this)">Dashboard</a>
+          <a href="#/projects" data-testid="TID-NAV-PROJECTS" onclick="return appNavTo(this)">Projects</a>
+          <a href="#/reports" data-testid="TID-NAV-REPORTS" onclick="return appNavTo(this)">Reports</a>
+          <a href="#/permissions" data-testid="TID-NAV-PERMISSIONS" onclick="return appNavTo(this)">Permissions</a>
+          <a href="#/workitem" data-testid="TID-NAV-WORKITEM" onclick="return appNavTo(this)">Work Item</a>
+          <a href="#/evidence" data-testid="TID-NAV-EVIDENCE" onclick="return appNavTo(this)">Evidence</a>
+          <a href="#/gantt" data-testid="TID-NAV-GANTT" onclick="return appNavTo(this)">Gantt</a>
+          <a href="#/timelines" data-testid="TID-NAV-TIMELINES" onclick="return appNavTo(this)">Timelines</a>
+          <a href="#/tl-test" data-testid="TID-NAV-TL-TEST" onclick="return appNavTo(this)">Timelines (Test)</a>
+          <a href="#/audit" data-testid="TID-NAV-AUDIT" onclick="return appNavTo(this)">Audit Log</a>
+          <a href="#/notify" data-testid="TID-NAV-NOTIFY" onclick="return appNavTo(this)">Notifications</a>
+          <a href="#/import" data-testid="TID-NAV-IMPORT" onclick="return appNavTo(this)">Import</a>
+          <a href="#/exports" data-testid="TID-NAV-EXPORTS" onclick="return appNavTo(this)">Exports</a>
+          <a href="#/templates" data-testid="TID-NAV-TEMPLATES" onclick="return appNavTo(this)">Templates</a>
+          <a href="#/settings" data-testid="TID-NAV-SETTINGS" onclick="return appNavTo(this)">Settings</a>
+          <a href="#/search" data-testid="TID-NAV-SEARCH" onclick="return appNavTo(this)">Search</a>
+          <a href="#/qa" data-testid="TID-NAV-QA" onclick="return appNavTo(this)">Quality Assurance</a>
+        </nav>
+      </aside>
+      <main class="content" data-testid="TID-CONTENT-AREA" role="main">
+        <div class="breadcrumbs" data-testid="TID-BREADCRUMBS">
+          <nav aria-label="Breadcrumb">
+            <ol>
+              <li>Dashboard</li>
+            </ol>
+          </nav>
+        </div>
+        <div data-testid="TID-DASHBOARD">
+          <div data-testid="TID-DASH-FILTERS" class="filters-bar">            <!-- Placeholder dashboard filters -->
+            <label>
+              Timeframe
+              <select>
+                <option>Last 7 days</option>
+                <option>Last 30 days</option>
+                <option>Quarter to date</option>
+              </select>
+            </label>
+          </div>
+          <div class="kpi-row">            <button class="btn" type="button" data-testid="TID-DASH-KPI-OVERDUE" aria-label="Overdue items"><strong>Overdue</strong>: 0</button>
+            <button class="btn" type="button" data-testid="TID-DASH-KPI-DUE" aria-label="Due soon"><strong>Due soon</strong>: 0</button>
+            <button class="btn" type="button" data-testid="TID-DASH-KPI-COMPLETION" aria-label="Completion rate"><strong>Completion</strong>: 0%</button>
+          </div>
+        </div>
+        <section data-testid="TID-PROBLEMS-PANEL" aria-label="Problems Panel" hidden>
+          <!-- Problems will be listed here when detected; empty/hidden when zero -->
+        </section>
+
+        <!-- Project setup modal -->
+        <div data-testid="TID-PSETUP-MODAL" hidden class="modal-overlay">
+          <div data-testid="TID-PSETUP-DIALOG" role="dialog" aria-modal="true" class="modal-dialog">
+            <div class="modal-header">
+              <h2 class="modal-title">Start a new project</h2>
+              <button class="btn" type="button" data-testid="TID-PSETUP-CLOSE" aria-label="Close" onclick="closeProjectSetup()">✕</button>
+            </div>
+            <div class="grid-2">              <label>Project name <input data-testid="TID-PSETUP-NAME" /></label>
+              <label>Assignee <select data-testid="TID-PSETUP-ASSIGNEE"><option>Current User</option></select></label>
+              <label class="grid-span-full">Project outcome <textarea class="textarea-full" data-testid="TID-PSETUP-OUTCOME" placeholder="SMART outcome"></textarea></label>
+              <label class="grid-span-full">Project description <textarea class="textarea-full" data-testid="TID-PSETUP-DESCRIPTION"></textarea></label>
+              <div class="actions-right grid-span-full"><button class="btn" type="button" data-testid="TID-PSETUP-OPEN-TIMELINE" onclick="openTimelines('project')">Set timeline…</button></div>
+              
+            </div>
+            <div class="actions-right">
+              <button class="btn" type="button" data-testid="TID-PSETUP-CANCEL" onclick="closeProjectSetup()">Cancel</button>
+              <button class="btn primary" type="button" data-testid="TID-PSETUP-SAVE" onclick="saveProject()">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Milestone setup modal -->
+        <div data-testid="TID-MS-MODAL" hidden class="modal-overlay">
+          <div data-testid="TID-MS-DIALOG" role="dialog" aria-modal="true" class="modal-dialog">
+            <div class="modal-header">
+              <h2 class="modal-title">Add Milestone</h2>
+              <button class="btn" type="button" data-testid="TID-MS-CLOSE" aria-label="Close" onclick="closeMilestoneSetup()">✕</button>
+            </div>
+            <div class="grid-2">
+              <label>Project <select data-testid="TID-MS-PROJECT-SELECT"></select></label>
+              <button class="btn" type="button" data-testid="TID-MS-OPEN-TIMELINE" onclick="openTimelines('milestones')">Edit in Timelines…</button>
+              <label>Milestones <select data-testid="TID-MS-DROPDOWN" aria-label="Milestone selector"><option>Choose existing…</option><option data-testid="TID-MS-ADD-NEW" value="__add_new__">Add milestone…</option></select></label>
+              <label class="grid-span-full" hidden data-testid="TID-MS-NEW-LABEL">New milestone <input data-testid="TID-MS-NEW-TEXT" spellcheck="true" /></label>
+
+              <div data-testid="TID-MS-DUPLICATE-ALERT" hidden>Milestone already exists. Replace?</div>
+              
+            </div>
+            <div class="actions-right">
+              <button class="btn" type="button" data-testid="TID-MS-CANCEL" onclick="closeMilestoneSetup()">Cancel</button>
+              <button class="btn primary" type="button" data-testid="TID-MS-SAVE" onclick="saveMilestone()">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deliverable setup modal -->
+        <div data-testid="TID-DL-MODAL" hidden class="modal-overlay">
+          <div data-testid="TID-DL-DIALOG" role="dialog" aria-modal="true" class="modal-dialog">
+            <div class="modal-header">
+              <h2 class="modal-title">Add Deliverable</h2>
+              <button class="btn" type="button" data-testid="TID-DL-CLOSE" aria-label="Close" onclick="closeDeliverableSetup()">✕</button>
+            </div>
+            <div class="grid-2">
+              <label>Milestone <select data-testid="TID-DL-MILESTONE"></select></label>
+              <label>Deliverables <select data-testid="TID-DL-DROPDOWN" aria-label="Deliverable selector"><option>Choose existing…</option><option data-testid="TID-DL-ADD-NEW" value="__add_new__">Add deliverable…</option></select></label>
+              <label class="grid-span-full" hidden data-testid="TID-DL-NEW-LABEL">New deliverable <input data-testid="TID-DL-NEW-TEXT" spellcheck="true" /></label>
+              <label>Person responsible <select data-testid="TID-DL-ASSIGNEE"><option>Unassigned</option></select></label>
+              
+            </div>
+            <div class="actions-right">
+              <button class="btn" type="button" data-testid="TID-DL-CANCEL" onclick="closeDeliverableSetup()">Cancel</button>
+              <button class="btn primary" type="button" data-testid="TID-DL-SAVE" onclick="saveDeliverable()">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task setup modal -->
+        <div data-testid="TID-TASK-MODAL" hidden class="modal-overlay">
+          <div data-testid="TID-TASK-DIALOG" role="dialog" aria-modal="true" class="modal-dialog">
+            <div class="modal-header">
+              <h2 class="modal-title">Add Task</h2>
+              <button class="btn" type="button" data-testid="TID-TASK-CLOSE" aria-label="Close" onclick="closeTaskSetup()">✕</button>
+            </div>
+            <div class="grid-2">
+              <label>Title <input data-testid="TID-TASK-TITLE" /></label>
+              <label>Responsible <select data-testid="TID-TASK-ASSIGNEE"><option>Current User</option></select></label>
+              <label>Start date <input type="date" data-testid="TID-TASK-START" /></label>
+              <label>End date <input type="date" data-testid="TID-TASK-END" /></label>
+              <label>Milestone <select data-testid="TID-TASK-MILESTONE"></select></label>
+              <label>Deliverable <select data-testid="TID-TASK-DELIVERABLE"></select></label>
+              <label>Task cluster? <select data-testid="TID-TASK-CLUSTER-TOGGLE" aria-label="Use task cluster"><option value="no">No</option><option value="yes">Yes</option></select></label>
+              <label class="grid-span-full">Cluster name <select data-testid="TID-CLUSTER-NAME-SELECT"><option>Choose cluster…</option><option data-testid="TID-CLUSTER-ADD-NEW" value="__add_new__">Add cluster…</option></select></label>
+              <div class="grid-span-full" data-testid="TID-CLUSTER-PRELOAD" hidden><!-- Preloaded tasks will list here --></div>
+              
+            </div>
+            <div class="actions-right">
+              <button class="btn" type="button" data-testid="TID-TASK-CANCEL" onclick="closeTaskSetup()">Cancel</button>
+              <button class="btn primary" type="button" data-testid="TID-TASK-SAVE" onclick="saveTask()">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Duration filter modal -->
+        <div data-testid="TID-DUR-MODAL" hidden class="modal-overlay">
+          <div data-testid="TID-DUR-DIALOG" role="dialog" aria-modal="true" class="modal-dialog">
+            <div class="modal-header">
+              <h2 class="modal-title">Duration filter</h2>
+              <button class="btn" type="button" aria-label="Close" onclick="closeDurationModal()">✕</button>
+            </div>
+            <div>
+              <div>
+                <label><input type="radio" name="dur-op" data-testid="TID-DUR-OP-LT" /> Less than</label>
+                <label><input type="radio" name="dur-op" data-testid="TID-DUR-OP-GT" /> More than</label>
+                <label><input type="radio" name="dur-op" data-testid="TID-DUR-OP-EQ" /> Equal to</label>
+                <label><input type="radio" name="dur-op" data-testid="TID-DUR-OP-BETWEEN" /> Between</label>
+              </div>
+              <div class="inline-flex-center">
+                <input type="number" min="0" class="w-64" data-testid="TID-DUR-DAYS-1" />
+                <span id="dur-and-sep" hidden>&nbsp;and&nbsp;</span>
+                <input type="number" min="0" class="w-64" data-testid="TID-DUR-DAYS-2" hidden /> days
+              </div>
+            </div>
+            <div class="actions-right">
+              <button class="btn" type="button" data-testid="TID-DUR-CANCEL" onclick="closeDurationModal()">Cancel</button>
+              <button class="btn primary" type="button" data-testid="TID-DUR-APPLY" onclick="applyDurationFilter()">Apply</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Placeholder sections for upcoming components (hidden until implemented) -->
+        <section data-testid="TID-PAGE-PROJECTS" hidden aria-label="Projects Page">
+          <div data-testid="TID-PROJ-FILTERS" hidden>
+            <label class="sr-only" for="proj-search">Search projects</label>
+            <input id="proj-search" data-testid="TID-PROJ-SEARCH" aria-label="Search projects" placeholder="Search projects…" />
+            <select data-testid="TID-PROJ-FILTER-STATUS" aria-label="Status">
+              <option>All</option>
+              <option>Active</option>
+              <option>Completed</option>
+              <option>On hold</option>
+            </select>
+            <select data-testid="TID-PROJ-FILTER-COMPANY" aria-label="Company">
+              <option>All Companies</option>
+            </select>
+            <label>View types
+              <select multiple data-testid="TID-PROJ-FILTER-TYPE" aria-label="Item types">
+                <option value="milestone">Milestones</option>
+                <option value="deliverable">Deliverables</option>
+                <option value="task">Tasks</option>
+              </select>
+            </label>
+            <label>From <input type="date" data-testid="TID-PROJ-FILTER-FROM" /></label>
+            <label>To <input type="date" data-testid="TID-PROJ-FILTER-TO" /></label>
+          </div>
+          <div data-testid="TID-PROJ-ACTIONS" hidden>
+            <button class="btn" type="button" data-testid="TID-PROJ-CREATE-BTN" aria-label="Create project">Create</button>
+            <button class="btn" type="button" data-testid="TID-PROJ-IMPORT-BTN" aria-label="Import projects">Import</button>
+          </div>
+          <div data-testid="TID-PROJ-HEADER" hidden></div>
+          <div data-testid="TID-PROJ-DETAIL" class="proj-detail" hidden>
+            <div data-testid="TID-FILTER-CARD" class="filter-card">
+              <label>Projects
+                <select multiple data-testid="TID-FILTER-PROJECTS" aria-label="Filter projects"></select>
+              </label>
+              <label>Milestones
+                <select multiple data-testid="TID-FILTER-MILESTONES" aria-label="Filter milestones"></select>
+              </label>
+              <label>Deliverables
+                <select multiple data-testid="TID-FILTER-DELIVERABLES" aria-label="Filter deliverables"></select>
+              </label>
+              <label>Tasks
+                <select multiple data-testid="TID-FILTER-TASKS" aria-label="Filter tasks"></select>
+              </label>
+              <label>Start date <input type="date" data-testid="TID-FILTER-START" /></label>
+              <label>End date <input type="date" data-testid="TID-FILTER-END" /></label>
+              <label>Duration <button class="btn" type="button" data-testid="TID-FILTER-DURATION" onclick="openDurationModal()">Set…</button></label>
+              <label>Responsible
+                <select multiple data-testid="TID-FILTER-RESP" aria-label="Filter responsible"></select>
+              </label>
+            </div>
+            <label>Project <select data-testid="TID-PROJ-SELECT"><option value="current">Current Project</option></select></label>
+            <h2 data-testid="TID-PROJ-TITLE" class="proj-title"></h2>
+            <div data-testid="TID-PROJ-META" class="proj-meta">
+              <span>Start: <span data-testid="TID-PROJ-START"></span></span>
+              <span> • End: <span data-testid="TID-PROJ-END"></span></span>
+            </div>
+            <div data-testid="TID-PROJ-SUMMARY" class="proj-summary" hidden>
+              <span data-testid="TID-PROJ-SUM-STATUS"></span>
+              <span data-testid="TID-PROJ-SUM-START"></span>
+              <span data-testid="TID-PROJ-SUM-END"></span>
+              <span data-testid="TID-PROJ-SUM-DURATION"></span>
+              <span data-testid="TID-PROJ-SUM-RESP"></span>
+              <span data-testid="TID-PROJ-SUM-PROGRESS"></span>
+              <span data-testid="TID-PROJ-SUM-EVIDENCE"></span>
+            </div>
+            <div data-testid="TID-PROJ-COLS-HEADER" class="proj-grid header" hidden>
+              <div data-testid="TID-COL-H-DESC">Projects descriptors</div>
+              <div data-testid="TID-COL-H-START">Start date</div>
+              <div data-testid="TID-COL-H-END">End date</div>
+              <div data-testid="TID-COL-H-DURATION">Duration</div>
+              <div data-testid="TID-COL-H-RESP">Person responsible</div>
+              <div data-testid="TID-COL-H-EVID">Evidence management</div>
+            </div>
+            <div data-testid="TID-PROJ-BUILD" hidden>
+              <div data-testid="TID-PROJ-TREE" class="proj-grid" hidden>
+                <!-- Rows render here -->
+              </div>
+            </div>
+            <div class="actions-left">
+              <button class="btn" type="button" data-testid="TID-PROJ-ADD-MS" onclick="openMilestoneSetup()">+ Milestone</button>
+              <button class="btn" type="button" data-testid="TID-PROJ-ADD-DL" onclick="openDeliverableSetup()">+ Deliverable</button>
+              <button class="btn" type="button" data-testid="TID-PROJ-ADD-TASK" onclick="openTaskSetup()">+ Task</button>
+            </div>
+            <div data-testid="TID-PROJ-TREE" class="indent-0" hidden>
+              <!-- Numbering and trace placeholders for rows (examples) -->
+              <div class="indent-1" data-testid="TID-MS-ROW"><span data-testid="TID-MS-NUM">1</span> <span data-testid="TID-TRACE">Project-1</span></div>
+              <div class="indent-2" data-testid="TID-DL-ROW"><span data-testid="TID-DL-NUM">1.1</span> <span data-testid="TID-TRACE">Project-1.1</span></div>
+              <div class="indent-2" data-testid="TID-TASK-ROW"><span data-testid="TID-TASK-NUM">1.1.1</span> <span data-testid="TID-TRACE">Project-1.1.1</span></div>
+            </div>
+          </div>
+          <div data-testid="TID-PROJ-RESULTS-COUNT" hidden>0 results <button class="btn primary" type="button" data-testid="TID-PAGE-START-PROJECT-BTN" onclick="openProjectSetup()">Start a new project</button></div>
+          <table data-testid="TID-PROJ-TABLE" role="table" hidden>
+            <thead>
+              <tr>
+                <th scope="col" data-testid="TID-PROJ-THEAD-NAME">Name</th>
+                <th scope="col" data-testid="TID-PROJ-THEAD-STATUS">Status</th>
+                <th scope="col" data-testid="TID-PROJ-THEAD-STATUSDESC">Status Description</th>
+                <th scope="col" data-testid="TID-PROJ-THEAD-START">Start</th>
+                <th scope="col" data-testid="TID-PROJ-THEAD-END">End</th>
+                <th scope="col" data-testid="TID-PROJ-THEAD-PROGRESS">Progress</th>
+                <th scope="col" data-testid="TID-PROJ-THEAD-OWNER">Owner</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-testid="TID-PROJ-ROW-1" hidden>
+                <td>Example Project</td>
+                <td>Active</td>
+                <td>On track</td>
+                <td>2025-01-01</td>
+                <td>2025-06-30</td>
+                <td>25%</td>
+                <td>A. Leader</td>
+              </tr>
+            </tbody>
+          </table>
+          <div data-testid="TID-PROJ-EMPTY" hidden>No projects found.</div>
+          <div data-testid="TID-PROJ-LOADING" hidden>Loading…</div>
+          <div data-testid="TID-PROJ-PAGINATION" hidden>Page 1 of 1</div>
+        </section>
+        <section data-testid="TID-PAGE-REPORTS" hidden aria-label="Reports Hub"></section>
+        <section data-testid="TID-ROLE-MATRIX" hidden aria-label="Permissions Matrix">
+          <div data-testid="TID-ROLEM-CAPS">
+            <span data-testid="TID-ROLEM-CAP-CREATE">Create</span>
+            <span data-testid="TID-ROLEM-CAP-EDIT">Edit</span>
+            <span data-testid="TID-ROLEM-CAP-VIEW">View</span>
+          </div>
+          <div data-testid="TID-ROLEM-ROLES">
+            <div data-testid="TID-ROLEM-ROW-ADMIN">
+              <span>Admin</span>
+              <label><input type="checkbox" data-testid="TID-ROLEM-CHECK-ADMIN-CREATE" aria-label="Admin can Create" checked />Create</label>
+              <label><input type="checkbox" data-testid="TID-ROLEM-CHECK-ADMIN-EDIT" aria-label="Admin can Edit" checked />Edit</label>
+              <label><input type="checkbox" data-testid="TID-ROLEM-CHECK-ADMIN-VIEW" aria-label="Admin can View" checked />View</label>
+            </div>
+          </div>
+
+          <!-- Access matrix (baseline all-access) -->
+          <section data-testid="TID-ACCESS-MATRIX" aria-label="User Access Matrix">
+            <div data-testid="TID-AM-FUNCS" class="funcs-row">
+              <span>Dashboard</span><span>Projects</span><span>Reports</span><span>Permissions</span><span>Work Item</span><span>Evidence</span><span>Gantt</span><span>Audit Log</span><span>Notifications</span><span>Import</span><span>Exports</span><span>Templates</span><span>Search</span>
+            </div>
+            <div data-testid="TID-AM-ROLES" class="roles-list">
+              <div>Main Admin</div>
+              <div>Company Admin</div>
+              <div>Project Lead</div>
+              <div>Milestone Lead</div>
+              <div>Deliverable Lead</div>
+              <div>Project Member</div>
+            </div>
+            <div data-testid="TID-AM-GRID" class="grid-roles">
+              <!-- baseline: some example checkboxes -->
+              <input type="checkbox" checked />
+              <input type="checkbox" checked />
+              <input type="checkbox" checked />
+              <input type="checkbox" checked />
+              <input type="checkbox" checked />
+              <input type="checkbox" checked />
+            </div>
+          </section>
+        </section>
+        <section data-testid="TID-ORG-HIERARCHY" hidden aria-label="Org Hierarchy"></section>
+        <section data-testid="TID-MEMBERS-MANAGE" hidden aria-label="Members Management"></section>
+        <section data-testid="TID-WORKITEM-DETAIL" hidden aria-label="Work Item Detail">
+          <form data-testid="TID-WI-FORM">
+            <label>Name <input data-testid="TID-WI-NAME" /></label>
+            <label>Description <textarea data-testid="TID-WI-DESCRIPTION"></textarea></label>
+            <label>Type <select data-testid="TID-WI-TYPE"><option>Action Item</option><option>Task</option></select></label>
+            <label>Planned Start <input type="date" data-testid="TID-WI-START" /></label>
+            <label>Planned End <input type="date" data-testid="TID-WI-END" /></label>
+            <label>Duration <input data-testid="TID-WI-DURATION" placeholder="Days/Hours" /></label>
+            <label>Assignee <select data-testid="TID-WI-ASSIGNEE"><option>Unassigned</option></select></label>
+            <label>Progress <input type="range" min="0" max="100" data-testid="TID-WI-PROGRESS" /></label>
+            <div data-testid="TID-WI-PROGRESS-LABEL">0%</div>
+            <label>Success Indicator <input data-testid="TID-WI-SUCCESS-INDICATOR" placeholder="Measurable output" /></label>
+            <button class="btn" type="button" data-testid="TID-WI-DEPENDENCIES-ADD">Add dependency</button>
+            <div>
+              <button class="btn primary" type="button" data-testid="TID-WI-ACCEPT-BTN" onclick="workItemAccept()">Accept</button>
+              <button class="btn" type="button" data-testid="TID-WI-EDIT-BTN" onclick="workItemEdit()">Edit</button>
+              <button class="btn" type="button" data-testid="TID-WI-REJECT-BTN" onclick="workItemReject()">Reject</button>
+            </div>
+          </form>
+        </section>
+        <section data-testid="TID-GANTT-VIEW" hidden aria-label="Gantt View">
+          <div data-testid="TID-GANTT-CANVAS" class="gantt-canvas">Timeline placeholder</div>
+          <div data-testid="TID-GANTT-ALERTS"></div>
+          <button class="btn" type="button" data-testid="TID-GANTT-ADD-LINK">Add dependency link</button>
+        </section>
+
+        <!-- Timelines TEST page (isolated) -->
+        <section data-testid="TID-TL-TEST-PAGE" hidden aria-label="Timelines Test">
+          <div class="tltest-toolbar">
+            <button class="btn" type="button" data-testid="TID-TLT-Z-YEAR">Year</button>
+            <button class="btn" type="button" data-testid="TID-TLT-Z-QUARTER">Quarter</button>
+            <button class="btn" type="button" data-testid="TID-TLT-Z-MONTH">Month</button>
+            <button class="btn" type="button" data-testid="TID-TLT-Z-WEEK">Week</button>
+            <button class="btn" type="button" data-testid="TID-TLT-Z-DAY">Day</button>
+            <span class="flex-spacer"></span>
+            <label>Timeline start date <input type="date" data-testid="TID-TLT-VIEW-START" /></label>
+            <span data-testid="TID-TLT-VIEWPORT"></span>
+          </div>
+          <div class="tltest-axes" data-testid="TID-TLT-AXES">
+            <div class="tltest-axes-scroll" data-testid="TID-TLT-AXES-SCROLL">
+              <div class="tltest-axes-content" data-testid="TID-TLT-AXES-CONTENT">
+                <div class="tltest-axis" data-testid="TID-TLT-AXIS-YEARS"></div>
+                <div class="tltest-axis" data-testid="TID-TLT-AXIS-QUARTERS" hidden></div>
+                <div class="tltest-axis" data-testid="TID-TLT-AXIS-MONTHS" hidden></div>
+                <div class="tltest-axis" data-testid="TID-TLT-AXIS-WEEKS" hidden></div>
+                <div class="tltest-axis" data-testid="TID-TLT-AXIS-DAYS" hidden></div>
+              </div>
+            </div>
+          </div>
+          <div class="tltest-grid" data-testid="TID-TLT-GRID">
+            <div class="tltest-left" data-testid="TID-TLT-LABELS"></div>
+            <div class="tltest-resizer" data-testid="TID-TLT-RESIZER" title="Drag to resize columns"></div>
+            <div class="tltest-progress" data-testid="TID-TLT-PROGRESS"></div>
+            <div class="tltest-resizer" data-testid="TID-TLT-RESIZER-2" title="Drag to resize columns"></div>
+            <div class="tltest-right">
+              <div class="tltest-scroll" data-testid="TID-TLT-SCROLL">
+                <div class="tltest-canvas" data-testid="TID-TLT-CANVAS"></div>
+              </div>
+            </div>
+          </div>
+          <div class="tltest-problems" data-testid="TID-TLT-PROBLEMS" hidden></div>
+        </section>
+
+        <!-- Timelines page -->
+        <section data-testid="TID-TL-PAGE" hidden aria-label="Timelines">
+          <div class="timeline-toolbar">
+            <button class="btn" type="button" data-testid="TID-TL-Z-YEAR" onclick="tlSetZoom('year')">Year</button>
+            <button class="btn" type="button" data-testid="TID-TL-Z-QUARTER" onclick="tlSetZoom('quarter')">Quarter</button>
+            <button class="btn" type="button" data-testid="TID-TL-Z-MONTH" onclick="tlSetZoom('month')">Month</button>
+            <button class="btn" type="button" data-testid="TID-TL-Z-WEEK" onclick="tlSetZoom('week')">Week</button>
+            <button class="btn" type="button" data-testid="TID-TL-Z-DAY" onclick="tlSetZoom('day')">Day</button>
+            <span class="flex-spacer"></span>
+            <label>View start <input type="date" data-testid="TID-TL-VIEW-START" /></label>
+            <label>Project <select data-testid="TID-TL-PROJECT-SELECT"></select></label>
+            <button class="btn" type="button" data-testid="TID-TL-CREATE-PROJECT" onclick="openProjectSetup()">Create project</button>
+            <button class="btn primary" type="button" data-testid="TID-TL-APPLY" onclick="tlApplyAndBack()">Apply</button>
+            <button class="btn" type="button" data-testid="TID-TL-BACK" onclick="backToProjects()">Back to projects</button>
+          </div>
+          <div class="timeline-filters" data-testid="TID-TL-FILTERS">
+            <div class="filter-card">
+              <label><input type="checkbox" data-testid="TID-TL-FSHOW-PROJ" checked /> Show project</label>
+              <label><input type="checkbox" data-testid="TID-TL-FSHOW-MS" checked /> Show milestones</label>
+              <label><input type="checkbox" data-testid="TID-TL-FSHOW-DL" checked /> Show deliverables</label>
+              <label><input type="checkbox" data-testid="TID-TL-FSHOW-TASK" checked /> Show tasks</label>
+              <label>Responsible <select data-testid="TID-TL-FRESP"><option>Any</option><option>Current User</option><option>Unassigned</option></select></label>
+            </div>
+          </div>
+          <div class="tl-grid">
+            <div class="tl-labels">
+              <!-- Left column header is injected by JS render -->
+            </div>
+            <div class="tl-scroll">
+              <div class="tl-header-spacer" data-testid="TID-TL-HEADER-SPACER"></div>
+              <div class="tl-axis" data-testid="TID-TL-AXIS-YEARS" hidden></div>
+              <div class="tl-axis" data-testid="TID-TL-AXIS-QUARTERS" hidden></div>
+              <div class="tl-axis" data-testid="TID-TL-AXIS-MONTHS" hidden></div>
+              <div class="tl-axis" data-testid="TID-TL-AXIS-WEEKS" hidden></div>
+              <div class="tl-axis" data-testid="TID-TL-AXIS-DAYS" hidden></div>
+              <div class="timeline-canvas" data-testid="TID-TL-CANVAS">
+                <!-- QA placeholders for base project lane/bar test IDs (runtime will render actual elements) -->
+                <div data-testid="TID-TL-LANE-PROJ" hidden></div>
+                <div data-testid="TID-TL-BAR-PROJ" hidden></div>
+                <div class="tl-lanes" id="tl-lanes"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section data-testid="TID-EVIDENCE-UPLOAD" hidden aria-label="Evidence Upload">
+          <div data-testid="TID-EV-HINT">Only one evidence item per task. Accepted: PDF, Office docs, images, MP4 video.</div>
+          <input data-testid="TID-EV-FILE" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.png,.jpg,.jpeg,.mp4" />
+          <div>
+            <button class="btn" type="button" data-testid="TID-EV-UPLOAD-BTN" onclick="evidenceUpload()">Upload</button>
+            <button class="btn" type="button" data-testid="TID-EV-REMOVE-BTN" onclick="evidenceRemove()">Remove</button>
+          </div>
+          <div data-testid="TID-EV-FILENAME"></div>
+        </section>
+        <section data-testid="TID-APPROVALS-PANEL" hidden aria-label="Approvals Panel"></section>
+        <section data-testid="TID-AUDIT-LOG" hidden aria-label="Audit Log">
+          <div data-testid="TID-AUD-FILTERS">
+            <input type="date" data-testid="TID-AUD-FROM" />
+            <input type="date" data-testid="TID-AUD-TO" />
+            <select data-testid="TID-AUD-USER"><option>Any</option></select>
+            <input placeholder="Search…" data-testid="TID-AUD-SEARCH" />
+          </div>
+          <table role="table" data-testid="TID-AUD-TABLE">
+            <thead>
+              <tr>
+                <th scope="col" data-testid="TID-AUD-TH-TIME">Time</th>
+                <th scope="col" data-testid="TID-AUD-TH-ACTOR">Actor</th>
+                <th scope="col" data-testid="TID-AUD-TH-ACTION">Action</th>
+                <th scope="col" data-testid="TID-AUD-TH-ENTITY">Entity</th>
+              </tr>
+            </thead>
+          </table>
+          <button class="btn" type="button" data-testid="TID-AUD-EXPORT" onclick="auditExport()">Export</button>
+        </section>
+        <section data-testid="TID-NOTIFY-PREFERENCES" hidden aria-label="Notification Preferences">
+          <label>Frequency
+            <select data-testid="TID-NOTIFY-FREQ"><option>Immediate</option><option>Daily</option><option>Weekly</option></select>
+          </label>
+          <label>Quiet hours
+            <input data-testid="TID-NOTIFY-QUIET" placeholder="22:00–06:00" />
+          </label>
+          <button class="btn" type="button" data-testid="TID-NOTIFY-SAVE">Save</button>
+        </section>
+        <section data-testid="TID-IMPORT-WIZARD" hidden aria-label="Import Wizard">
+          <input type="file" data-testid="TID-IMP-FILE" />
+          <div data-testid="TID-IMP-MAP">Mapping area placeholder</div>
+          <button class="btn" type="button" data-testid="TID-IMP-VALIDATE" onclick="importValidate()">Validate</button>
+          <button class="btn" type="button" data-testid="TID-IMP-IMPORT" onclick="importRun()">Import</button>
+        </section>
+        <section data-testid="TID-EXPORT-REPORTS" hidden aria-label="Export Reports">
+          <select data-testid="TID-EXP-TYPE"><option>CSV</option><option>Excel</option><option>PDF</option></select>
+          <button class="btn" type="button" data-testid="TID-EXP-GO" onclick="exportsRun()">Generate</button>
+        </section>
+        <section data-testid="TID-TEMPLATES-LIBRARY" hidden aria-label="Templates Library">
+          <ul data-testid="TID-TPL-LIST"><li>Onboarding Procedure</li></ul>
+          <button class="btn" type="button" data-testid="TID-TPL-APPLY" onclick="templatesApply()">Apply Template</button>
+        </section>
+        <section data-testid="TID-QA-PAGE" hidden aria-label="Quality Assurance">
+          <div class="filter-card">
+            <label>Component
+              <select data-testid="TID-QA-COMPONENT">
+                <option value="tltest">Timelines (Test)</option>
+                <option value="dashboard">Dashboard</option>
+                <option value="projects">Projects</option>
+              </select>
+            </label>
+            <button class="btn primary" type="button" data-testid="TID-QA-RUN">Run QA tests</button>
+            <span data-testid="TID-QA-RUN-COUNT">Tests run: 0</span>
+            <span data-testid="TID-QA-PASS-COUNT">Passed: 0</span>
+            <span data-testid="TID-QA-PERF">App performance: 0%</span>
+          </div>
+          <div class="filter-card">
+            <button class="btn" type="button" data-testid="TID-QA-SHOW-CLIP">Show latest clipboard image</button>
+            <span data-testid="TID-QA-CLIP-URL"></span>
+          </div>
+          <div><img data-testid="TID-QA-CLIP-IMG" alt="Clipboard latest" class="qa-clip-img" /></div>
+          <div class="filter-card">
+            <button class="btn" type="button" data-testid="TID-QA-DESCRIBE-CLIP">Describe latest screenshot</button>
+            <span data-testid="TID-QA-CLIP-DESC-STATUS"></span>
+          </div>
+          <pre data-testid="TID-QA-CLIP-DESC"></pre>
+          <div data-testid="TID-QA-FAIL-LIST"></div>
+        </section>
+        <section data-testid="TID-SETTINGS-PAGE" hidden aria-label="Settings">
+          <h2>Display settings</h2>
+          <div class="filter-card">
+            <label>Years visible <input type="number" min="1" max="20" data-testid="TID-SET-YEARS" /></label>
+            <label>Quarters visible <input type="number" min="1" max="40" data-testid="TID-SET-QUARTERS" /></label>
+            <label>Months visible <input type="number" min="1" max="60" data-testid="TID-SET-MONTHS" /></label>
+            <label>Weeks visible <input type="number" min="1" max="104" data-testid="TID-SET-WEEKS" /></label>
+            <label>Days visible <input type="number" min="1" max="62" data-testid="TID-SET-DAYS" /></label>
+          </div>
+          <div class="actions-left">
+            <button class="btn primary" type="button" data-testid="TID-SET-SAVE" onclick="settingsSave()">Save</button>
+            <button class="btn" type="button" data-testid="TID-SET-CANCEL" onclick="navigateTo('#/timelines')">Back to timelines</button>
+          </div>
+        </section>
+        <section data-testid="TID-SEARCH-RESULTS" hidden aria-label="Search Results">
+          <div data-testid="TID-SRCH-COUNT">0 results</div>
+          <ul data-testid="TID-SRCH-LIST"></ul>
+        </section>
+        <section data-testid="TID-ASSIGNMENT-AI-SUGGEST" hidden aria-label="AI Assignment Suggestions"></section>
+      </main>
+    </div>
+    <script src="app-main.js"></script>
+    <script src="timelines-test.js"></script>
+    <script type="text/plain" data-disabled="true">
+      // Early global fallbacks to prevent ReferenceError if bundling/binding is delayed
+      (function(){
+        if(typeof window.appNavTo !== 'function'){
+          window.appNavTo = function(el){
+            try {
+              const href = el && el.getAttribute ? (el.getAttribute('href') || '#/') : (typeof el === 'string' ? el : '#/');
+              location.hash = href;
+              if(typeof navigateTo === 'function'){ navigateTo(href); }
+              return false;
+            } catch(e){ return false; }
+          };
+        }
+        if(typeof window.openProjectSetup !== 'function'){
+          window.openProjectSetup = function(){
+            try { const m = document.querySelector('[data-testid="TID-PSETUP-MODAL"]'); if(m){ m.removeAttribute('hidden'); } } catch(e){}
+          };
+        }
+      })();
+
+      // Lightweight in-memory state for project hierarchy (MVP)
+      window.projectState = null;
+      window.durationFilter = null;
+
+      // Placeholder handlers for QA-visible interactions
+      document.querySelector('[data-testid="TID-NOTIFICATIONS-BTN"]').addEventListener('click', ()=>{
+        console.log('Notifications clicked');
+        alert('Notifications placeholder');
+      });
+      document.querySelector('[data-testid="TID-PROFILE-MENU"]').addEventListener('click', ()=>{
+        console.log('Profile menu clicked');
+        alert('Profile menu placeholder');
+      });
+
+      // Initialize perf bucket
+      window.__tlPerf = window.__tlPerf || {};
+
+      // Hash-based navigation hooks for QA
+      function appNavTo(el){ const href = el.getAttribute('href') || '#/'; location.hash = href; navigateTo(href); return false; }
+      function navigateTo(route){
+        const routes = {
+          '#/': 'TID-DASHBOARD',
+          '#/projects': 'TID-PAGE-PROJECTS',
+          '#/timelines': 'TID-TL-PAGE',
+          '#/reports': 'TID-PAGE-REPORTS',
+          '#/permissions': 'TID-ROLE-MATRIX',
+          '#/workitem': 'TID-WORKITEM-DETAIL',
+          '#/evidence': 'TID-EVIDENCE-UPLOAD',
+          '#/gantt': 'TID-GANTT-VIEW',
+          '#/audit': 'TID-AUDIT-LOG',
+          '#/notify': 'TID-NOTIFY-PREFERENCES',
+          '#/import': 'TID-IMPORT-WIZARD',
+          '#/exports': 'TID-EXPORT-REPORTS',
+          '#/templates': 'TID-TEMPLATES-LIBRARY',
+          '#/settings': 'TID-SETTINGS-PAGE',
+          '#/search': 'TID-SEARCH-RESULTS'
+        };
+        const showTestId = routes[route] || 'TID-DASHBOARD';
+        const content = document.querySelector('[data-testid="TID-CONTENT-AREA"]');
+        if(content){
+          const children = Array.from(content.children);
+          children.forEach(el=>{
+            const tid = el.getAttribute('data-testid');
+            if(!tid || tid === 'TID-BREADCRUMBS') return;
+            if(tid === showTestId){ el.removeAttribute('hidden'); }
+            else { el.setAttribute('hidden',''); }
+          });
+        }
+        // Update aria-current
+        document.querySelectorAll('.nav a[data-testid^="TID-NAV-"]').forEach(a=>{
+          if(a.getAttribute('href') === route){ a.setAttribute('aria-current','page'); }
+          else { a.removeAttribute('aria-current'); }
+        });
+        // Update breadcrumbs (hide redundant label on Projects page)
+        const bc = document.querySelector('[data-testid="TID-BREADCRUMBS"] ol');
+        if(bc){
+          bc.innerHTML = '';
+          if(route === '#/'){
+            const li = document.createElement('li'); li.textContent = 'Dashboard'; bc.appendChild(li);
+          } else if(route !== '#/projects'){
+            const li = document.createElement('li');
+            li.textContent = route.replace('#/','').replace(/^[a-z]/, c=>c.toUpperCase());
+            bc.appendChild(li);
+          }
+        }
+        // Route-specific init wiring
+        if(route === '#/workitem'){ try{ workItemInit(); }catch(e){} }
+        if(route === '#/evidence'){ try{ evidenceInit(); }catch(e){} }
+        if(route === '#/gantt'){ try{ ganttInit(); }catch(e){} }
+        if(route === '#/audit'){ try{ auditInit(); }catch(e){} }
+        if(route === '#/notify'){ try{ notifyInit(); }catch(e){} }
+        if(route === '#/import'){ try{ importInit(); }catch(e){} }
+        if(route === '#/exports'){ try{ exportsInit(); }catch(e){} }
+        if(route === '#/templates'){ try{ templatesInit(); }catch(e){} }
+        if(route === '#/search'){ try{ searchInit(); }catch(e){} }
+        if(route === '#/timelines'){ try{ tlInitFromStore(); tlRender(); }catch(e){} }
+        if(route === '#/settings'){ try{ settingsInit(); }catch(e){} }
+        try{ runWiringChecks(); }catch(e){}
+      }
+      window.addEventListener('hashchange', ()=> { closeProjectSetup(); navigateTo(location.hash || '#/'); });
+      // Ensure sidebar nav always navigates even if default is blocked
+      document.addEventListener('DOMContentLoaded', ()=>{
+        document.querySelectorAll('.nav a[data-testid^="TID-NAV-"]').forEach(a=>{
+          a.addEventListener('click', (e)=>{
+            e.preventDefault();
+            const href = a.getAttribute('href') || '#/';
+            location.hash = href;
+            navigateTo(href);
+          });
+        });
+      });
+      // Initial nav
+      navigateTo(location.hash || '#/');
+
+      // Duration filter modal wiring
+      function openDurationModal(){ const m = document.querySelector('[data-testid="TID-DUR-MODAL"]'); if(m){ m.removeAttribute('hidden'); } }
+      function closeDurationModal(){ const m = document.querySelector('[data-testid="TID-DUR-MODAL"]'); if(m){ m.setAttribute('hidden',''); } }
+      function applyDurationFilter(){
+        const op = document.querySelector('[data-testid="TID-DUR-OP-LT"]')?.checked ? 'lt'
+          : document.querySelector('[data-testid="TID-DUR-OP-GT"]')?.checked ? 'gt'
+          : document.querySelector('[data-testid="TID-DUR-OP-EQ"]')?.checked ? 'eq' : null;
+        const days = parseInt(document.querySelector('[data-testid="TID-DUR-DAYS-1"]')?.value||'0', 10) || 0;
+        window.durationFilter = op ? { op, days } : null;
+        closeDurationModal();
+      }
+
+      // Projects page behavior hooks for QA
+      function projectSetRowsCount(n){
+        const results = document.querySelector('[data-testid="TID-PROJ-RESULTS-COUNT"]');
+        const empty = document.querySelector('[data-testid="TID-PROJ-EMPTY"]');
+        const row1 = document.querySelector('[data-testid="TID-PROJ-ROW-1"]');
+        const tbody = document.querySelector('[data-testid="TID-PROJ-TABLE"] tbody');
+        const count = Math.max(0, parseInt(n, 10) || 0);
+        if(results){ results.textContent = count + ' results'; }
+        if(empty){
+          if(count > 0){ empty.setAttribute('hidden',''); } else { empty.removeAttribute('hidden'); }
+        }
+        if(tbody && row1){
+          if(count > 0){ row1.removeAttribute('hidden'); if(!row1.parentElement){ tbody.appendChild(row1); } }
+          else { row1.setAttribute('hidden',''); }
+        }
+      }
+      const projSearch = document.getElementById('proj-search');
+      if(projSearch){
+        projSearch.addEventListener('input', (e)=>{
+          // Demo behavior: if search text is empty, show 1 result; else show 0
+          const val = e.target.value.trim();
+          projectSetRowsCount(val.length ? 0 : 1);
+        });
+      }
+
+      // Wiring self-checks to populate Problems panel if anything is off
+      function runWiringChecks(){
+        const problems = [];
+        const sidebar = document.querySelector('[data-testid="TID-SIDEBAR"]');
+        if(!sidebar){ problems.push('Sidebar missing'); }
+        else {
+          const rect = sidebar.getBoundingClientRect();
+          if(rect.width < 50){ problems.push('Sidebar not visible or too narrow'); }
+        }
+        const dash = document.querySelector('[data-testid="TID-DASHBOARD"]');
+        if(!dash || dash.hasAttribute('hidden')){ problems.push('Dashboard not visible on initial load'); }
+        const navDashboard = document.querySelector('[data-testid="TID-NAV-DASHBOARD"]');
+        if(!navDashboard){ problems.push('Dashboard nav link missing'); }
+        // Timelines diagnostics (runtime): if timelines page is visible ensure axes or lanes rendered
+        const tlPage = document.querySelector('[data-testid="TID-TL-PAGE"]');
+        if(tlPage && !tlPage.hasAttribute('hidden')){
+          const years = document.querySelector('[data-testid="TID-TL-AXIS-YEARS"]');
+          const quarters = document.querySelector('[data-testid="TID-TL-AXIS-QUARTERS"]');
+          const months = document.querySelector('[data-testid="TID-TL-AXIS-MONTHS"]');
+          const lanes = document.getElementById('tl-lanes');
+          const axesVisible = (years && !years.hasAttribute('hidden')) || (quarters && !quarters.hasAttribute('hidden')) || (months && !months.hasAttribute('hidden'));
+          const lanesPopulated = !!(lanes && lanes.children && lanes.children.length > 0);
+          if(!axesVisible && !lanesPopulated){ problems.push('Timelines not rendered: axes hidden and no lanes'); }
+        }
+
+        const ind = document.querySelector('[data-testid="TID-PROBLEMS-INDICATOR"]');
+        const panel = document.querySelector('[data-testid="TID-PROBLEMS-PANEL"]');
+        if(ind){ ind.textContent = String(problems.length); }
+        if(panel){
+          if(problems.length){
+            panel.innerHTML = '<ul>' + problems.map(p=>`<li>${p}</li>`).join('') + '</ul>';
+            panel.removeAttribute('hidden');
+          }else{
+            panel.setAttribute('hidden','');
+          }
+        }
+      }
+      window.addEventListener('DOMContentLoaded', ()=>{ runWiringChecks(); });
+
+      // Work item hooks
+      function updateProgressLabel(value){
+        const lbl = document.querySelector('[data-testid="TID-WI-PROGRESS-LABEL"]');
+        if(lbl){ lbl.textContent = (parseInt(value,10)||0) + '%'; }
+      }
+      function workItemInit(){
+        const prog = document.querySelector('[data-testid="TID-WI-PROGRESS"]');
+        if(prog){ prog.addEventListener('input', e=> updateProgressLabel(e.target.value)); }
+      }
+      function workItemAccept(){ console.log('workItemAccept'); }
+      function workItemReject(){ console.log('workItemReject'); }
+      function workItemEdit(){ console.log('workItemEdit'); }
+      function linkPredecessor(id){ console.log('linkPredecessor', id); }
+
+      // Evidence hooks
+      function evidenceInit(){ console.log('evidenceInit'); }
+      function evidenceSetFileName(name){ const el = document.querySelector('[data-testid="TID-EV-FILENAME"]'); if(el){ el.textContent = name || ''; } }
+      function evidenceUpload(){ console.log('evidenceUpload'); }
+      function evidenceRemove(){ evidenceSetFileName(''); console.log('evidenceRemove'); }
+
+      // Gantt hooks
+      function ganttInit(){ console.log('ganttInit'); }
+      function ganttAddLink(pred, succ){ console.log('ganttAddLink', pred, succ); }
+      function ganttShowDependencyIssue(msg){ const a = document.querySelector('[data-testid="TID-GANTT-ALERTS"]'); if(a){ a.textContent = msg; } }
+
+      // Audit hooks
+      function auditInit(){ console.log('auditInit'); }
+      function auditFilter(){ console.log('auditFilter'); }
+      function auditExport(){ console.log('auditExport'); }
+
+      // Notification hooks
+      function notifyInit(){ console.log('notifyInit'); }
+      function notifySave(){ console.log('notifySave'); }
+
+      // Import hooks
+      function importInit(){ console.log('importInit'); }
+      function importValidate(){ console.log('importValidate'); }
+      function importRun(){ console.log('importRun'); }
+
+      // Exports hooks
+      function exportsInit(){ console.log('exportsInit'); }
+      function exportsRun(){ console.log('exportsRun'); }
+
+      // Templates hooks
+      function templatesInit(){ console.log('templatesInit'); }
+      function templatesApply(){ console.log('templatesApply'); }
+
+      // Settings for timelines display counts
+      function settingsLoad(){
+        try{ return JSON.parse(localStorage.getItem('pm_tl_settings')||'{}'); }catch(e){ return {}; }
+      }
+      function settingsDefaults(){ return { yearsVisible: 5, quartersVisible: 8, monthsVisible: 12, weeksVisible: 24, daysVisible: 31 }; }
+      function settingsGet(){ const def=settingsDefaults(); const cur=settingsLoad(); return Object.assign({}, def, cur); }
+      function settingsSave(){
+        const s = settingsGet();
+        const g = (tid, min, max, fallback)=>{ const el=document.querySelector(`[data-testid="${tid}"]`); const v=parseInt(el?.value||fallback,10); return isNaN(v)?fallback: Math.max(min, Math.min(max, v)); };
+        const val = {
+          yearsVisible: g('TID-SET-YEARS',1,20, s.yearsVisible),
+          quartersVisible: g('TID-SET-QUARTERS',1,40, s.quartersVisible),
+          monthsVisible: g('TID-SET-MONTHS',1,60, s.monthsVisible),
+          weeksVisible: g('TID-SET-WEEKS',1,104, s.weeksVisible),
+          daysVisible: g('TID-SET-DAYS',1,62, s.daysVisible)
+        };
+        localStorage.setItem('pm_tl_settings', JSON.stringify(val));
+        window.tlSettings = val;
+        alert('Settings saved');
+        // If timelines is open, re-render fully
+        if(location.hash === '#/timelines'){ tlRender(); }
+      }
+      function settingsInit(){
+        const s = settingsGet();
+        const set = (tid, v)=>{ const el=document.querySelector(`[data-testid="${tid}"]`); if(el) el.value = String(v); };
+        set('TID-SET-YEARS', s.yearsVisible);
+        set('TID-SET-QUARTERS', s.quartersVisible);
+        set('TID-SET-MONTHS', s.monthsVisible);
+        set('TID-SET-WEEKS', s.weeksVisible);
+        set('TID-SET-DAYS', s.daysVisible);
+      }
+
+      // Timelines navigation
+      function openTimelines(mode){ window.timelineMode = mode || 'project'; window.returnToModal = (mode==='project' ? 'project' : (mode==='milestones' ? 'milestone' : null)); navigateTo('#/timelines'); tlInitFromStore(); tlRender(); const sel=document.querySelector('[data-testid="TID-TL-PROJECT-SELECT"]'); if(sel){ sel.onchange = ()=>{ const i=parseInt(sel.value,10); const list=projectsLoad(); if(!isNaN(i) && list[i]){ window.projectState = JSON.parse(JSON.stringify(list[i])); tlRender(); } }; } }
+      function backToProjects(){ navigateTo('#/projects'); if(window.returnToModal==='project'){ openProjectSetup(); } else if(window.returnToModal==='milestone'){ openMilestoneSetup(); } window.returnToModal=null; }
+
+      // Timelines engine (very light MVP)
+      window.tlState = { zoom: 'quarter', origin: new Date(), autoZoom: false };
+      function tlZoom(dir){ const order=['day','week','month','quarter','year']; const i=order.indexOf(window.tlState.zoom); const ni=Math.min(order.length-1, Math.max(0, i+dir)); window.tlState.zoom=order[ni]; const lbl=document.querySelector('[data-testid="TID-TL-ZOOM-LABEL"]'); if(lbl){ lbl.textContent = (window.tlState.zoom==='month'?'Monthly':window.tlState.zoom.charAt(0).toUpperCase()+window.tlState.zoom.slice(1)); } tlRender(); }
+      function tlPan(dir){ const z=window.tlState.zoom; const ms = new Date(window.tlState.origin); if(z==='day'){ ms.setDate(ms.getDate()+dir); } else if(z==='week'){ ms.setDate(ms.getDate()+7*dir); } else if(z==='month'){ ms.setMonth(ms.getMonth()+dir); } else if(z==='quarter'){ ms.setMonth(ms.getMonth()+3*dir); } else if(z==='year'){ ms.setFullYear(ms.getFullYear()+dir); } window.tlState.origin = ms; tlRender(); }
+      function tlParseDateLocal(s){ if(s instanceof Date) return new Date(s.getFullYear(), s.getMonth(), s.getDate()); if(typeof s === 'string'){ const [y,m,d] = s.split('-').map(n=>parseInt(n,10)); return new Date(y, (m||1)-1, d||1); } return new Date(s); }
+      function tlFmtDateLocal(d){ const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`; }
+      function tlDateToX(d){
+        const origin = new Date(window.tlState.origin.getFullYear(), window.tlState.origin.getMonth(), 1);
+        const pxPerDay = window.tlState.pxPerDay || 6;
+        const dt = tlParseDateLocal(d);
+        const dd = (dt - origin)/(1000*60*60*24);
+        return Math.round(dd*pxPerDay);
+      }
+      function tlXToDate(x){
+        const origin = new Date(window.tlState.origin.getFullYear(), window.tlState.origin.getMonth(), 1);
+        const pxPerDay = window.tlState.pxPerDay || 6;
+        const days = Math.round(x/pxPerDay);
+        const dt = new Date(origin);
+        dt.setDate(dt.getDate()+days);
+        return new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+      }
+      function tlInitFromStore(){
+        const p0 = (performance && performance.now) ? performance.now() : Date.now();
+        console.log('[TL-PERF] tl:init:start');
+        console.log('[TL] tlInitFromStore');
+        const sel = document.querySelector('[data-testid="TID-TL-PROJECT-SELECT"]');
+        const projects = projectsLoad();
+        if(sel){
+          sel.innerHTML = projects.length ? projects.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('') : '<option>No projects</option>';
+          const typed = document.querySelector('[data-testid="TID-PSETUP-NAME"]')?.value?.trim();
+          const comingFromUnsaved = (window.timelineMode === 'project' && typed);
+          // Default to last project only if not coming from unsaved Project modal name
+          if(projects.length && !comingFromUnsaved){
+            if(sel.selectedIndex < 0){ sel.selectedIndex = projects.length - 1; }
+            const i = parseInt(sel.value||String(projects.length-1),10) || (projects.length-1);
+            window.projectState = JSON.parse(JSON.stringify(projects[i]));
+          } else if(comingFromUnsaved){
+            // Create a draft state to reflect typed name
+            const today = new Date(); const next = new Date(today); next.setMonth(today.getMonth()+1);
+            window.projectState = { name: typed, start: tlFmtDateLocal(today), end: tlFmtDateLocal(next), milestones: [], isDraft: true };
+          }
+          // Set origin to project start month so full duration is scrollable from the left
+          if(window.projectState?.start){ const ps = tlParseDateLocal(window.projectState.start); window.tlState.origin = new Date(ps.getFullYear(), ps.getMonth(), 1); }
+          sel.onchange = ()=>{ const i=parseInt(sel.value,10); if(!isNaN(i) && projects[i]){ window.projectState = JSON.parse(JSON.stringify(projects[i])); if(window.projectState?.start){ const ps=tlParseDateLocal(window.projectState.start); window.tlState.origin = new Date(ps.getFullYear(), ps.getMonth(), 1); } console.log('[TL] project changed', window.projectState); tlRender(); } };
+        }
+        // Load settings
+        window.tlSettings = settingsGet();
+        console.log('[TL] settings', window.tlSettings);
+        // Bind and sync the View start picker
+        tlBindViewStartInput();
+        const p1 = (performance && performance.now) ? performance.now() : Date.now();
+        window.__tlPerf.initMs = (p1 - p0);
+        console.log('[TL-PERF] tl:init:end', window.__tlPerf.initMs);
+      }
+      function tlComputeView(){
+        const scroll = document.querySelector('.tl-scroll');
+        const p0 = (performance && performance.now) ? performance.now() : Date.now();
+        console.log('[TL-PERF] tl:computeView:start');
+        console.log('[TL] tlComputeView start', { zoom: window.tlState.zoom, origin: window.tlState.origin });
+        const counts = window.tlSettings || settingsGet();
+        const origin = new Date(window.tlState.origin.getFullYear(), window.tlState.origin.getMonth(), 1);
+        const z = window.tlState.zoom;
+        // Determine viewStart (explicit control or default to project start)
+        let viewStart = window.tlState.viewStart;
+        if(!viewStart){ viewStart = window.projectState?.start ? tlParseDateLocal(window.projectState.start) : new Date(origin); window.tlState.viewStart = viewStart; }
+        // Compute viewEnd based on selected denominator count starting at viewStart
+        let viewEnd;
+        if(z==='year'){
+          viewEnd = new Date(viewStart.getFullYear() + (counts.yearsVisible||5), 0, 1);
+        } else if(z==='quarter'){
+          const qStartMonth = Math.floor(viewStart.getMonth()/3)*3; const qStart = new Date(viewStart.getFullYear(), qStartMonth, 1);
+          viewEnd = new Date(qStart); viewEnd.setMonth(qStart.getMonth() + 3*(counts.quartersVisible||8));
+        } else if(z==='month'){
+          viewEnd = new Date(viewStart); viewEnd.setMonth(viewStart.getMonth() + (counts.monthsVisible||12));
+        } else if(z==='week'){
+          const start = new Date(viewStart); const dow=start.getDay(); const delta=(dow+6)%7; start.setDate(start.getDate()-delta);
+          viewEnd = new Date(start); viewEnd.setDate(start.getDate() + 7*(counts.weeksVisible||24));
+        } else {
+          const start = new Date(viewStart.getFullYear(), viewStart.getMonth(), viewStart.getDate()); viewEnd = new Date(start); viewEnd.setDate(start.getDate() + (counts.daysVisible||31));
+        }
+        // Align origin with the left edge of the view window so x(viewStart)=0
+        window.tlState.origin = new Date(viewStart.getFullYear(), viewStart.getMonth(), 1);
+        const visibleDays = Math.max(1, Math.round((viewEnd - viewStart)/(1000*60*60*24)));
+        const containerW = Math.max(600, scroll?.clientWidth || 1000);
+        const pxPerDay = Math.max(0.5, (containerW - 24) / visibleDays);
+        window.tlState.pxPerDay = pxPerDay;
+        window.tlState.viewEnd = viewEnd;
+        window.tlState.viewDays = visibleDays;
+        console.log('[TL] tlComputeView result', { viewStart, viewEnd, visibleDays, pxPerDay });
+        const p1 = (performance && performance.now) ? performance.now() : Date.now();
+        window.__tlPerf.computeViewMs = (p1 - p0);
+        console.log('[TL-PERF] tl:computeView:end', window.__tlPerf.computeViewMs);
+        // Keep the input in sync
+        const vsInput = document.querySelector('[data-testid="TID-TL-VIEW-START"]');
+        if(vsInput){ vsInput.value = tlFmtDateLocal(viewStart); }
+      }
+      function tlEnableClickCreate(){
+        const canvas = document.querySelector('[data-testid="TID-TL-CANVAS"]');
+        if(!canvas || canvas._clickBound) return;
+        canvas.addEventListener('click', (e)=>{
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const date = tlXToDate(x);
+          if(!window.projectState){ window.projectState = { name: 'Untitled Project', start: tlFmtDateLocal(date), end: tlFmtDateLocal(new Date(date.getFullYear(), date.getMonth()+1, date.getDate())), milestones: [], isDraft: true }; }
+          else {
+            if(!window.projectState.start){ window.projectState.start = tlFmtDateLocal(date); }
+            if(!window.projectState.end){ const d = new Date(date); d.setMonth(d.getMonth()+1); window.projectState.end = tlFmtDateLocal(d); }
+          }
+          tlRender();
+        });
+        canvas._clickBound = true;
+      }
+      function tlRender(){
+        const p0 = (performance && performance.now) ? performance.now() : Date.now();
+        console.log('[TL-PERF] tl:render:start');
+        console.log('[TL] tlRender start');
+        const lanes = document.getElementById('tl-lanes'); if(!lanes){ console.warn('[TL] lanes missing'); return; }
+        // Ensure draft objects so the page is never blank for user
+        if(!window.projectState){ tlEnsureDraftProject(); }
+        // Reflect typed project name from modal even before save
+        const typed = document.querySelector('[data-testid="TID-PSETUP-NAME"]')?.value?.trim();
+        if(typed){ window.projectState.name = typed; }
+        // If user only set a start date, default an end date +1 month so a bar is visible
+        if(window.projectState?.start && !window.projectState.end){
+          const s = tlParseDateLocal(window.projectState.start); const e = new Date(s); e.setMonth(e.getMonth()+1); window.projectState.end = tlFmtDateLocal(e);
+        }
+        if(window.timelineMode === 'milestones'){ tlEnsureAtLeastOneMilestone(); }
+        // Compute view scale based on settings and container width
+        tlComputeView();
+        // Ensure click-to-create is enabled on empty baselines
+        tlEnableClickCreate();
+        // Build hierarchy rows for labels and lanes
+        const rows = [];
+        const state = window.projectState;
+        // Read type filters
+        const fShowProj = document.querySelector('[data-testid="TID-TL-FSHOW-PROJ"]')?.checked !== false;
+        const fShowMs = document.querySelector('[data-testid="TID-TL-FSHOW-MS"]')?.checked !== false;
+        const fShowDl = document.querySelector('[data-testid="TID-TL-FSHOW-DL"]')?.checked !== false;
+        const fShowTask = document.querySelector('[data-testid="TID-TL-FSHOW-TASK"]')?.checked !== false;
+        if(state){
+          if(fShowProj){ rows.push({ kind:'proj', title: state.name || 'Project', level:0, start: state.start, end: state.end }); }
+          (state.milestones||[]).forEach((ms, mi)=>{
+            if(fShowMs){ rows.push({ kind:'ms', title: ms.title||`M${mi+1}`, level:1, start: ms.start||state.start, end: ms.end||state.end, mi }); }
+            (ms.deliverables||[]).forEach((dl, di)=>{
+              // Aggregate deliverable from tasks if dates missing
+              let s = dl.start, e = dl.end;
+              if((!s || !e) && dl.tasks && dl.tasks.length){
+                const ds = dl.tasks.map(t=> t.start ? tlParseDateLocal(t.start) : null).filter(Boolean);
+                const de = dl.tasks.map(t=> t.end ? tlParseDateLocal(t.end) : null).filter(Boolean);
+                const minS = ds.length ? new Date(Math.min.apply(null, ds)) : null;
+                const maxE = de.length ? new Date(Math.max.apply(null, de)) : null;
+                s = s || (minS ? tlFmtDateLocal(minS) : null);
+                e = e || (maxE ? tlFmtDateLocal(maxE) : null);
+              }
+              if(fShowDl){ rows.push({ kind:'dl', title: dl.title||`D${mi+1}.${di+1}`, level:2, start: s, end: e, mi, di }); }
+              (dl.tasks||[]).forEach((t, ti)=>{
+                if(fShowTask){ rows.push({ kind:'task', title: t.title||`T${mi+1}.${di+1}.${ti+1}`, level:3, start: t.start, end: t.end, mi, di, ti }); }
+              });
+            });
+          });
+        }
+        console.log('[TL] rows built', rows.length, rows);
+        // Rebuild labels column
+        const labels = document.querySelector('.tl-labels');
+        if(labels){
+          labels.innerHTML = '';
+          // Header row
+          const hdr = document.createElement('div'); hdr.className='tl-label-header'; hdr.textContent='Project descriptors'; labels.appendChild(hdr);
+          // Sync the right header spacer height to align axes vs labels
+          const headerSpacer = document.querySelector('[data-testid="TID-TL-HEADER-SPACER"]');
+          if(headerSpacer){ headerSpacer.style.height = hdr.offsetHeight + 'px'; }
+          // Add axis spacers to align with visible axes on the right
+          const z = window.tlState.zoom;
+          const spacerCount = (z==='day')?5 : (z==='week')?4 : (z==='month')?3 : (z==='quarter')?2 : 1;
+          for(let i=0;i<spacerCount;i++){ const sp = document.createElement('div'); sp.className='tl-axis-spacer'; labels.appendChild(sp); }
+          // Add lanes top padding spacer so first row aligns with first bar lane
+          const lanesPad = document.createElement('div'); lanesPad.className='tl-lanes-spacer'; labels.appendChild(lanesPad);
+          rows.forEach((r, idx)=>{
+            const div = document.createElement('div');
+            div.className = 'tl-label-row lvl-'+r.level;
+            div.setAttribute('data-testid', `TID-TL-LABEL-${r.kind.toUpperCase()}-${idx}`);
+            div.textContent = r.title;
+            labels.appendChild(div);
+          });
+        }
+        // Rebuild lanes to match rows
+        lanes.innerHTML = '';
+        rows.forEach((r, idx)=>{
+          const lane = document.createElement('div'); lane.className='tl-lane'; lane.setAttribute('data-testid', `TID-TL-LANE-${r.kind.toUpperCase()}-${idx}`); lanes.appendChild(lane);
+          // Add bars for project and milestones; for deliverables/tasks add if dates present
+          if(r.start && r.end){
+            const tid = `TID-TL-BAR-${r.kind.toUpperCase()}-${idx}`;
+            tlAddBar(r.kind, tid, r.start, r.end, idx, typeof r.mi==='number'? r.mi : undefined, typeof r.di==='number'? r.di : undefined, typeof r.ti==='number'? r.ti : undefined);
+          }
+        });
+        tlUpdateAxisVisibility();
+        tlRenderTicks();
+        const p1 = (performance && performance.now) ? performance.now() : Date.now();
+        window.__tlPerf.renderMs = (p1 - p0);
+        console.log('[TL-PERF] tl:render:end', window.__tlPerf.renderMs);
+        console.log('[TL] tlRender done');
+        // Ensure the view window starts flush at the left of the scroll pane
+        const scrollEl = document.querySelector('.tl-scroll');
+        if(scrollEl){ scrollEl.scrollLeft = 0; }
+      }
+      /* removed duplicate tlRenderTicks stub; real renderer is defined later */
+      function tlEnsureMsLane(i){
+        const lanes = document.getElementById('tl-lanes');
+        const id = `TID-TL-LANE-MS-${i+1}`;
+        if(!document.querySelector(`[data-testid="${id}"]`)){
+          const div = document.createElement('div'); div.className='tl-lane'; div.setAttribute('data-testid', id); lanes.appendChild(div);
+          // Add corresponding label row
+          const labels = document.querySelector('.tl-labels'); if(labels){ const lr = document.createElement('div'); lr.className='tl-label-row'; lr.setAttribute('data-testid', `TID-TL-LABEL-MS-${i+1}`); lr.textContent = `M${i+1}`; labels.appendChild(lr); }
+        }
+      }
+      function tlEnsureDraftProject(){
+        const today = new Date(); const next = new Date(today); next.setMonth(today.getMonth()+1);
+        window.projectState = { name: (document.querySelector('[data-testid="TID-PSETUP-NAME"]')?.value?.trim() || 'Untitled Project'), start: tlFmtDateLocal(today), end: tlFmtDateLocal(next), milestones: [], isDraft: true };
+      }
+      function tlEnsureAtLeastOneMilestone(){ if(!window.projectState) return; if(!Array.isArray(window.projectState.milestones)) window.projectState.milestones=[]; if(window.projectState.milestones.length===0){ window.projectState.milestones.push({ title: 'Milestone 1', start: window.projectState.start, end: window.projectState.end, deliverables: [] }); } }
+      function tlRenderAxes(){ /* legacy no-op; tlRenderTicks provides aligned ticks */ }
+      function tlRenderTicks(){
+        const p0 = (performance && performance.now) ? performance.now() : Date.now();
+        console.log('[TL-PERF] tl:ticks:start');
+        console.log('[TL] tlRenderTicks');
+        const yearsAxis = document.querySelector('[data-testid="TID-TL-AXIS-YEARS"]');
+        const quartersAxis = document.querySelector('[data-testid="TID-TL-AXIS-QUARTERS"]');
+        const monthsAxis = document.querySelector('[data-testid="TID-TL-AXIS-MONTHS"]');
+        const weeksAxis = document.querySelector('[data-testid="TID-TL-AXIS-WEEKS"]');
+        const daysAxis = document.querySelector('[data-testid="TID-TL-AXIS-DAYS"]');
+        const canvas = document.querySelector('[data-testid="TID-TL-CANVAS"]');
+        const origin = new Date(window.tlState.origin.getFullYear(), window.tlState.origin.getMonth(), 1);
+        const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const counts = window.tlSettings || settingsGet();
+        function clear(el){ if(!el) return; el.innerHTML=''; }
+        function offsetFor(axisEl){ if(!axisEl || !canvas) return 0; const a=axisEl.getBoundingClientRect(), c=canvas.getBoundingClientRect(); return c.left - a.left; }
+        // Clear all axes
+        clear(yearsAxis); clear(quartersAxis); clear(monthsAxis); clear(weeksAxis); clear(daysAxis);
+        const yOff = offsetFor(yearsAxis), qOff = offsetFor(quartersAxis), mOff=offsetFor(monthsAxis), wOff=offsetFor(weeksAxis), dOff=offsetFor(daysAxis);
+
+        // Helper to check if an axis is visible (not hidden)
+        const isVisible = (el)=> !!el && !el.hasAttribute('hidden');
+
+        // Compute canvas width from primary zoom selection
+        function computeEndDate(){
+          const z = window.tlState.zoom;
+          if(z==='year'){
+            return new Date(origin.getFullYear() + (counts.yearsVisible||5), 0, 1);
+          } else if(z==='quarter'){
+            const qStartMonth = Math.floor(origin.getMonth()/3)*3;
+            const qStart = new Date(origin.getFullYear(), qStartMonth, 1);
+            const end = new Date(qStart); end.setMonth(qStart.getMonth() + 3*(counts.quartersVisible||8)); return end;
+          } else if(z==='month'){
+            const end = new Date(origin); end.setMonth(origin.getMonth() + (counts.monthsVisible||12)); return end;
+          } else if(z==='week'){
+            const start = new Date(origin); const dow=start.getDay(); const delta=(dow+6)%7; start.setDate(start.getDate()-delta);
+            const end = new Date(start); end.setDate(start.getDate() + 7*(counts.weeksVisible||24)); return end;
+          } else { // day
+            const start = new Date(origin.getFullYear(), origin.getMonth(), origin.getDate());
+            const end = new Date(start); end.setDate(start.getDate() + (counts.daysVisible||31)); return end;
+          }
+        }
+        function updateWidths(){
+          console.log('[TL] updateWidths');
+          const scroll = document.querySelector('.tl-scroll');
+          // Size canvas to entire project duration (default 5 years if no dates)
+          const today = new Date();
+          const pStart = window.projectState?.start ? tlParseDateLocal(window.projectState.start) : new Date(today.getFullYear(), today.getMonth(), today.getDate());
+          const pEnd = window.projectState?.end ? tlParseDateLocal(window.projectState.end) : new Date(pStart.getFullYear()+5, pStart.getMonth(), pStart.getDate());
+          // Ensure origin at or before project start for positive coordinates
+          if(pStart && (origin > pStart)){ window.tlState.origin = new Date(pStart.getFullYear(), pStart.getMonth(), 1); }
+          const maxX = tlDateToX(pEnd);
+          const widthPx = Math.max(scroll?.clientWidth || 800, maxX + 48);
+          if(canvas){ canvas.style.width = widthPx + 'px'; }
+          [yearsAxis, quartersAxis, monthsAxis, weeksAxis, daysAxis].forEach(ax=>{ if(ax){ ax.style.width = widthPx + 'px'; } });
+        }
+        updateWidths();
+
+        // Years: render full project span if visible
+        if(isVisible(yearsAxis)){
+          console.log('[TL] render years');
+          const pStart = window.projectState?.start ? tlParseDateLocal(window.projectState.start) : origin;
+          const pEnd = window.projectState?.end ? tlParseDateLocal(window.projectState.end) : new Date(pStart.getFullYear()+5, pStart.getMonth(), pStart.getDate());
+          let d = new Date(pStart.getFullYear(), 0, 1);
+          while(d <= pEnd){
+            const x = tlDateToX(d);
+            const t = document.createElement('div'); t.className='tl-tick'; t.style.left=(yOff+x)+'px';
+            const l = document.createElement('div'); l.className='tl-tick-label'; l.style.left=(yOff+x)+'px'; l.textContent=String(d.getFullYear());
+            yearsAxis.appendChild(t); yearsAxis.appendChild(l);
+            d.setFullYear(d.getFullYear()+1);
+          }
+        }
+        // Quarters: render full project span if visible
+        if(isVisible(quartersAxis)){
+          console.log('[TL] render quarters');
+          const pStart = window.projectState?.start ? tlParseDateLocal(window.projectState.start) : origin;
+          const pEnd = window.projectState?.end ? tlParseDateLocal(window.projectState.end) : new Date(pStart.getFullYear()+5, pStart.getMonth(), pStart.getDate());
+          const qStartMonth = Math.floor(pStart.getMonth()/3)*3;
+          let d=new Date(pStart.getFullYear(), qStartMonth, 1);
+          while(d <= pEnd){
+            const q = Math.floor(d.getMonth()/3)+1; const x=tlDateToX(d);
+            const t=document.createElement('div'); t.className='tl-tick'; t.style.left=(qOff+x)+'px';
+            const l=document.createElement('div'); l.className='tl-tick-label'; l.style.left=(qOff+x)+'px'; l.textContent='Q'+q+' '+d.getFullYear();
+            quartersAxis.appendChild(t); quartersAxis.appendChild(l);
+            d.setMonth(d.getMonth()+3,1);
+          }
+        }
+        // Months: render full project span if visible
+        if(isVisible(monthsAxis)){
+          console.log('[TL] render months');
+          const pStart = window.projectState?.start ? tlParseDateLocal(window.projectState.start) : origin;
+          const pEnd = window.projectState?.end ? tlParseDateLocal(window.projectState.end) : new Date(pStart.getFullYear()+5, pStart.getMonth(), pStart.getDate());
+          let d=new Date(pStart.getFullYear(), pStart.getMonth(), 1);
+          while(d <= pEnd){
+            const x=tlDateToX(d);
+            const t=document.createElement('div'); t.className='tl-tick'; t.style.left=(mOff+x)+'px';
+            const l=document.createElement('div'); l.className='tl-tick-label'; l.style.left=(mOff+x)+'px'; l.textContent=monthNames[d.getMonth()]+' '+d.getFullYear();
+            monthsAxis.appendChild(t); monthsAxis.appendChild(l);
+            d.setMonth(d.getMonth()+1,1);
+          }
+        }
+        // Weeks: render full project span if visible
+        if(isVisible(weeksAxis)){
+          console.log('[TL] render weeks');
+          const pStart = window.projectState?.start ? tlParseDateLocal(window.projectState.start) : origin;
+          const pEnd = window.projectState?.end ? tlParseDateLocal(window.projectState.end) : new Date(pStart.getFullYear()+5, pStart.getMonth(), pStart.getDate());
+          const start = new Date(pStart);
+          const dow = start.getDay(); const deltaToMonday = (dow+6)%7; start.setDate(start.getDate()-deltaToMonday);
+          let d = new Date(start); let wIndex = 1;
+          while(d <= pEnd){
+            const x = tlDateToX(d);
+            const t=document.createElement('div'); t.className='tl-tick'; t.style.left=(wOff+x)+'px';
+            const l=document.createElement('div'); l.className='tl-tick-label'; l.style.left=(wOff+x)+'px'; l.textContent='W'+(wIndex++);
+            weeksAxis.appendChild(t); weeksAxis.appendChild(l);
+            d.setDate(d.getDate()+7);
+          }
+        }
+        // Days: render full project span if visible
+        if(isVisible(daysAxis)){
+          console.log('[TL] render days');
+          const pStart = window.projectState?.start ? tlParseDateLocal(window.projectState.start) : origin;
+          const pEnd = window.projectState?.end ? tlParseDateLocal(window.projectState.end) : new Date(pStart.getFullYear()+5, pStart.getMonth(), pStart.getDate());
+          let d=new Date(pStart.getFullYear(), pStart.getMonth(), pStart.getDate());
+          while(d <= pEnd){
+            const x=tlDateToX(d);
+            const t=document.createElement('div'); t.className='tl-tick'; t.style.left=(dOff+x)+'px';
+            const l=document.createElement('div'); l.className='tl-tick-label'; l.style.left=(dOff+x)+'px'; l.textContent=String(d.getDate()).padStart(2,'0');
+            daysAxis.appendChild(t); daysAxis.appendChild(l);
+            d.setDate(d.getDate()+1);
+          }
+        }
+        const p1 = (performance && performance.now) ? performance.now() : Date.now();
+        window.__tlPerf.ticksMs = (p1 - p0);
+        console.log('[TL-PERF] tl:ticks:end', window.__tlPerf.ticksMs);
+      }
+      function tlUpdateAxisVisibility(){
+        console.log('[TL] tlUpdateAxisVisibility', window.tlState.zoom);
+        const z=window.tlState.zoom;
+        const yearsAxis = document.querySelector('[data-testid="TID-TL-AXIS-YEARS"]');
+        const quartersAxis = document.querySelector('[data-testid="TID-TL-AXIS-QUARTERS"]');
+        const monthsAxis = document.querySelector('[data-testid="TID-TL-AXIS-MONTHS"]');
+        const weeksAxis = document.querySelector('[data-testid="TID-TL-AXIS-WEEKS"]');
+        const daysAxis = document.querySelector('[data-testid="TID-TL-AXIS-DAYS"]');
+        // Visibility mapping (cumulative from Years downward):
+        // year  -> Years
+        // quarter -> Years + Quarters
+        // month -> Years + Quarters + Months
+        // week  -> Years + Quarters + Months + Weeks
+        // day   -> Years + Quarters + Months + Weeks + Days
+        function show(el, on){ if(!el) return; if(on) el.removeAttribute('hidden'); else el.setAttribute('hidden',''); }
+        show(yearsAxis, true);
+        show(quartersAxis, z==='quarter' || z==='month' || z==='week' || z==='day');
+        show(monthsAxis, z==='month' || z==='week' || z==='day');
+        show(weeksAxis, z==='week' || z==='day');
+        show(daysAxis, z==='day');
+        // If z==='year', hide all except Years
+        if(z==='year'){
+          show(quartersAxis, false); show(monthsAxis, false); show(weeksAxis, false); show(daysAxis, false);
+        }
+      }
+      function tlSetZoom(mode){ const valid=['year','quarter','month','week','day']; if(!valid.includes(mode)) return; window.tlState.zoom=mode; tlComputeView(); tlRender(); }
+      function tlBindViewStartInput(){
+        const inp = document.querySelector('[data-testid="TID-TL-VIEW-START"]');
+        if(!inp) return;
+        // Set initial value from state or project
+        const vs = window.tlState.viewStart || (window.projectState?.start ? tlParseDateLocal(window.projectState.start) : new Date());
+        inp.value = tlFmtDateLocal(vs);
+        if(inp._bound) return;
+        inp.addEventListener('change', ()=>{
+          const v = inp.value;
+          if(v){ window.tlState.viewStart = tlParseDateLocal(v); tlComputeView(); tlRender(); }
+        });
+        inp._bound = true;
+      }
+      function tlApplyAndBack(){
+        if(window.projectState){ projectsUpsert(window.projectState); }
+        projectsPopulateSelectors();
+        backToProjects();
+      }
+      function tlAddBar(kind, tid, start, end, laneIndex, msIndex, dlIndex, taskIndex){
+        console.log('[TL] tlAddBar', { kind, tid, start, end, laneIndex });
+        const lanes = document.getElementById('tl-lanes'); const lane = lanes.children[laneIndex]; if(!lane) return;
+        const bar = document.createElement('div'); bar.className = `tl-bar ${kind}`; bar.setAttribute('data-testid', tid);
+        // place bar using local date math
+        const xStart = tlDateToX(start); const xEnd = tlDateToX(end);
+        console.log('[TL] tlAddBar pos', { xStart, xEnd, pxPerDay: window.tlState.pxPerDay });
+        const x = xStart; const w = Math.max(12, xEnd - xStart);
+        bar.style.left = x+'px'; bar.style.width = w+'px'; bar.style.top = (lane.offsetTop + 6)+'px';
+        // labels for precise dates
+        const lblStart = document.createElement('div'); lblStart.className='tl-label'; lblStart.textContent = typeof start==='string'? start : tlFmtDateLocal(tlParseDateLocal(start));
+        const lblEnd = document.createElement('div'); lblEnd.className='tl-label'; lblEnd.textContent = typeof end==='string'? end : tlFmtDateLocal(tlParseDateLocal(end));
+        bar.appendChild(lblStart); bar.appendChild(lblEnd);
+        function positionLabels(){ lblStart.style.left = '0px'; lblEnd.style.left = (bar.clientWidth - lblEnd.offsetWidth) + 'px'; }
+        // handles
+        const h1 = document.createElement('div'); h1.className='tl-handle start'; const h2 = document.createElement('div'); h2.className='tl-handle end';
+        bar.appendChild(h1); bar.appendChild(h2);
+        positionLabels();
+        // drag
+        let dragging = null; let startX = 0;
+        function onDown(e, which){ dragging = which; startX = e.clientX; e.preventDefault(); e.stopPropagation(); }
+        h1.onmousedown = (e)=> onDown(e, 'start');
+        h2.onmousedown = (e)=> onDown(e, 'end');
+        document.onmouseup = ()=> dragging=null;
+        let lastMoveTs = Date.now(); let lastAdjustTs = 0;
+        document.onmousemove = (e)=>{
+          if(!dragging) return;
+          const now = Date.now();
+          const dt = Math.max(1, now - lastMoveTs);
+          const dx = e.clientX - startX; startX = e.clientX;
+          const vel = Math.abs(dx) / dt; // px per ms
+          lastMoveTs = now;
+
+          // Velocity-based zoom adjust (with cooldown) [kept but disabled unless autoZoom]
+          const order = ['day','week','month','quarter','year'];
+          function adjustZoomByVelocity(){
+            if(now - lastAdjustTs < 120) return;
+            let i = order.indexOf(window.tlState.zoom);
+            if(vel > 0.6 && i < order.length-1){ i += 1; window.tlState.zoom = order[i]; lastAdjustTs = now; }
+            else if(vel < 0.08 && i > 0){ i -= 1; window.tlState.zoom = order[i]; lastAdjustTs = now; }
+          }
+          if(window.tlState.autoZoom){ adjustZoomByVelocity(); }
+
+          // Auto-scroll timeline when dragging near the edges
+          const sp = document.querySelector('.tl-scroll');
+          if(sp){
+            const r = sp.getBoundingClientRect();
+            const edge = 32;
+            if(e.clientX > r.right - edge){ sp.scrollLeft += Math.ceil((e.clientX - (r.right - edge)) / 2); }
+            else if(e.clientX < r.left + edge){ sp.scrollLeft -= Math.ceil(((r.left + edge) - e.clientX) / 2); }
+          }
+
+          // Move dates by converting dx to days using current scale, then snap by zoom
+          let sDate = tlParseDateLocal(start); let eDate = tlParseDateLocal(end);
+          const z = window.tlState.zoom; let changed = false;
+          const pxPerDay = Math.max(0.5, window.tlState.pxPerDay || 6);
+          const daysDelta = Math.round(dx / pxPerDay);
+          if(daysDelta !== 0){ changed = true; if(dragging==='start'){ sDate.setDate(sDate.getDate()+daysDelta); } else { eDate.setDate(eDate.getDate()+daysDelta); } }
+          function snap(date){
+            if(z==='week'){
+              const d = date.getDay(); const delta = (d+6)%7; date.setDate(date.getDate()-delta);
+            } else if(z==='month'){
+              date.setDate(1);
+            } else if(z==='quarter'){
+              const m = date.getMonth(); date.setMonth(Math.floor(m/3)*3, 1);
+            } else if(z==='year'){
+              date.setMonth(0,1);
+            }
+          }
+          if(!changed) return;
+          snap(sDate); snap(eDate);
+
+          // Constraints and update
+          function fmt(d){ return tlFmtDateLocal(d); }
+          if(kind==='proj'){
+            if(sDate>eDate){ const tmp=sDate; sDate=eDate; eDate=tmp; }
+            start = fmt(sDate); end = fmt(eDate);
+            bar.style.left = tlDateToX(start)+'px'; bar.style.width = Math.max(12, tlDateToX(end)-tlDateToX(start))+'px';
+            window.projectState.start = start; window.projectState.end = end;
+            lblStart.textContent = start; lblEnd.textContent = end; positionLabels();
+          } else if(kind==='ms'){
+            const pS = tlParseDateLocal(window.projectState.start); const pE = tlParseDateLocal(window.projectState.end);
+            if(sDate < pS) sDate = pS; if(eDate > pE) eDate = pE; if(sDate>eDate){ const tmp=sDate; sDate=eDate; eDate=tmp; }
+            start = fmt(sDate); end = fmt(eDate);
+            bar.style.left = tlDateToX(start)+'px'; bar.style.width = Math.max(12, tlDateToX(end)-tlDateToX(start))+'px';
+            if(typeof msIndex==='number'){ window.projectState.milestones[msIndex].start = start; window.projectState.milestones[msIndex].end = end; }
+            lblStart.textContent = start; lblEnd.textContent = end; positionLabels();
+          } else if(kind==='dl'){
+            const ms = typeof msIndex==='number' ? window.projectState.milestones[msIndex] : null;
+            const pS = tlParseDateLocal(ms?.start || window.projectState.start); const pE = tlParseDateLocal(ms?.end || window.projectState.end);
+            if(sDate < pS) sDate = pS; if(eDate > pE) eDate = pE; if(sDate>eDate){ const tmp=sDate; sDate=eDate; eDate=tmp; }
+            start = fmt(sDate); end = fmt(eDate);
+            bar.style.left = tlDateToX(start)+'px'; bar.style.width = Math.max(12, tlDateToX(end)-tlDateToX(start))+'px';
+            if(typeof msIndex==='number' && typeof dlIndex==='number'){ const dl = window.projectState.milestones[msIndex].deliverables[dlIndex]; if(dl){ dl.start = start; dl.end = end; } }
+            lblStart.textContent = start; lblEnd.textContent = end; positionLabels();
+          } else if(kind==='task'){
+            const ms = typeof msIndex==='number' ? window.projectState.milestones[msIndex] : null;
+            const dl = (ms && typeof dlIndex==='number') ? ms.deliverables[dlIndex] : null;
+            const pS = tlParseDateLocal(dl?.start || ms?.start || window.projectState.start); const pE = tlParseDateLocal(dl?.end || ms?.end || window.projectState.end);
+            if(sDate < pS) sDate = pS; if(eDate > pE) eDate = pE; if(sDate>eDate){ const tmp=sDate; sDate=eDate; eDate=tmp; }
+            start = fmt(sDate); end = fmt(eDate);
+            bar.style.left = tlDateToX(start)+'px'; bar.style.width = Math.max(12, tlDateToX(end)-tlDateToX(start))+'px';
+            if(typeof msIndex==='number' && typeof dlIndex==='number' && typeof taskIndex==='number'){
+              const t = window.projectState.milestones[msIndex].deliverables[dlIndex].tasks[taskIndex]; if(t){ t.start = start; t.end = end; }
+            }
+            lblStart.textContent = start; lblEnd.textContent = end; positionLabels();
+          }
+        };
+        document.getElementById('tl-lanes').appendChild(bar);
+      }
+
+      // Search hooks
+      function searchInit(){ console.log('searchInit'); }
+      function searchRun(query){ console.log('searchRun', query); }
+
+      function generateItemId(kind, parentPath){ return (parentPath ? parentPath + '.' : '') + kind; }
+
+
+      // Access Matrix hooks
+      function accessMatrixInit(){ console.log('accessMatrixInit'); }
+      function accessMatrixGrant(role, func, value){ console.log('accessMatrixGrant', role, func, value); }
+      function roleMatrixToggle(role, cap){
+        const id = `TID-ROLEM-CHECK-${role}-${cap}`;
+        const cb = document.querySelector(`[data-testid="${id}"]`);
+        if(cb){ cb.checked = !cb.checked; }
+      }
+      function roleMatrixAddRole(name){
+        console.log('roleMatrixAddRole placeholder:', name);
+      }
+
+      // Project Setup hooks
+      function openProjectSetup(){ const m = document.querySelector('[data-testid="TID-PSETUP-MODAL"]'); if(m){ m.removeAttribute('hidden'); } setupProjectInit(); }
+      function closeProjectSetup(){ const m = document.querySelector('[data-testid="TID-PSETUP-MODAL"]'); if(m){ m.setAttribute('hidden',''); } }
+      function setupProjectInit(){
+        const btn = document.querySelector('[data-testid="TID-PSETUP-SAVE"]');
+        if(btn){
+          // Remove any previous to avoid duplicate handlers
+          const clone = btn.cloneNode(true);
+          btn.parentNode.replaceChild(clone, btn);
+          clone.addEventListener('click', saveProject);
+        }
+      }
+      function saveProject(){
+        const name = /** @type {HTMLInputElement} */(document.querySelector('[data-testid="TID-PSETUP-NAME"]'))?.value?.trim();
+        const outcome = /** @type {HTMLTextAreaElement} */(document.querySelector('[data-testid="TID-PSETUP-OUTCOME"]'))?.value?.trim();
+        const desc = /** @type {HTMLTextAreaElement} */(document.querySelector('[data-testid="TID-PSETUP-DESCRIPTION"]'))?.value?.trim();
+        if(!name){ alert('Please enter a project name'); return; }
+        // Prefer timeline-selected dates if available
+        const cur = window.projectState || {};
+        let start = cur.start, end = cur.end;
+        if(!start || !end){ const today = new Date(); const next = new Date(today); next.setMonth(today.getMonth()+1); start = start || today.toISOString().slice(0,10); end = end || next.toISOString().slice(0,10); }
+        // Initialize in-memory state (preserve any milestones already set on timelines)
+        window.projectState = { name, start, end, statusDesc: (outcome || desc || ''), milestones: (cur.milestones||[]) };
+        // Persist to store and refresh selectors
+        projectsUpsert(window.projectState);
+        projectsPopulateSelectors();
+        // Populate Filters banner basics
+        const projMulti = document.querySelector('[data-testid="TID-FILTER-PROJECTS"]');
+        if(projMulti){ projMulti.innerHTML = `<option selected>${name}</option>`; }
+        const respMulti = document.querySelector('[data-testid="TID-FILTER-RESP"]');
+        if(respMulti){ respMulti.innerHTML = `<option>Current User</option>`; }
+        // Populate clean Project Detail view and hide legacy list elements
+        const detail = document.querySelector('[data-testid="TID-PROJ-DETAIL"]');
+        const titleEl = document.querySelector('[data-testid="TID-PROJ-TITLE"]');
+        const startEl = document.querySelector('[data-testid="TID-PROJ-START"]');
+        const endEl = document.querySelector('[data-testid="TID-PROJ-END"]');
+        if(detail && titleEl && startEl && endEl){
+          titleEl.textContent = name;
+          startEl.textContent = start || '';
+          endEl.textContent = end || '';
+          detail.removeAttribute('hidden');
+          // Populate Project Summary line
+          const sum = document.querySelector('[data-testid="TID-PROJ-SUMMARY"]');
+          const f = (sel)=>document.querySelector(sel);
+          const setText = (tid, txt)=>{ const el = f(`[data-testid=\"${tid}\"]`); if(el) el.textContent = txt || ''; };
+          const status = computeStatusDescriptor(start, end);
+          const dur = (start && end) ? Math.ceil((new Date(end)-new Date(start))/(1000*60*60*24)) + ' days' : '';
+          setText('TID-PROJ-SUM-STATUS', status);
+          setText('TID-PROJ-SUM-START', start||'');
+          setText('TID-PROJ-SUM-END', end||'');
+          setText('TID-PROJ-SUM-DURATION', dur);
+          setText('TID-PROJ-SUM-RESP', 'Person responsible');
+          setText('TID-PROJ-SUM-PROGRESS', '0%');
+          setText('TID-PROJ-SUM-EVIDENCE', 'Evidence');
+          if(sum){ sum.removeAttribute('hidden'); }
+          // Hide legacy list elements for a clean page
+          ['TID-PROJ-FILTERS','TID-PROJ-ACTIONS','TID-PROJ-RESULTS-COUNT','TID-PROJ-TABLE','TID-PROJ-EMPTY','TID-PROJ-LOADING','TID-PROJ-PAGINATION'].forEach(id=>{
+            const el = document.querySelector(`[data-testid=\"${id}\"]`);
+            if(el){ el.setAttribute('hidden',''); }
+          });
+        }
+        closeProjectSetup();
+        navigateTo('#/projects');
+      }
+      // Modal overlay dismiss and ESC
+      (function(){
+        document.addEventListener('DOMContentLoaded', ()=>{
+          const modal = document.querySelector('[data-testid="TID-PSETUP-MODAL"]');
+          if(modal){
+            modal.addEventListener('click', (e)=>{ if(e.target === modal){ closeProjectSetup(); } });
+          }
+          const msModal = document.querySelector('[data-testid="TID-MS-MODAL"]');
+          if(msModal){ msModal.addEventListener('click', (e)=>{ if(e.target === msModal){ closeMilestoneSetup(); } }); }
+          const dlModal = document.querySelector('[data-testid="TID-DL-MODAL"]');
+          if(dlModal){ dlModal.addEventListener('click', (e)=>{ if(e.target === dlModal){ closeDeliverableSetup(); } }); }
+          const taskModal = document.querySelector('[data-testid="TID-TASK-MODAL"]');
+          if(taskModal){ taskModal.addEventListener('click', (e)=>{ if(e.target === taskModal){ closeTaskSetup(); } }); }
+          document.addEventListener('keydown', (e)=>{
+            if(e.key !== 'Escape') return;
+            const m1 = document.querySelector('[data-testid="TID-PSETUP-MODAL"]'); if(m1 && !m1.hasAttribute('hidden')){ closeProjectSetup(); return; }
+            const m2 = document.querySelector('[data-testid="TID-MS-MODAL"]'); if(m2 && !m2.hasAttribute('hidden')){ closeMilestoneSetup(); return; }
+            const m3 = document.querySelector('[data-testid="TID-DL-MODAL"]'); if(m3 && !m3.hasAttribute('hidden')){ closeDeliverableSetup(); return; }
+            const m4 = document.querySelector('[data-testid="TID-TASK-MODAL"]'); if(m4 && !m4.hasAttribute('hidden')){ closeTaskSetup(); return; }
+          });
+        });
+      })();
+
+      // Task modal helpers and simple persistence for Projects
+      function closeTaskSetup(){ const m = document.querySelector('[data-testid="TID-TASK-MODAL"]'); if(m){ m.setAttribute('hidden',''); } }
+      function saveTask(){
+        const msIndex = parseInt(document.querySelector('[data-testid="TID-TASK-MILESTONE"]')?.value||'0',10) || 0;
+        const dlIndex = parseInt(document.querySelector('[data-testid="TID-TASK-DELIVERABLE"]')?.value||'0',10) || 0;
+        const title = /** @type {HTMLInputElement} */(document.querySelector('[data-testid="TID-TASK-TITLE"]'))?.value?.trim() || 'Task';
+        const start = /** @type {HTMLInputElement} */(document.querySelector('[data-testid="TID-TASK-START"]'))?.value || '';
+        const end = /** @type {HTMLInputElement} */(document.querySelector('[data-testid="TID-TASK-END"]'))?.value || '';
+        const respSel = /** @type {HTMLSelectElement} */(document.querySelector('[data-testid="TID-TASK-ASSIGNEE"]'));
+        if(!window.projectState || !window.projectState.milestones?.[msIndex]){ alert('Invalid milestone'); return; }
+        const ms = window.projectState.milestones[msIndex];
+        if(!ms.deliverables?.[dlIndex]){ alert('Invalid deliverable'); return; }
+        const dl = ms.deliverables[dlIndex];
+        dl.tasks = dl.tasks || [];
+        dl.tasks.push({ title, start, end, resp: respSel?.value || '' });
+        renderProjectTree();
+        ensureBuildVisible();
+        closeTaskSetup();
+      }
+      function projectsLoad(){ try { return JSON.parse(localStorage.getItem('pm_projects')||'[]'); } catch(e){ return []; } }
+      function projectsUpsert(p){ const list = projectsLoad(); const i = list.findIndex(x=> x.name && p.name && x.name.toLowerCase() === p.name.toLowerCase()); if(i>=0){ list[i] = p; } else { list.push(p); } localStorage.setItem('pm_projects', JSON.stringify(list)); return list; }
+      function projectsPopulateSelectors(){
+        const list = projectsLoad();
+        const sel = document.querySelector('[data-testid="TID-TL-PROJECT-SELECT"]');
+        if(sel){ sel.innerHTML = list.length ? list.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('') : '<option>No projects</option>'; }
+        const projMulti = document.querySelector('[data-testid="TID-FILTER-PROJECTS"]');
+        if(projMulti){ projMulti.innerHTML = list.map(p=>`<option selected>${p.name}</option>`).join(''); }
+      }
+
+      // Expose key functions globally for onclick/UI bindings
+      (function(){
+        // Navigation
+        window.appNavTo = appNavTo;
+        window.navigateTo = navigateTo;
+        // Project modal
+        window.openProjectSetup = openProjectSetup;
+        window.closeProjectSetup = closeProjectSetup;
+        // Build modals
+        window.openMilestoneSetup = openMilestoneSetup;
+        window.closeMilestoneSetup = closeMilestoneSetup;
+        window.openDeliverableSetup = openDeliverableSetup;
+        window.closeDeliverableSetup = closeDeliverableSetup;
+        window.openTaskSetup = openTaskSetup;
+        window.closeTaskSetup = closeTaskSetup;
+        // Timelines
+        window.openTimelines = openTimelines;
+        window.backToProjects = backToProjects;
+        window.tlSetZoom = tlSetZoom;
+        window.tlApplyAndBack = tlApplyAndBack;
+        // Settings
+        window.settingsSave = settingsSave;
+      })();
+
+      // Status logic (auto-computed)
+      function computeStatusDescriptor(startDate, endDate, today = new Date()){
+        if(!startDate || !endDate) return 'No dates';
+        const s = new Date(startDate);
+        const e = new Date(endDate);
+        const t = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        if(t < s) return 'Not started';
+        if(t > e) return 'Overdue';
+        const diffDays = Math.ceil((e - t) / (1000*60*60*24));
+        if(diffDays <= 7) return 'Due soon';
+        return 'On track';
+      }
+
+      // Project hierarchy rendering and modals
+      function ensureBuildVisible(){
+        const build = document.querySelector('[data-testid="TID-PROJ-BUILD"]');
+        const tree = document.querySelector('[data-testid="TID-PROJ-TREE"]');
+        const hdr = document.querySelector('[data-testid="TID-PROJ-COLS-HEADER"]');
+        if(hdr && hdr.hasAttribute('hidden')) hdr.removeAttribute('hidden');
+        if(build && build.hasAttribute('hidden')) build.removeAttribute('hidden');
+        if(tree && tree.hasAttribute('hidden')) tree.removeAttribute('hidden');
+      }
+      function aggregateFromTasks(tasks){
+        if(!tasks || !tasks.length) return { start: null, end: null, progress: 0 };
+        let minS = null, maxE = null, sumP = 0;
+        tasks.forEach(t=>{
+          const s = t.start ? new Date(t.start) : null;
+          const e = t.end ? new Date(t.end) : null;
+          if(s && (!minS || s < minS)) minS = s;
+          if(e && (!maxE || e > maxE)) maxE = e;
+          sumP += (parseInt(t.progress||'0',10)||0);
+        });
+        const avg = Math.round(sumP / tasks.length);
+        return { start: minS ? minS.toISOString().slice(0,10) : null, end: maxE ? maxE.toISOString().slice(0,10) : null, progress: avg };
+      }
+      function aggregateDeliverable(dl){
+        const agg = aggregateFromTasks(dl.tasks||[]);
+        dl.agg = agg; return agg;
+      }
+      function aggregateMilestone(ms){
+        let tasks = [];
+        (ms.deliverables||[]).forEach(d=>{ tasks = tasks.concat(d.tasks||[]); });
+        const agg = aggregateFromTasks(tasks);
+        ms.agg = agg; return agg;
+      }
+      function renderProjectTree(){
+        const container = document.querySelector('[data-testid="TID-PROJ-TREE"]');
+        const state = window.projectState;
+        if(!container || !state){ return; }
+        // Filters (MVP retains existing type and date filters)
+        const typeSel = document.querySelector('[data-testid="TID-PROJ-FILTER-TYPE"]');
+        const fromEl = document.querySelector('[data-testid="TID-PROJ-FILTER-FROM"]');
+        const toEl = document.querySelector('[data-testid="TID-PROJ-FILTER-TO"]');
+        const selectedTypes = new Set(Array.from(typeSel?.selectedOptions||[]).map(o=>o.value));
+        const from = fromEl?.value ? new Date(fromEl.value) : null;
+        const to = toEl?.value ? new Date(toEl.value) : null;
+        const within = (s, e)=>{
+          if(!from && !to) return true;
+   
