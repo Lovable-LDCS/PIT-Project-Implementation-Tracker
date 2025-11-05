@@ -4,13 +4,19 @@ A comprehensive Project Management Platform for tracking project implementation,
 
 ## Quick Start
 
-To run the application locally:
+1. **Start the server** - Open a terminal and run:
+   ```bash
+   python3 server/serve_static.py --port 8080
+   ```
 
-```bash
-python3 server/serve_static.py --port 8080
-```
+2. **Access the application** - Open your browser and go to:
+   ```
+   http://localhost:8080
+   ```
 
-Then open [http://localhost:8080](http://localhost:8080) in your browser.
+3. **Stop the server** - Press `Ctrl+C` in the terminal when done.
+
+> 📖 For detailed instructions, troubleshooting, and features guide, see [GETTING_STARTED.md](GETTING_STARTED.md)
 
 ## Features
 

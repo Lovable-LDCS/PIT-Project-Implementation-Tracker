@@ -1,24 +1,36 @@
 # Getting Started with PIT Project Management Platform
 
-## 🚀 Server is Running!
+## 🚀 Quick Start
 
-Your development server is currently running at:
-**http://localhost:8080**
+To run the application, you need to start the development server first.
 
-## 📋 Current Status
+### Step 1: Start the Server
 
-✅ Server Status: RUNNING
-✅ Port: 8080
-✅ Process ID: 3365
-✅ Mode: Detached (will continue running)
+Open a terminal in the project directory and run:
 
-## 🎯 How to Use
+```bash
+# Method 1: Using Python directly
+python3 server/serve_static.py --port 8080
 
-### Accessing the Application
-Simply open your web browser and navigate to:
+# Method 2: Using the convenience script
+./start-server.sh 8080
+```
+
+You should see output like:
+```
+Serving /path/to/src/frontend at http://localhost:8080
+```
+
+### Step 2: Access the Application
+
+Once the server is running, open your web browser and navigate to:
 ```
 http://localhost:8080
 ```
+
+**Important**: Keep the terminal window open while using the application. Press `Ctrl+C` to stop the server when done.
+
+## 🎯 Main Features
 
 ### Main Features Available
 
@@ -68,25 +80,16 @@ http://localhost:8080
 ## 🔧 Server Management
 
 ### Stop the Server
-If you need to stop the server:
+
+If you started the server in a terminal window, simply press `Ctrl+C` in that terminal.
+
+If the server is running in the background:
 ```bash
 # Find the process
 ps aux | grep "python3.*serve_static"
 
-# Kill the process (use the PID from above, currently 3365)
-kill 3365
-```
-
-### Restart the Server
-```bash
-# Method 1: Using the convenience script
-./start-server.sh 8080
-
-# Method 2: Direct command
-python3 server/serve_static.py --port 8080
-
-# Method 3: Use a different port
-python3 server/serve_static.py --port 3000
+# Kill the process (replace PID with the actual process ID from above)
+kill <PID>
 ```
 
 ### Check if Server is Running
@@ -96,6 +99,19 @@ netstat -tulpn | grep 8080
 
 # Or test with curl
 curl -I http://localhost:8080
+
+# Or check for the process
+ps aux | grep "python3.*serve_static"
+```
+
+### Using a Different Port
+
+If port 8080 is already in use, you can use a different port:
+```bash
+# Use port 3000 instead
+python3 server/serve_static.py --port 3000
+
+# Then access at http://localhost:3000
 ```
 
 ## 📚 Architecture & Documentation
