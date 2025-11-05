@@ -1,8 +1,32 @@
 # Getting Started with PIT Project Management Platform
 
-## 🚀 Quick Start
+## 🌐 Easiest Option: GitHub Pages (Recommended!)
 
-To run the application, you need to start the development server first.
+**No setup, no installation, no server - just click and use!**
+
+👉 **[Launch App from GitHub Pages](https://lovable-ldcs.github.io/PIT-Project-Implementation-Tracker/)** 👈
+
+This is the easiest way to access your PM Platform:
+- ✅ Works instantly - no configuration needed
+- ✅ Always up-to-date with latest changes
+- ✅ Access from any device with a browser
+- ✅ No need to keep a local copy of files
+- ✅ No need to run a server on your computer
+
+### 🖱️ One-Click Desktop Launcher
+
+For even easier access, save the launcher to your desktop:
+
+1. Download [LAUNCH-APP.html](LAUNCH-APP.html) from the repository
+2. Right-click → "Save link as" → Save to your Desktop
+3. Double-click the file anytime to:
+   - Open the app from GitHub Pages (instant)
+   - Or open localhost if you're running a local server
+   - Get quick instructions and help
+
+## 💻 Alternative: Run Locally (Optional)
+
+Only use this if you need to develop or customize the app. Otherwise, use GitHub Pages above!
 
 ### Step 1: Start the Server
 
@@ -35,6 +59,21 @@ http://localhost:8080
 ```
 
 **Important**: Keep the terminal window open while using the application. Press `Ctrl+C` to stop the server when done.
+
+## 📁 About File Management
+
+**Your files keep getting deleted? Here's what you need to know:**
+
+- 🏠 **GitHub is your "home base"** - All files are safely stored there
+- 💻 **Local folder is optional** - You only need it for development
+- 🌐 **Use GitHub Pages** - No local files needed to run the app
+- 🔄 **Sync when needed** - Use `git pull` if you want to update your local copy
+- ✅ **Everything is backed up** - Your work is safe in GitHub, not dependent on local files
+
+**Recommended approach:**
+1. Use the **GitHub Pages link** for daily work (no local setup needed)
+2. Only clone/sync files locally if you're making code changes
+3. Don't worry about local file management - GitHub is the source of truth
 
 ## 🎯 Main Features
 
