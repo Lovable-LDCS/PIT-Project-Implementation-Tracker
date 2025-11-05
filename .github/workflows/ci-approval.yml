@@ -15,10 +15,12 @@ jobs:
         with:
           python-version: "3.10"
       - name: Install dependencies
+        shell: bash
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pytest requests pillow
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; else pip install pytest requests pillow; fi
       - name: Run tests
+        shell: bash
         run: |
           python -m pytest -q
 
