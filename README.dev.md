@@ -1,5 +1,7 @@
 Local development notes
 
+> **Quick Start**: See [GETTING_STARTED.md](GETTING_STARTED.md) for a comprehensive guide with server management, features overview, and troubleshooting.
+
 1) Serving the frontend
 
 To serve the static frontend locally run:
@@ -7,6 +9,11 @@ To serve the static frontend locally run:
 ```bash
 python3 server/serve_static.py --port 8080
 # then open http://localhost:8080 in your browser
+```
+
+Or use the convenience script:
+```bash
+./start-server.sh 8080
 ```
 
 2) Running QA checks (pytest)
