@@ -1,91 +1,93 @@
-# PIT-Project-Implementation-Tracker
+# PIT - Project Implementation Tracker
 
-A comprehensive Project Management Platform for tracking project implementation, timelines, work items, and evidence.
+A comprehensive project implementation and operations tracking system designed for large enterprises with multiple users and interfaces.
 
-## 🚀 Easiest Way to Access (No Setup Required!)
+## 🚀 Quick Access
 
-**GitHub Pages - Live Application:**
 👉 **[Open App Now](https://lovable-ldcs.github.io/PIT-Project-Implementation-Tracker/)** 👈
 
-The application is automatically deployed to GitHub Pages. Just click the link above - no server setup needed!
+The application is automatically deployed to GitHub Pages. Just click the link above - no setup needed!
 
-### 🖱️ One-Click Launcher
+## Overview
 
-Download and save [LAUNCH-APP.html](LAUNCH-APP.html) to your desktop for instant access:
-1. Right-click the file in GitHub and "Save link as"
-2. Save to your Desktop
-3. Double-click anytime to launch the app!
+PIT (Project Implementation Tracker) is a static web application for tracking project implementations and daily operations in large organizations.
 
-The launcher provides:
-- Quick access to GitHub Pages (no setup required)
-- Option to open localhost if you prefer local development
-- Built-in instructions and troubleshooting
-
-## 💻 Local Development (Optional)
-
-If you prefer to run the app locally on your machine:
-
-1. **Start the server** - Open a terminal/command prompt and run:
-   
-   **Windows (PowerShell/Command Prompt):**
-   ```bash
-   python server/serve_static.py --port 8080
-   ```
-   
-   **macOS/Linux:**
-   ```bash
-   python3 server/serve_static.py --port 8080
-   ```
-   
-   **Or use the convenience script:**
-   - Windows: `start-server.bat 8080`
-   - macOS/Linux: `./start-server.sh 8080`
-
-2. **Access the application** - Open your browser and go to:
-   ```
-   http://localhost:8080
-   ```
-
-3. **Stop the server** - Press `Ctrl+C` in the terminal when done.
-
-> 📖 For detailed instructions, troubleshooting, and features guide, see [GETTING_STARTED.md](GETTING_STARTED.md)
-
-## 📁 About Your Local Files
-
-**Important:** Don't worry if files get deleted from your local folder!
-
-- ✅ All project files are safely stored in **GitHub** (the source of truth)
-- ✅ You can access the live app via **GitHub Pages** without any local files
-- ✅ Your local folder is just a working copy for development
-- ✅ Use `git pull` to sync the latest version from GitHub when needed
-
-**Recommended workflow:**
-1. Use the GitHub Pages link for daily use (no local files needed)
-2. Only clone locally if you want to make changes to the code
-3. All your work is safe in GitHub - local copies are optional
-
-## Features
-
+### Key Features
 - **Dashboard**: View project KPIs, overdue items, and completion rates
-- **Projects**: Manage and track multiple projects
-- **Gantt Charts**: Visualize project timelines and dependencies
-- **Timelines**: Track project progress over time
-- **Work Items**: Manage tasks and assignments
-- **Evidence**: Store and track project documentation
-- **Reports**: Generate insights and analytics
-- **Permissions**: Role-based access control
-- **Audit Log**: Track changes and activities
-- **Import/Export**: Data portability
-- **Templates**: Reusable project structures
+- **Projects**: Manage and track multiple projects with status, priority, and progress
+- **Operations/Work Items**: Track daily operations and task assignments
+- **User Management**: Multi-user support with role-based access
+- **Reports & Analytics**: Generate insights and track completion rates
+- **Evidence & Documentation**: Store and track project documentation
 
-## Documentation
+## Installation & Usage
 
-- See [README.dev.md](README.dev.md) for local development instructions
-- Architecture documentation in [docs/architecture/](docs/architecture/)
-- QA specifications in [docs/qa/](docs/qa/)
+### GitHub Pages (Recommended)
+Access the live application at: https://lovable-ldcs.github.io/PIT-Project-Implementation-Tracker/
+
+### Local Development
+
+**One-Click Launcher:**
+1. Download [LAUNCH-APP.html](LAUNCH-APP.html)
+2. Save to your Desktop
+3. Double-click anytime to launch!
+
+**Using Python Server:**
+
+Windows:
+```bash
+python server/serve_static.py --port 8080
+# Or use: start-server.bat 8080
+```
+
+macOS/Linux:
+```bash
+python3 server/serve_static.py --port 8080
+# Or use: ./start-server.sh 8080
+```
+
+Access at: `http://localhost:8080`
 
 ## Technology Stack
 
 - **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
 - **Server**: Python 3 (SimpleHTTPServer for development)
-- **Testing**: pytest (for QA validation)
+- **Deployment**: GitHub Pages
+- **Testing**: pytest
+
+## Architecture
+
+### Multi-Interface Support
+- Web browser interface (primary UI)
+- Ability to add mobile interfaces
+- Integration capabilities with enterprise systems
+
+### Multi-User Support
+- Concurrent user access
+- Individual user accounts with roles
+- Assignment tracking per user
+- Role-based access control
+
+### Enterprise Features
+- Scalable architecture
+- Environment-based configuration
+- Comprehensive error handling
+
+## Documentation
+
+- [Getting Started Guide](GETTING_STARTED.md) - Comprehensive setup instructions
+- [Developer Documentation](README.dev.md) - Development guidelines
+- [Architecture Documentation](docs/architecture/) - System architecture
+- [QA Specifications](docs/qa/) - Testing specifications
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit pull requests or open issues.
+
+## License
+
+ISC
+
+## Support
+
+For enterprise support and customization, please contact the development team.
