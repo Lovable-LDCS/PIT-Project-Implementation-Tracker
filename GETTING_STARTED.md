@@ -6,15 +6,21 @@ To run the application, you need to start the development server first.
 
 ### Step 1: Start the Server
 
-Open a terminal in the project directory and run:
+Open a terminal/command prompt in the project directory and run:
 
+**Windows (PowerShell or Command Prompt):**
 ```bash
-# Method 1: Using Python directly
-python3 server/serve_static.py --port 8080
-
-# Method 2: Using the convenience script
-./start-server.sh 8080
+python server/serve_static.py --port 8080
 ```
+
+**macOS/Linux:**
+```bash
+python3 server/serve_static.py --port 8080
+```
+
+**Or use the convenience script:**
+- **Windows**: Double-click `start-server.bat` or run `start-server.bat 8080`
+- **macOS/Linux**: Run `./start-server.sh 8080`
 
 You should see output like:
 ```
@@ -147,28 +153,64 @@ The project includes comprehensive documentation:
 
 ## 🐛 Troubleshooting
 
+**"python3 is not recognized" (Windows)**
+
+On Windows, use `python` instead of `python3`:
+```bash
+python server/serve_static.py --port 8080
+```
+
+Or use the Windows batch script:
+```bash
+start-server.bat 8080
+```
+
+**"python is not recognized" (Any OS)**
+
+Python is not installed or not in your PATH. Install Python:
+- **Windows**: Download from [python.org](https://www.python.org/downloads/)
+- **macOS**: Use `brew install python3` or download from python.org
+- **Linux**: Use your package manager (e.g., `sudo apt install python3`)
+
 **Port already in use?**
+
+Windows:
+```bash
+# Find what's using port 8080
+netstat -ano | findstr :8080
+
+# Use a different port
+python server/serve_static.py --port 3000
+```
+
+macOS/Linux:
 ```bash
 # Find what's using port 8080
 lsof -i :8080
 
-# Or use a different port
+# Use a different port
 python3 server/serve_static.py --port 3000
 ```
 
 **Server not responding?**
+
+Windows:
+```bash
+# Check if the process is running
+tasklist | findstr python
+```
+
+macOS/Linux:
 ```bash
 # Check if the process is running
 ps aux | grep serve_static
-
-# Check server logs
-# The server prints output to the terminal where it was started
 ```
 
 **Can't access from browser?**
 - Ensure you're using `http://` not `https://`
 - Try `http://127.0.0.1:8080` instead of localhost
 - Check firewall settings if accessing from another machine
+- Make sure the server is still running in the terminal
 
 ## 📞 Next Steps
 

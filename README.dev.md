@@ -6,15 +6,21 @@ Local development notes
 
 To serve the static frontend locally run:
 
+**Windows:**
+```bash
+python server/serve_static.py --port 8080
+# then open http://localhost:8080 in your browser
+```
+
+**macOS/Linux:**
 ```bash
 python3 server/serve_static.py --port 8080
 # then open http://localhost:8080 in your browser
 ```
 
 Or use the convenience script:
-```bash
-./start-server.sh 8080
-```
+- Windows: `start-server.bat 8080`
+- macOS/Linux: `./start-server.sh 8080`
 
 2) Running QA checks (pytest)
 

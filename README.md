@@ -4,10 +4,21 @@ A comprehensive Project Management Platform for tracking project implementation,
 
 ## Quick Start
 
-1. **Start the server** - Open a terminal and run:
+1. **Start the server** - Open a terminal/command prompt and run:
+   
+   **Windows (PowerShell/Command Prompt):**
+   ```bash
+   python server/serve_static.py --port 8080
+   ```
+   
+   **macOS/Linux:**
    ```bash
    python3 server/serve_static.py --port 8080
    ```
+   
+   **Or use the convenience script:**
+   - Windows: `start-server.bat 8080`
+   - macOS/Linux: `./start-server.sh 8080`
 
 2. **Access the application** - Open your browser and go to:
    ```
