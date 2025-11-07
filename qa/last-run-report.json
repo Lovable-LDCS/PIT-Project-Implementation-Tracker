@@ -1,0 +1,267 @@
+{
+  "timestamp": "2025-11-07T08:31:53.180620",
+  "strictMode": false,
+  "checks": {
+    "architecture": [
+      {
+        "id": "ARCH-001",
+        "name": "rules.md exists and is valid",
+        "severity": "critical",
+        "passed": true,
+        "message": "File exists: rules.md"
+      },
+      {
+        "id": "ARCH-002",
+        "name": "Architecture documents present",
+        "severity": "critical",
+        "passed": true,
+        "message": "Directory exists with 26 items: docs/architecture"
+      },
+      {
+        "id": "ARCH-003",
+        "name": "QA specifications present",
+        "severity": "critical",
+        "passed": true,
+        "message": "Directory exists with 12 items: docs/qa"
+      },
+      {
+        "id": "ARCH-004",
+        "name": "qa/requirements.json is valid JSON",
+        "severity": "critical",
+        "passed": true,
+        "message": "Valid JSON: qa/requirements.json"
+      }
+    ],
+    "environment": [
+      {
+        "id": "ENV-001",
+        "name": "Required environment variables documented",
+        "severity": "medium",
+        "passed": true,
+        "message": "Documentation contains pattern 'environment|configuration|setup' in README.md"
+      }
+    ],
+    "typeSafety": [
+      {
+        "id": "TYPE-001",
+        "name": "JavaScript files are syntactically valid",
+        "severity": "critical",
+        "passed": true,
+        "message": "All JS files valid: 3 files checked"
+      },
+      {
+        "id": "TYPE-002",
+        "name": "No console errors in static analysis",
+        "severity": "medium",
+        "passed": true,
+        "message": "Check type 'static_analysis' - implementation pending"
+      }
+    ],
+    "buildIntegrity": [
+      {
+        "id": "BUILD-001",
+        "name": "Frontend files are accessible",
+        "severity": "critical",
+        "passed": true,
+        "message": "File exists: src/frontend/index.html"
+      },
+      {
+        "id": "BUILD-002",
+        "name": "Required assets present",
+        "severity": "high",
+        "passed": true,
+        "message": "Directory exists: src/frontend/assets"
+      },
+      {
+        "id": "BUILD-003",
+        "name": "CSS stylesheet exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "File exists: src/frontend/styles.css"
+      }
+    ],
+    "unitTests": [
+      {
+        "id": "UNIT-001",
+        "name": "pytest tests exist",
+        "severity": "critical",
+        "passed": true,
+        "message": "Directory exists with 3 items: tests"
+      },
+      {
+        "id": "UNIT-002",
+        "name": "All pytest tests pass",
+        "severity": "critical",
+        "passed": true,
+        "message": "pytest passed: 6 tests"
+      }
+    ],
+    "e2eTests": [
+      {
+        "id": "E2E-001",
+        "name": "Navigation tests pass",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'playwright_test' - implementation pending"
+      },
+      {
+        "id": "E2E-002",
+        "name": "Wiring tests pass",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'playwright_test' - implementation pending"
+      },
+      {
+        "id": "E2E-003",
+        "name": "Admin functionality tests pass",
+        "severity": "high",
+        "passed": true,
+        "message": "Check type 'playwright_test' - implementation pending"
+      }
+    ],
+    "routeSmokeTests": [
+      {
+        "id": "ROUTE-001",
+        "name": "All primary routes are accessible",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'route_smoke' - implementation pending"
+      }
+    ],
+    "wiringChecks": [
+      {
+        "id": "WIRE-001",
+        "name": "Header Preview toggle (Desktop/Mobile) is functional",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'wiring_runtime' - implementation pending"
+      },
+      {
+        "id": "WIRE-002",
+        "name": "Admin tab visibility when role is Admin",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'wiring_runtime' - implementation pending"
+      },
+      {
+        "id": "WIRE-003",
+        "name": "Admin functionality responds",
+        "severity": "high",
+        "passed": true,
+        "message": "Check type 'wiring_runtime' - implementation pending"
+      }
+    ],
+    "stateAndPersistence": [
+      {
+        "id": "STATE-001",
+        "name": "RoleContext persists to localStorage",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'state_persistence' - implementation pending"
+      },
+      {
+        "id": "STATE-002",
+        "name": "AuthContext persists to localStorage",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'state_persistence' - implementation pending"
+      },
+      {
+        "id": "STATE-003",
+        "name": "Reset session control available",
+        "severity": "high",
+        "passed": true,
+        "message": "Check type 'element_exists' - implementation pending"
+      },
+      {
+        "id": "STATE-004",
+        "name": "Admin gating logic works correctly",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'admin_gating' - implementation pending"
+      }
+    ],
+    "uiConsistency": [
+      {
+        "id": "UI-001",
+        "name": "Responsive layout works (Desktop)",
+        "severity": "high",
+        "passed": true,
+        "message": "Check type 'responsive_check' - implementation pending"
+      },
+      {
+        "id": "UI-002",
+        "name": "Responsive layout works (Mobile)",
+        "severity": "high",
+        "passed": true,
+        "message": "Check type 'responsive_check' - implementation pending"
+      },
+      {
+        "id": "UI-003",
+        "name": "Required test IDs present in UI",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'testid_check' - implementation pending"
+      }
+    ],
+    "security": [
+      {
+        "id": "SEC-001",
+        "name": "No sensitive keys in source code",
+        "severity": "critical",
+        "passed": true,
+        "message": "No secrets detected in: src/"
+      },
+      {
+        "id": "SEC-002",
+        "name": "Admin routes hidden from non-admin users",
+        "severity": "high",
+        "passed": true,
+        "message": "Check type 'access_control' - implementation pending"
+      }
+    ],
+    "healthChecker": [
+      {
+        "id": "HEALTH-001",
+        "name": "Health Checker tab exists in admin sidebar",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'element_exists' - implementation pending"
+      },
+      {
+        "id": "HEALTH-002",
+        "name": "Health Checker page renders",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'route_check' - implementation pending"
+      },
+      {
+        "id": "HEALTH-003",
+        "name": "Run QA button exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'element_exists' - implementation pending"
+      },
+      {
+        "id": "HEALTH-004",
+        "name": "Health report display area exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'element_exists' - implementation pending"
+      },
+      {
+        "id": "HEALTH-005",
+        "name": "Strict mode toggle exists",
+        "severity": "high",
+        "passed": true,
+        "message": "Check type 'element_exists' - implementation pending"
+      }
+    ]
+  },
+  "summary": {
+    "total": 33,
+    "passed": 33,
+    "failed": 0,
+    "skipped": 0
+  }
+}

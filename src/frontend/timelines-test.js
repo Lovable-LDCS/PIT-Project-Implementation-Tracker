@@ -98,9 +98,6 @@
     // offsets align labels vs canvas
     function offsetFor(axisEl){ if(!axisEl||!canvas) return 0; const a=axisEl.getBoundingClientRect(), c=canvas.getBoundingClientRect(); return c.left - a.left; }
     const yOff=offsetFor(axes.years), qOff=offsetFor(axes.quarters), mOff=offsetFor(axes.months), wOff=offsetFor(axes.weeks), dOff=offsetFor(axes.days);
-    // offsets align labels vs canvas
-    function offsetFor(axisEl){ if(!axisEl||!canvas) return 0; const a=axisEl.getBoundingClientRect(), c=canvas.getBoundingClientRect(); return c.left - a.left; }
-    const yOff=offsetFor(axes.years), qOff=offsetFor(axes.quarters), mOff=offsetFor(axes.months), wOff=offsetFor(axes.weeks), dOff=offsetFor(axes.days);
     // Enable expand/collapse per-axis by clicking the row
     Object.entries(axes).forEach(([key, el])=>{
       if(!el) return; if(el._ec) return; el._ec=true; el.addEventListener('click', ()=>{ el.classList.toggle('collapsed'); });

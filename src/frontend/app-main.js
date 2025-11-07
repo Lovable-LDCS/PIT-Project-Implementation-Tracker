@@ -1,58 +1,138 @@
-It looks like the suggested change is a standalone PowerShell script intended to inspect a repository, not something that should be merged into your JavaScript app file. To apply this edit cleanly, add it as a new script file in your repo (no changes needed to your existing JS).
+/* Main application logic */
 
-Proposed addition
-- New file: scripts/repo-summary.ps1
+// Application initialization
+(function() {
+  'use strict';
 
-Contents:
-# Repo summary (run in repo root)
-$ErrorActionPreference = 'SilentlyContinue'
+  // State and persistence management
+  window.appState = {
+    user: null,
+    role: null,
+    isAdmin: false
+  };
 
-$root   = (Get-Location).Path
-$all    = Get-ChildItem -Recurse -Force
-$files  = $all | Where-Object { -not $_.PSIsContainer }
-$dirs   = $all | Where-Object { $_.PSIsContainer }
-$totSz  = ($files | Measure-Object Length -Sum).Sum
+  // Load state from localStorage
+  function loadState() {
+    try {
+      const roleContext = localStorage.getItem('roleContext');
+      const authContext = localStorage.getItem('authContext');
+      
+      if (roleContext) {
+        const role = JSON.parse(roleContext);
+        window.appState.role = role;
+      }
+      
+      if (authContext) {
+        const auth = JSON.parse(authContext);
+        window.appState.user = auth;
+      }
+      
+      updateAdminStatus();
+    } catch (e) {
+      console.error('Error loading state:', e);
+    }
+  }
 
-Write-Host "Repo root : $root"
-Write-Host ("Total folders: {0}" -f $dirs.Count)
-Write-Host ("Total files  : {0}" -f $files.Count)
-Write-Host ("Total size   : {0:n2} MB ({1} bytes)" -f ($totSz/1MB), $totSz)
-Write-Host ""
+  // Save state to localStorage
+  function saveState() {
+    try {
+      if (window.appState.role) {
+        localStorage.setItem('roleContext', JSON.stringify(window.appState.role));
+      }
+      if (window.appState.user) {
+        localStorage.setItem('authContext', JSON.stringify(window.appState.user));
+      }
+    } catch (e) {
+      console.error('Error saving state:', e);
+    }
+  }
 
-Write-Host "Top-level directory sizes (MB):"
-Get-ChildItem -Directory -Force |
-  ForEach-Object {
-    $sz = (Get-ChildItem -LiteralPath $_.FullName -Recurse -File -Force | Measure-Object Length -Sum).Sum
-    [PSCustomObject]@{ Directory = $_.Name; SizeMB = [math]::Round(($sz/1MB),2); SizeBytes = $sz }
-  } |
-  Sort-Object SizeBytes -Descending |
-  Format-Table -AutoSize
+  // Admin gating logic
+  function updateAdminStatus() {
+    const isAdmin = 
+      window.appState.role === 'Admin' ||
+      (window.appState.user && window.appState.user.role === 'Admin') ||
+      (window.appState.user && isEmailInAdminList(window.appState.user.email));
+    
+    window.appState.isAdmin = isAdmin;
+    updateAdminVisibility();
+  }
 
-Write-Host ""
-Write-Host "Largest 40 files (MB):"
-$files | Sort-Object Length -Descending |
-  Select-Object -First 40 @{N='SizeMB';E={[math]::Round(($_.Length/1MB),2)}}, Length, LastWriteTime, FullName |
-  Format-Table -AutoSize
+  function isEmailInAdminList(email) {
+    // TODO: Load admin list from settings/configuration
+    const adminList = ['admin@example.com'];
+    return email && adminList.includes(email.toLowerCase());
+  }
 
-Write-Host ""
-Write-Host "File counts by extension (top 40):"
-$files |
-  Group-Object { ($_.Extension ?? '').ToLower() } |
-  Where-Object { $_.Name -ne '' } |
-  Sort-Object Count -Descending |
-  Select-Object -First 40 @{N='Ext';E={$_.Name}}, Count |
-  Format-Table -AutoSize
+  function updateAdminVisibility() {
+    const adminElements = document.querySelectorAll('[data-admin-only]');
+    adminElements.forEach(el => {
+      if (window.appState.isAdmin) {
+        el.removeAttribute('hidden');
+      } else {
+        el.setAttribute('hidden', '');
+      }
+    });
+  }
 
-Write-Host ""
-Write-Host "Top-level items:"
-Get-ChildItem -Force |
-  Select-Object Mode, LastWriteTime, Length, Name |
-  Format-Table -AutoSize
+  // Reset session
+  window.resetSession = function() {
+    localStorage.removeItem('roleContext');
+    localStorage.removeItem('authContext');
+    window.appState = { user: null, role: null, isAdmin: false };
+    updateAdminVisibility();
+    location.reload();
+  };
 
-How to run
-- From the repo root in PowerShell 7+:
-  - pwsh -File scripts/repo-summary.ps1
-  - Or: ./scripts/repo-summary.ps1
+  // Set role (for testing/role selector)
+  window.setRole = function(role) {
+    window.appState.role = role;
+    saveState();
+    updateAdminStatus();
+  };
 
-If you intended this to be embedded somewhere else or named differently, tell me where you’d like it placed and I’ll adjust.
+  // Placeholder functions referenced in HTML
+  window.saveProject = function() {
+    console.log('saveProject called');
+    if (typeof window.closeProjectSetup === 'function') {
+      window.closeProjectSetup();
+    }
+  };
 
+  window.runWiringChecks = function() {
+    console.log('Running wiring checks...');
+    // Placeholder for wiring checks
+    return true;
+  };
+
+  window.computeStatusDescriptor = function(startDate, endDate, today = new Date()) {
+    // Placeholder status computation
+    if (!startDate || !endDate) return 'unknown';
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    if (today < start) return 'not-started';
+    if (today > end) return 'overdue';
+    return 'in-progress';
+  };
+
+  // Initialize on DOMContentLoaded
+  document.addEventListener('DOMContentLoaded', function() {
+    loadState();
+    
+    // Set up hashchange listener for navigation
+    window.addEventListener('hashchange', function() {
+      const route = location.hash || '#/';
+      if (typeof window.navigateTo === 'function') {
+        window.navigateTo(route);
+      }
+    });
+    
+    // Trigger initial navigation
+    const initialRoute = location.hash || '#/';
+    if (typeof window.navigateTo === 'function') {
+      window.navigateTo(initialRoute);
+    }
+  });
+
+  console.log('app-main.js loaded');
+})();

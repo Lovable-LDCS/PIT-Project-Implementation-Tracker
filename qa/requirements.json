@@ -1,0 +1,379 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "description": "Machine-verifiable QA requirements for PIT Project Implementation Tracker",
+  "lastUpdated": "2025-11-07",
+  "requirements": {
+    "architecture": {
+      "description": "Architecture and requirements compliance checks",
+      "checks": [
+        {
+          "id": "ARCH-001",
+          "name": "rules.md exists and is valid",
+          "type": "file_exists",
+          "target": "rules.md",
+          "severity": "critical"
+        },
+        {
+          "id": "ARCH-002",
+          "name": "Architecture documents present",
+          "type": "directory_not_empty",
+          "target": "docs/architecture",
+          "severity": "critical"
+        },
+        {
+          "id": "ARCH-003",
+          "name": "QA specifications present",
+          "type": "directory_not_empty",
+          "target": "docs/qa",
+          "severity": "critical"
+        },
+        {
+          "id": "ARCH-004",
+          "name": "qa/requirements.json is valid JSON",
+          "type": "json_valid",
+          "target": "qa/requirements.json",
+          "severity": "critical"
+        }
+      ]
+    },
+    "environment": {
+      "description": "Environment variable and configuration checks",
+      "strictModeVar": "QA_STRICT",
+      "checks": [
+        {
+          "id": "ENV-001",
+          "name": "Required environment variables documented",
+          "type": "documentation_check",
+          "target": "README.md",
+          "searchPattern": "environment|configuration|setup",
+          "severity": "medium"
+        }
+      ]
+    },
+    "typeSafety": {
+      "description": "Type safety and coding correctness (JS validation for this project)",
+      "checks": [
+        {
+          "id": "TYPE-001",
+          "name": "JavaScript files are syntactically valid",
+          "type": "js_syntax_check",
+          "target": "src/frontend/**/*.js",
+          "severity": "critical"
+        },
+        {
+          "id": "TYPE-002",
+          "name": "No console errors in static analysis",
+          "type": "static_analysis",
+          "target": "src/frontend",
+          "severity": "medium"
+        }
+      ]
+    },
+    "buildIntegrity": {
+      "description": "Build process integrity",
+      "checks": [
+        {
+          "id": "BUILD-001",
+          "name": "Frontend files are accessible",
+          "type": "file_exists",
+          "target": "src/frontend/index.html",
+          "severity": "critical"
+        },
+        {
+          "id": "BUILD-002",
+          "name": "Required assets present",
+          "type": "directory_exists",
+          "target": "src/frontend/assets",
+          "severity": "high"
+        },
+        {
+          "id": "BUILD-003",
+          "name": "CSS stylesheet exists",
+          "type": "file_exists",
+          "target": "src/frontend/styles.css",
+          "severity": "critical"
+        }
+      ]
+    },
+    "unitTests": {
+      "description": "Unit test coverage and execution",
+      "checks": [
+        {
+          "id": "UNIT-001",
+          "name": "pytest tests exist",
+          "type": "directory_not_empty",
+          "target": "tests",
+          "severity": "critical"
+        },
+        {
+          "id": "UNIT-002",
+          "name": "All pytest tests pass",
+          "type": "pytest_run",
+          "target": "tests/",
+          "severity": "critical"
+        }
+      ]
+    },
+    "e2eTests": {
+      "description": "End-to-end and wiring tests with Playwright",
+      "checks": [
+        {
+          "id": "E2E-001",
+          "name": "Navigation tests pass",
+          "type": "playwright_test",
+          "target": "tests/e2e/navigation.spec.js",
+          "severity": "critical"
+        },
+        {
+          "id": "E2E-002",
+          "name": "Wiring tests pass",
+          "type": "playwright_test",
+          "target": "tests/e2e/wiring.spec.js",
+          "severity": "critical"
+        },
+        {
+          "id": "E2E-003",
+          "name": "Admin functionality tests pass",
+          "type": "playwright_test",
+          "target": "tests/e2e/admin.spec.js",
+          "severity": "high"
+        }
+      ]
+    },
+    "routeSmokeTests": {
+      "description": "Route accessibility and smoke tests",
+      "checks": [
+        {
+          "id": "ROUTE-001",
+          "name": "All primary routes are accessible",
+          "type": "route_smoke",
+          "routes": [
+            "#/",
+            "#/projects",
+            "#/reports",
+            "#/permissions",
+            "#/workitem",
+            "#/evidence",
+            "#/gantt",
+            "#/audit",
+            "#/notify",
+            "#/import",
+            "#/exports",
+            "#/templates",
+            "#/search"
+          ],
+          "severity": "critical"
+        }
+      ]
+    },
+    "wiringChecks": {
+      "description": "Strict runtime wiring checks",
+      "checks": [
+        {
+          "id": "WIRE-001",
+          "name": "Header Preview toggle (Desktop/Mobile) is functional",
+          "type": "wiring_runtime",
+          "target": "TID-PREVIEW-TOGGLE",
+          "interactions": [
+            {
+              "action": "click",
+              "selector": "[data-testid='TID-PREVIEW-MOBILE']",
+              "expected": "mobile-preview class applied"
+            },
+            {
+              "action": "click",
+              "selector": "[data-testid='TID-PREVIEW-DESKTOP']",
+              "expected": "mobile-preview class removed"
+            }
+          ],
+          "severity": "critical"
+        },
+        {
+          "id": "WIRE-002",
+          "name": "Admin tab visibility when role is Admin",
+          "type": "wiring_runtime",
+          "target": "Admin tabs in sidebar",
+          "interactions": [
+            {
+              "action": "set_role",
+              "value": "Admin",
+              "expected": "Admin tabs visible"
+            }
+          ],
+          "expectedElements": [
+            "TID-NAV-INVITE-MEMBERS",
+            "TID-NAV-REPORTS",
+            "TID-NAV-SETTINGS",
+            "TID-NAV-SECURITY-DASHBOARD",
+            "TID-NAV-HEALTH-CHECKER"
+          ],
+          "severity": "critical"
+        },
+        {
+          "id": "WIRE-003",
+          "name": "Admin functionality responds",
+          "type": "wiring_runtime",
+          "target": "Admin pages",
+          "routes": [
+            "#/invite-members",
+            "#/settings",
+            "#/security-dashboard",
+            "#/health-checker"
+          ],
+          "severity": "high"
+        }
+      ]
+    },
+    "stateAndPersistence": {
+      "description": "State management and persistence checks",
+      "checks": [
+        {
+          "id": "STATE-001",
+          "name": "RoleContext persists to localStorage",
+          "type": "state_persistence",
+          "target": "roleContext",
+          "storage": "localStorage",
+          "severity": "critical"
+        },
+        {
+          "id": "STATE-002",
+          "name": "AuthContext persists to localStorage",
+          "type": "state_persistence",
+          "target": "authContext",
+          "storage": "localStorage",
+          "severity": "critical"
+        },
+        {
+          "id": "STATE-003",
+          "name": "Reset session control available",
+          "type": "element_exists",
+          "target": "TID-RESET-SESSION-BTN",
+          "severity": "high"
+        },
+        {
+          "id": "STATE-004",
+          "name": "Admin gating logic works correctly",
+          "type": "admin_gating",
+          "conditions": [
+            "role selector says Admin",
+            "user.role === 'Admin'",
+            "email in admin list"
+          ],
+          "severity": "critical"
+        }
+      ]
+    },
+    "uiConsistency": {
+      "description": "UI/UX consistency and responsive behavior",
+      "checks": [
+        {
+          "id": "UI-001",
+          "name": "Responsive layout works (Desktop)",
+          "type": "responsive_check",
+          "viewport": { "width": 1920, "height": 1080 },
+          "severity": "high"
+        },
+        {
+          "id": "UI-002",
+          "name": "Responsive layout works (Mobile)",
+          "type": "responsive_check",
+          "viewport": { "width": 375, "height": 667 },
+          "severity": "high"
+        },
+        {
+          "id": "UI-003",
+          "name": "Required test IDs present in UI",
+          "type": "testid_check",
+          "testIds": [
+            "TID-SHELL-ROOT",
+            "TID-TOPBAR",
+            "TID-SIDEBAR",
+            "TID-BREADCRUMBS",
+            "TID-CONTENT-AREA",
+            "TID-HEALTH-CHECKER-ROOT"
+          ],
+          "severity": "critical"
+        }
+      ]
+    },
+    "security": {
+      "description": "Security baseline checks",
+      "checks": [
+        {
+          "id": "SEC-001",
+          "name": "No sensitive keys in source code",
+          "type": "secret_scan",
+          "target": "src/",
+          "patterns": [
+            "api[_-]?key",
+            "secret",
+            "password",
+            "token"
+          ],
+          "severity": "critical"
+        },
+        {
+          "id": "SEC-002",
+          "name": "Admin routes hidden from non-admin users",
+          "type": "access_control",
+          "target": "admin routes",
+          "severity": "high"
+        }
+      ]
+    },
+    "healthChecker": {
+      "description": "Health Checker component requirements",
+      "checks": [
+        {
+          "id": "HEALTH-001",
+          "name": "Health Checker tab exists in admin sidebar",
+          "type": "element_exists",
+          "target": "TID-NAV-HEALTH-CHECKER",
+          "severity": "critical"
+        },
+        {
+          "id": "HEALTH-002",
+          "name": "Health Checker page renders",
+          "type": "route_check",
+          "target": "#/health-checker",
+          "severity": "critical"
+        },
+        {
+          "id": "HEALTH-003",
+          "name": "Run QA button exists",
+          "type": "element_exists",
+          "target": "TID-HEALTH-RUN-QA-BTN",
+          "severity": "critical"
+        },
+        {
+          "id": "HEALTH-004",
+          "name": "Health report display area exists",
+          "type": "element_exists",
+          "target": "TID-HEALTH-REPORT-DISPLAY",
+          "severity": "critical"
+        },
+        {
+          "id": "HEALTH-005",
+          "name": "Strict mode toggle exists",
+          "type": "element_exists",
+          "target": "TID-HEALTH-STRICT-MODE-TOGGLE",
+          "severity": "high"
+        }
+      ]
+    }
+  },
+  "redGreenCriteria": {
+    "green": "All critical and high severity checks pass",
+    "amber": "All critical checks pass, some high severity checks fail",
+    "red": "Any critical check fails",
+    "failureReport": "Must include component name, check ID, failure reason, and remediation steps"
+  },
+  "legacyCodePolicy": {
+    "rule": "If code exists but isn't wired (not visible/functional in UI), QA must fail RED",
+    "resolution": [
+      "If required: wire it now; keep QA RED until it works at runtime",
+      "If legacy/de-wired: delete it after failing wiring-checks twice consecutively"
+    ]
+  }
+}
