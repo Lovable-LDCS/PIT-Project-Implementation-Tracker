@@ -11,7 +11,7 @@
   }
   function navigateTo(route){
     try{
-      var map={'#/':'TID-DASHBOARD','#/projects':'TID-PAGE-PROJECTS','#/timelines':'TID-TL-PAGE','#/tl-test':'TID-TL-TEST-PAGE','#/reports':'TID-PAGE-REPORTS','#/permissions':'TID-ROLE-MATRIX','#/workitem':'TID-WORKITEM-DETAIL','#/evidence':'TID-EVIDENCE-UPLOAD','#/gantt':'TID-GANTT-VIEW','#/audit':'TID-AUDIT-LOG','#/notify':'TID-NOTIFY-PREFERENCES','#/import':'TID-IMPORT-WIZARD','#/exports':'TID-EXPORT-REPORTS','#/templates':'TID-TEMPLATES-LIBRARY','#/settings':'TID-SETTINGS-PAGE','#/search':'TID-SEARCH-RESULTS'};
+      var map={'#/':'TID-DASHBOARD','#/projects':'TID-PAGE-PROJECTS','#/timelines':'TID-TL-PAGE','#/tl-test':'TID-TL-TEST-PAGE','#/reports':'TID-PAGE-REPORTS','#/permissions':'TID-ROLE-MATRIX','#/workitem':'TID-WORKITEM-DETAIL','#/evidence':'TID-EVIDENCE-UPLOAD','#/gantt':'TID-GANTT-VIEW','#/audit':'TID-AUDIT-LOG','#/notify':'TID-NOTIFY-PREFERENCES','#/import':'TID-IMPORT-WIZARD','#/exports':'TID-EXPORT-REPORTS','#/templates':'TID-TEMPLATES-LIBRARY','#/settings':'TID-SETTINGS-PAGE','#/search':'TID-SEARCH-RESULTS','#/invite-members':'TID-INVITE-MEMBERS-PAGE','#/security-dashboard':'TID-SECURITY-DASHBOARD-PAGE','#/health-checker':'TID-HEALTH-CHECKER-ROOT'};
       var show = map[route] || 'TID-DASHBOARD';
       var content = document.querySelector('[data-testid="TID-CONTENT-AREA"]');
       if(content){

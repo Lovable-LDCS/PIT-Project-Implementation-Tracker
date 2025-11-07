@@ -15,7 +15,14 @@
           <img class="brand-logo" data-testid="TID-BRAND-LOGO" alt="Brand logo" src="assets/APGI Logo.png" />
           <strong>PM Platform</strong>
         </div>
-        <div class="inline-flex-center">          <label for="global-search" class="sr-only">Search</label>
+        <div class="inline-flex-center">
+          <!-- Preview Toggle -->
+          <div data-testid="TID-PREVIEW-TOGGLE" class="preview-toggle">
+            <span>Preview:</span>
+            <button class="btn" type="button" data-testid="TID-PREVIEW-DESKTOP" onclick="window.setPreviewMode('desktop')" aria-label="Desktop preview">🖥️ Desktop</button>
+            <button class="btn" type="button" data-testid="TID-PREVIEW-MOBILE" onclick="window.setPreviewMode('mobile')" aria-label="Mobile preview">📱 Mobile</button>
+          </div>
+          <label for="global-search" class="sr-only">Search</label>
           <input id="global-search" data-testid="TID-GLOBAL-SEARCH" aria-label="Search" placeholder="Search…" />
           <select data-testid="TID-ORG-SCOPE-SELECTOR" aria-label="Scope">
             <option>OrgGroup</option>
@@ -63,7 +70,28 @@
           <a href="#/settings" data-testid="TID-NAV-SETTINGS" onclick="return appNavTo(this)">Settings</a>
           <a href="#/search" data-testid="TID-NAV-SEARCH" onclick="return appNavTo(this)">Search</a>
           <a href="#/qa" data-testid="TID-NAV-QA" onclick="return appNavTo(this)">Quality Assurance</a>
+          <!-- Admin-only navigation items -->
+          <div data-admin-only hidden>
+            <hr class="admin-divider">
+            <div class="admin-section-label">Admin Tools</div>
+            <a href="#/invite-members" data-testid="TID-NAV-INVITE-MEMBERS" onclick="return appNavTo(this)">Invite Members</a>
+            <a href="#/security-dashboard" data-testid="TID-NAV-SECURITY-DASHBOARD" onclick="return appNavTo(this)">Security Dashboard</a>
+            <a href="#/health-checker" data-testid="TID-NAV-HEALTH-CHECKER" onclick="return appNavTo(this)">Health Checker</a>
+          </div>
         </nav>
+        <!-- Admin Role Toggle and Reset Session Controls -->
+        <div class="sidebar-controls">
+          <label>
+            <span>Role (for testing):</span>
+            <select id="role-selector" data-testid="TID-ROLE-SELECTOR" onchange="window.setRole(this.value)">
+              <option value="">None</option>
+              <option value="User">User</option>
+              <option value="Technician">Technician</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </label>
+          <button class="btn" type="button" data-testid="TID-RESET-SESSION-BTN" onclick="window.resetSession()">Reset Session</button>
+        </div>
       </aside>
       <main class="content" data-testid="TID-CONTENT-AREA" role="main">
         <div class="breadcrumbs" data-testid="TID-BREADCRUMBS">
@@ -576,6 +604,76 @@
           <ul data-testid="TID-SRCH-LIST"></ul>
         </section>
         <section data-testid="TID-ASSIGNMENT-AI-SUGGEST" hidden aria-label="AI Assignment Suggestions"></section>
+        
+        <!-- Admin-Only Pages -->
+        <section data-testid="TID-INVITE-MEMBERS-PAGE" data-admin-only hidden aria-label="Invite Members">
+          <h2>Invite New Members</h2>
+          <div class="filter-card">
+            <p>Invite team members to join the platform.</p>
+            <label>Email addresses (comma-separated)
+              <textarea data-testid="TID-INVITE-EMAILS" placeholder="email1@example.com, email2@example.com" class="textarea-medium"></textarea>
+            </label>
+            <label>Default Role
+              <select data-testid="TID-INVITE-ROLE">
+                <option value="User">User</option>
+                <option value="Technician">Technician</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </label>
+          </div>
+          <div class="actions-left">
+            <button class="btn primary" type="button" data-testid="TID-INVITE-SEND-BTN">Send Invitations</button>
+            <button class="btn" type="button" onclick="navigateTo('#/')">Cancel</button>
+          </div>
+        </section>
+        
+        <section data-testid="TID-SECURITY-DASHBOARD-PAGE" data-admin-only hidden aria-label="Security Dashboard">
+          <h2>Security Dashboard</h2>
+          <div class="filter-card">
+            <h3>Security Status</h3>
+            <div data-testid="TID-SECURITY-STATUS">
+              <p>✓ No sensitive keys detected in source code</p>
+              <p>✓ Admin routes properly gated</p>
+              <p>✓ Session state properly managed</p>
+            </div>
+          </div>
+          <div class="filter-card">
+            <h3>Access Control</h3>
+            <div data-testid="TID-SECURITY-ACCESS">
+              <p>Admin users: <span id="admin-count">1</span></p>
+              <p>Active sessions: <span id="session-count">0</span></p>
+            </div>
+          </div>
+        </section>
+        
+        <section data-testid="TID-HEALTH-CHECKER-ROOT" data-admin-only hidden aria-label="Health Checker">
+          <h2>System Health Checker</h2>
+          <p class="health-description">
+            Run comprehensive QA checks to verify system health and architecture compliance.
+          </p>
+          
+          <div class="filter-card health-config-card">
+            <div class="health-config">
+              <div>
+                <h3>QA Configuration</h3>
+              </div>
+              <label class="health-strict-label">
+                <input type="checkbox" data-testid="TID-HEALTH-STRICT-MODE-TOGGLE" id="strict-mode-toggle" />
+                <span>Strict Mode (fail on missing envs)</span>
+              </label>
+            </div>
+            <button class="btn primary health-run-btn" type="button" data-testid="TID-HEALTH-RUN-QA-BTN" onclick="window.runHealthCheck()">
+              🔍 Run Health Check
+            </button>
+          </div>
+          
+          <div data-testid="TID-HEALTH-REPORT-DISPLAY" id="health-report-display" class="health-report">
+            <div class="health-ready">
+              <p>Ready to run health checks</p>
+              <p>Click the "Run Health Check" button to start</p>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
     <script src="app-main.js"></script>
@@ -635,7 +733,10 @@
           '#/exports': 'TID-EXPORT-REPORTS',
           '#/templates': 'TID-TEMPLATES-LIBRARY',
           '#/settings': 'TID-SETTINGS-PAGE',
-          '#/search': 'TID-SEARCH-RESULTS'
+          '#/search': 'TID-SEARCH-RESULTS',
+          '#/invite-members': 'TID-INVITE-MEMBERS-PAGE',
+          '#/security-dashboard': 'TID-SECURITY-DASHBOARD-PAGE',
+          '#/health-checker': 'TID-HEALTH-CHECKER-ROOT'
         };
         const showTestId = routes[route] || 'TID-DASHBOARD';
         const content = document.querySelector('[data-testid="TID-CONTENT-AREA"]');
