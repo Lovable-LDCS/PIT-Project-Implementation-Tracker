@@ -159,3 +159,152 @@ input, select, textarea { padding: 6px 8px; border: 1px solid #cbd5e1; border-ra
 section[data-testid="TID-TL-PAGE"] .tl-grid { margin-left: 8px; margin-right: 8px; }
 /* Optional: visibly show the gutter during debugging */
 /* .timeline-canvas::before { content:''; position:absolute; left:calc(-1 * var(--tl-gutter)); top:0; bottom:0; width:var(--tl-gutter); background:transparent; } */
+
+/* Preview Toggle */
+.preview-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 12px;
+  padding: 4px 8px;
+  background: #1e293b;
+  border-radius: 4px;
+}
+
+.preview-toggle span {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.preview-toggle .btn {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+}
+
+/* Admin Section Divider */
+.admin-divider {
+  margin: 12px 0;
+  border-color: #334155;
+}
+
+.admin-section-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  padding: 4px 0;
+  text-transform: uppercase;
+}
+
+/* Sidebar Controls */
+.sidebar-controls {
+  padding: 12px;
+  border-top: 1px solid #334155;
+}
+
+.sidebar-controls label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.sidebar-controls label span {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.sidebar-controls select {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.sidebar-controls .btn {
+  width: 100%;
+  padding: 6px;
+  font-size: 0.875rem;
+}
+
+/* Health Checker */
+.health-config {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.health-config h3 {
+  margin: 0;
+}
+
+.health-config label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.health-run-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+}
+
+.health-report {
+  min-height: 200px;
+}
+
+.health-ready {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}
+
+.health-ready p:first-child {
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+}
+
+.health-ready p:last-child {
+  font-size: 0.875rem;
+}
+
+/* Mobile Preview Mode */
+.mobile-preview {
+  max-width: 375px;
+  margin: 0 auto;
+  border-left: 1px solid #334155;
+  border-right: 1px solid #334155;
+}
+
+.mobile-preview .sidebar {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Admin-only elements */
+[data-admin-only][hidden] {
+  display: none !important;
+}
+
+/* Textarea sizes */
+.textarea-medium {
+  min-height: 100px;
+}
+
+.textarea-large {
+  min-height: 200px;
+}
+
+/* Health Checker additional styles */
+.health-description {
+  color: #94a3b8;
+  margin-bottom: 16px;
+}
+
+.health-config-card {
+  margin-bottom: 16px;
+}
+
+.health-strict-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
