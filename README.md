@@ -75,14 +75,45 @@ Access at: `http://localhost:8080`
 
 ## Documentation
 
+- **[QA Quick Start](QA_QUICK_START.md)** - Get started with the QA system
+- **[QA System Documentation](docs/QA_SYSTEM.md)** - Complete QA and Health Checker guide
 - [Getting Started Guide](GETTING_STARTED.md) - Comprehensive setup instructions
 - [Developer Documentation](README.dev.md) - Development guidelines
 - [Architecture Documentation](docs/architecture/) - System architecture
 - [QA Specifications](docs/qa/) - Testing specifications
+- [Rules & Governance](rules.md) - Architecture-first principles ("True North")
+
+## Quality Assurance
+
+This project follows an **architecture-first, QA-driven** workflow:
+
+✅ **Current Status**: 🟢 GREEN (33/33 checks passing)
+
+### Quick QA Check
+
+```bash
+# Run comprehensive QA
+python3 qa/run_qa.py
+
+# View results in the UI
+# 1. Set role to "Admin" in sidebar
+# 2. Click "Health Checker" under Admin Tools
+# 3. Click "Run Health Check"
+```
+
+See **[QA_QUICK_START.md](QA_QUICK_START.md)** for complete guide.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit pull requests or open issues.
+Contributions are welcome! Please follow the architecture-first workflow:
+
+1. **Update architecture** documents first (`docs/architecture/`)
+2. **Update QA requirements** (`qa/requirements.json`)
+3. **Implement** the feature
+4. **Run QA** until GREEN: `python3 qa/run_qa.py`
+5. **Submit PR** with QA report
+
+See [rules.md](rules.md) for detailed governance.
 
 ## License
 
