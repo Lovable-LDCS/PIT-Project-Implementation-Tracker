@@ -1,5 +1,7 @@
 # PIT - Project Implementation Tracker
 
+[![QA Status](https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/actions/workflows/run-qa.yml/badge.svg)](https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/actions/workflows/run-qa.yml)
+
 A comprehensive project implementation and operations tracking system designed for large enterprises with multiple users and interfaces.
 
 ## 🚀 Quick Access
