@@ -1,0 +1,121 @@
+{
+  "config": {
+    "configFile": "/home/runner/work/PIT-Project-Implementation-Tracker/PIT-Project-Implementation-Tracker/tests/e2e/playwright.config.js",
+    "rootDir": "/home/runner/work/PIT-Project-Implementation-Tracker/PIT-Project-Implementation-Tracker/tests/e2e/tests/e2e",
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "ci": {
+        "commitHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/commit/a5de2aaaa232c297212dce3e9edcd36de7951169",
+        "commitHash": "a5de2aaaa232c297212dce3e9edcd36de7951169",
+        "buildHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/actions/runs/19225995183"
+      },
+      "gitCommit": {
+        "shortHash": "ef75902",
+        "hash": "ef7590227087e726e5f4b97d107a1d69c0cab0a5",
+        "subject": "Initial exploration - architecture and QA requirements verified",
+        "body": "Initial exploration - architecture and QA requirements verified\n\nCo-authored-by: Lovable-LDCS <220024911+Lovable-LDCS@users.noreply.github.com>\n",
+        "author": {
+          "name": "copilot-swe-agent[bot]",
+          "email": "198982749+Copilot@users.noreply.github.com",
+          "time": 1762764927000
+        },
+        "committer": {
+          "name": "copilot-swe-agent[bot]",
+          "email": "198982749+Copilot@users.noreply.github.com",
+          "time": 1762764927000
+        },
+        "branch": "copilot/update-build-philosophy-docs"
+      }
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "qa/reports/e2e-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/home/runner/work/PIT-Project-Implementation-Tracker/PIT-Project-Implementation-Tracker/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {
+          "ci": {
+            "commitHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/commit/a5de2aaaa232c297212dce3e9edcd36de7951169",
+            "commitHash": "a5de2aaaa232c297212dce3e9edcd36de7951169",
+            "buildHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/actions/runs/19225995183"
+          },
+          "gitCommit": {
+            "shortHash": "ef75902",
+            "hash": "ef7590227087e726e5f4b97d107a1d69c0cab0a5",
+            "subject": "Initial exploration - architecture and QA requirements verified",
+            "body": "Initial exploration - architecture and QA requirements verified\n\nCo-authored-by: Lovable-LDCS <220024911+Lovable-LDCS@users.noreply.github.com>\n",
+            "author": {
+              "name": "copilot-swe-agent[bot]",
+              "email": "198982749+Copilot@users.noreply.github.com",
+              "time": 1762764927000
+            },
+            "committer": {
+              "name": "copilot-swe-agent[bot]",
+              "email": "198982749+Copilot@users.noreply.github.com",
+              "time": 1762764927000
+            },
+            "branch": "copilot/update-build-philosophy-docs"
+          }
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/home/runner/work/PIT-Project-Implementation-Tracker/PIT-Project-Implementation-Tracker/tests/e2e/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.56.1",
+    "workers": 1,
+    "webServer": {
+      "command": "python3 -m http.server 8000 --directory src/frontend",
+      "port": 8000,
+      "timeout": 120000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [],
+  "errors": [
+    {
+      "message": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments.",
+      "stack": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments."
+    }
+  ],
+  "stats": {
+    "startTime": "2025-11-10T09:00:51.865Z",
+    "duration": 134.27800000000002,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
