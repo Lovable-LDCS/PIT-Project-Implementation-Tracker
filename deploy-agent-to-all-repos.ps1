@@ -84,7 +84,7 @@ if ($DryRun) {
 # Confirm with user
 Write-Warning "`nThis will deploy the custom agent to $($repos.Count) repositories."
 $confirmation = Read-Host "Continue? (yes/no)"
-if ($confirmation -ne "yes") {
+if ($confirmation -notin @("yes", "y", "Y", "Yes", "YES")) {
     Write-Info "Cancelled by user"
     exit 0
 }
