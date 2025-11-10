@@ -77,6 +77,7 @@ Access at: `http://localhost:8080`
 
 - **[QA Quick Start](QA_QUICK_START.md)** - Get started with the QA system
 - **[QA System Documentation](docs/QA_SYSTEM.md)** - Complete QA and Health Checker guide
+- **[Custom Agent Guide](CUSTOM-AGENT-GUIDE.md)** - Using the One Time Build Agent across repositories
 - [Getting Started Guide](GETTING_STARTED.md) - Comprehensive setup instructions
 - [Developer Documentation](README.dev.md) - Development guidelines
 - [Architecture Documentation](docs/architecture/) - System architecture
@@ -114,6 +115,29 @@ Contributions are welcome! Please follow the architecture-first workflow:
 5. **Submit PR** with QA report
 
 See [rules.md](rules.md) for detailed governance.
+
+### Using the Custom Agent
+
+This repository includes a GitHub Copilot custom agent called **"One Time Build Agent"** that automates the architecture-first workflow. The agent:
+
+- Updates architecture (`rules.md`) before implementation
+- Encodes QA checks (`qa/requirements.json`)
+- Runs full builds and tests
+- Delivers GREEN QA before handover
+
+**Location**: `.github/agents/my-agent.agent.md`
+
+#### Deploy to All Your Repositories (Automated)
+
+**No manual copying or pasting required!** Use the automated PowerShell script:
+
+```powershell
+.\deploy-agent-to-all-repos.ps1
+```
+
+See **[AUTOMATED-DEPLOYMENT.md](AUTOMATED-DEPLOYMENT.md)** for setup instructions (5 minutes one-time setup).
+
+For manual deployment options, see **[CUSTOM-AGENT-GUIDE.md](CUSTOM-AGENT-GUIDE.md)**.
 
 ## License
 

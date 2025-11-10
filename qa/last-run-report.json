@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-07T08:41:22.358308",
+  "timestamp": "2025-11-10T07:08:20.694766",
   "strictMode": false,
   "checks": {
     "architecture": [
@@ -86,14 +86,14 @@
         "name": "pytest tests exist",
         "severity": "critical",
         "passed": true,
-        "message": "Directory exists with 3 items: tests"
+        "message": "Directory exists with 2 items: tests"
       },
       {
         "id": "UNIT-002",
         "name": "All pytest tests pass",
         "severity": "critical",
-        "passed": true,
-        "message": "pytest passed: 6 tests"
+        "passed": false,
+        "message": "pytest failed:\n"
       }
     ],
     "e2eTests": [
@@ -260,8 +260,8 @@
   },
   "summary": {
     "total": 33,
-    "passed": 33,
-    "failed": 0,
+    "passed": 32,
+    "failed": 1,
     "skipped": 0
   }
 }
