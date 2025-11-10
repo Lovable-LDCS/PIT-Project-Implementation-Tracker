@@ -94,3 +94,7 @@ desktop.ini
 *.rar
 *.tar
 *.zip
+
+# Playwright test results
+test-results/
+playwright-report/
