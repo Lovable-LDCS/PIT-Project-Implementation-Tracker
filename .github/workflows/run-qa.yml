@@ -1,0 +1,148 @@
+name: One Time Build QA Runner
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'rules.md'
+      - 'qa/requirements.json'
+      - 'scripts/**'
+      - 'src/**'
+      - 'tests/**'
+      - '.github/workflows/run-qa.yml'
+  
+  workflow_dispatch:
+    inputs:
+      strict_mode:
+        description: 'Enable strict mode (fail on any error)'
+        required: false
+        type: boolean
+        default: false
+      skip_tests:
+        description: 'Skip pytest execution'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  qa-validation:
+    name: Architecture-First QA Validation
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if (Test-Path requirements.txt) {
+            pip install -r requirements.txt
+          }
+          # Install pytest if not in requirements
+          pip install pytest pytest-cov
+        shell: pwsh
+      
+      - name: Set up Node.js (for Playwright if needed)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install Node dependencies (Playwright)
+        run: |
+          if (Test-Path package.json) {
+            npm ci
+            npm run playwright:install
+          }
+        shell: pwsh
+        continue-on-error: true
+      
+      - name: Run QA Validation
+        id: qa_run
+        run: |
+          $strictMode = '${{ github.event.inputs.strict_mode }}' -eq 'true'
+          $skipTests = '${{ github.event.inputs.skip_tests }}' -eq 'true'
+          
+          $params = @()
+          if ($strictMode) { $params += '-StrictMode' }
+          if ($skipTests) { $params += '-SkipTests' }
+          
+          Write-Host "Running QA with parameters: $($params -join ' ')"
+          & ./scripts/run-qa.ps1 @params
+        shell: pwsh
+      
+      - name: Upload QA Report (Markdown)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-report-md
+          path: qa/report.md
+          retention-days: 30
+      
+      - name: Upload QA Results (JSON)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-results-json
+          path: qa/last-result.json
+          retention-days: 30
+      
+      - name: Display QA Summary
+        if: always()
+        run: |
+          Write-Host "`n╔════════════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
+          Write-Host "║               QA Validation Summary                            ║" -ForegroundColor Cyan
+          Write-Host "╚════════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
+          
+          if (Test-Path qa/report.md) {
+            Get-Content qa/report.md | Select-Object -First 20
+            Write-Host "`n... (see full report in artifacts) ...`n"
+          } else {
+            Write-Host "⚠ QA report not generated" -ForegroundColor Yellow
+          }
+          
+          if (Test-Path qa/last-result.json) {
+            $results = Get-Content qa/last-result.json | ConvertFrom-Json
+            Write-Host "Overall Status: $($results.overallStatus)" -ForegroundColor $(
+              switch ($results.overallStatus) {
+                'GREEN' { 'Green' }
+                'AMBER' { 'Yellow' }
+                'RED' { 'Red' }
+                default { 'White' }
+              }
+            )
+            Write-Host "Passed: $($results.summary.passed) | Failed: $($results.summary.failed) | Skipped: $($results.summary.skipped)"
+          }
+        shell: pwsh
+      
+      - name: Check QA Status
+        if: always()
+        run: |
+          if (Test-Path qa/last-result.json) {
+            $results = Get-Content qa/last-result.json | ConvertFrom-Json
+            if ($results.overallStatus -eq 'RED') {
+              Write-Host "❌ QA validation failed with RED status" -ForegroundColor Red
+              exit 1
+            } elseif ($results.overallStatus -eq 'AMBER') {
+              Write-Host "⚠ QA validation completed with AMBER status (warnings present)" -ForegroundColor Yellow
+              # Allow AMBER to pass in CI
+              exit 0
+            } else {
+              Write-Host "✅ QA validation passed with GREEN status" -ForegroundColor Green
+              exit 0
+            }
+          } else {
+            Write-Host "❌ QA results file not found" -ForegroundColor Red
+            exit 1
+          }
+        shell: pwsh
