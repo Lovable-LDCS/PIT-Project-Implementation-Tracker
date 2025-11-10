@@ -57,9 +57,40 @@ Three documentation files were created to help you:
 
 ## How to Use This Agent Across Your Profile
 
-To apply this agent to all repositories in your GitHub profile:
+### ⭐ RECOMMENDED: Automated Deployment (No Manual Work!)
 
-### Quick Steps
+**The easiest way to deploy this agent to all your repositories is using the automated PowerShell script.**
+
+See **[AUTOMATED-DEPLOYMENT.md](AUTOMATED-DEPLOYMENT.md)** for the complete automated solution.
+
+#### Quick Start (One Command!)
+
+1. **One-time setup** (5 minutes):
+   ```powershell
+   # Install GitHub CLI
+   winget install GitHub.cli
+   
+   # Authenticate
+   gh auth login
+   ```
+
+2. **Deploy to all repositories**:
+   ```powershell
+   .\deploy-agent-to-all-repos.ps1
+   ```
+
+That's it! The script:
+- ✅ Automatically deploys to all your repositories
+- ✅ Creates pull requests for safe review
+- ✅ Skips repositories that already have the agent
+- ✅ Provides detailed status report
+- ✅ **No copying, pasting, or manual file creation!**
+
+### Alternative: Manual Deployment
+
+If you prefer to deploy manually, see the instructions below:
+
+#### Quick Steps (Manual)
 
 1. **For each repository**, copy the agent file:
    ```bash

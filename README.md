@@ -127,7 +127,17 @@ This repository includes a GitHub Copilot custom agent called **"One Time Build 
 
 **Location**: `.github/agents/my-agent.agent.md`
 
-To use this agent in other repositories, see **[CUSTOM-AGENT-GUIDE.md](CUSTOM-AGENT-GUIDE.md)**.
+#### Deploy to All Your Repositories (Automated)
+
+**No manual copying or pasting required!** Use the automated PowerShell script:
+
+```powershell
+.\deploy-agent-to-all-repos.ps1
+```
+
+See **[AUTOMATED-DEPLOYMENT.md](AUTOMATED-DEPLOYMENT.md)** for setup instructions (5 minutes one-time setup).
+
+For manual deployment options, see **[CUSTOM-AGENT-GUIDE.md](CUSTOM-AGENT-GUIDE.md)**.
 
 ## License
 

@@ -8,7 +8,44 @@ This repository includes a custom GitHub Copilot agent (`my-agent.agent.md`) tha
 
 **Custom agents are NOT profile-wide.** Each repository must have its own copy of the agent configuration file. GitHub does not currently support profile-wide or organization-wide custom agents - they must be configured per repository.
 
-## How to Apply This Agent to Other Repositories
+## ⭐ RECOMMENDED: Automated Deployment (No Manual Work!)
+
+**The easiest way to deploy this agent to all your repositories is using the automated PowerShell script.**
+
+See **[AUTOMATED-DEPLOYMENT.md](AUTOMATED-DEPLOYMENT.md)** for the full automated solution.
+
+### Quick Start (5 Minutes One-Time Setup)
+
+1. **Install GitHub CLI** (one time):
+   ```powershell
+   winget install GitHub.cli
+   ```
+
+2. **Authenticate** (one time):
+   ```powershell
+   gh auth login
+   ```
+
+3. **Run the deployment script**:
+   ```powershell
+   .\deploy-agent-to-all-repos.ps1
+   ```
+
+That's it! The script automatically:
+- Deploys the agent to all your repositories
+- Creates pull requests for review
+- Skips repositories that already have the agent
+- Provides detailed status report
+
+**No copying, pasting, or manual file creation required!**
+
+---
+
+## Manual Deployment Options
+
+If you prefer manual deployment or the automated script doesn't work for you:
+
+### How to Apply This Agent to Other Repositories
 
 To use the "One Time Build Agent" in other repositories:
 
@@ -61,14 +98,32 @@ Once merged to the default branch:
 
 To use this agent across all your repositories:
 
-### Option 1: Manual Copy (Recommended for Different Structures)
+### ⭐ Option 1: AUTOMATED DEPLOYMENT (RECOMMENDED - No Manual Work!)
 
-Repeat Steps 1-4 for each repository individually. This allows you to:
+**Use the PowerShell script to deploy to all repositories automatically.**
+
+See **[AUTOMATED-DEPLOYMENT.md](AUTOMATED-DEPLOYMENT.md)** for complete instructions.
+
+**Quick summary:**
+1. One-time setup: Install GitHub CLI and authenticate (~5 minutes)
+2. Run: `.\deploy-agent-to-all-repos.ps1`
+3. Review and merge the auto-created pull requests
+
+**Benefits:**
+- ✅ No manual copying or pasting
+- ✅ Deploys to all repos at once
+- ✅ Creates PRs for safe review
+- ✅ Detailed status reporting
+- ✅ Skips repos that already have the agent
+
+### Option 2: Manual Copy (For Different Structures)
+
+Repeat the manual steps for each repository individually. This allows you to:
 - Adapt the agent to each repository's specific needs
 - Maintain different versions if repositories have different requirements
 - Ensure each repository has the necessary support files
 
-### Option 2: Template Repository
+### Option 3: Template Repository
 
 Create a template repository with the agent pre-configured:
 
@@ -77,7 +132,7 @@ Create a template repository with the agent pre-configured:
 3. When creating new repositories, use this template
 4. New repositories will have the agent automatically included
 
-### Option 3: Scripted Deployment
+### Option 4: Scripted Deployment
 
 Create a script to deploy the agent to multiple repositories:
 
