@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-11T09:33:27.480260",
+  "timestamp": "2025-11-11T10:09:45.053669",
   "strictMode": false,
   "checks": {
     "architecture": [
@@ -86,14 +86,14 @@
         "name": "pytest tests exist",
         "severity": "critical",
         "passed": true,
-        "message": "Directory exists with 4 items: tests"
+        "message": "Directory exists with 3 items: tests"
       },
       {
         "id": "UNIT-002",
         "name": "All pytest tests pass",
         "severity": "critical",
-        "passed": true,
-        "message": "pytest passed: 6 tests"
+        "passed": false,
+        "message": "pytest failed:\n"
       }
     ],
     "e2eTests": [
@@ -297,8 +297,8 @@
         "id": "DEPLOY-006",
         "name": "Deploy workflow has environment configuration",
         "severity": "critical",
-        "passed": false,
-        "message": "Deployment job missing environment configuration. Expected: 'github-pages'"
+        "passed": true,
+        "message": "Deployment job 'deploy' has environment 'github-pages'"
       }
     ]
   },
