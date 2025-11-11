@@ -1,0 +1,13 @@
+# Python dependencies for PIT Project Implementation Tracker
+# QA and testing dependencies
+
+# Testing framework
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# QA dependencies
+PyYAML>=6.0
+
+# Additional dependencies
+requests>=2.31.0
+pillow>=10.0.0
