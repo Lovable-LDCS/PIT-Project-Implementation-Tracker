@@ -1,0 +1,205 @@
+{
+  "checks": [
+    {
+      "name": "rules.md exists and is valid",
+      "severity": "critical",
+      "message": "",
+      "id": "ARCH-001",
+      "timestamp": "2025-11-11T08:27:51.1558348+00:00",
+      "details": "",
+      "status": "PASS",
+      "category": "architecture"
+    },
+    {
+      "name": "Architecture documents present",
+      "severity": "critical",
+      "message": "",
+      "id": "ARCH-002",
+      "timestamp": "2025-11-11T08:27:51.1816305+00:00",
+      "details": "Found 26 architecture documents",
+      "status": "PASS",
+      "category": "architecture"
+    },
+    {
+      "name": "QA specifications present",
+      "severity": "critical",
+      "message": "",
+      "id": "ARCH-003",
+      "timestamp": "2025-11-11T08:27:51.1848413+00:00",
+      "details": "Found 12 QA specification documents",
+      "status": "PASS",
+      "category": "architecture"
+    },
+    {
+      "name": "qa/requirements.json is valid JSON",
+      "severity": "critical",
+      "message": "",
+      "id": "ARCH-004",
+      "timestamp": "2025-11-11T08:27:51.2102750+00:00",
+      "details": "Version: 1.0.0",
+      "status": "PASS",
+      "category": "architecture"
+    },
+    {
+      "name": "Frontend index.html exists",
+      "severity": "critical",
+      "message": "",
+      "id": "BUILD-001",
+      "timestamp": "2025-11-11T08:27:51.2113034+00:00",
+      "details": "",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "name": "Frontend assets directory exists",
+      "severity": "high",
+      "message": "",
+      "id": "BUILD-002",
+      "timestamp": "2025-11-11T08:27:51.2122018+00:00",
+      "details": "",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "name": "CSS stylesheet exists",
+      "severity": "critical",
+      "message": "",
+      "id": "BUILD-003",
+      "timestamp": "2025-11-11T08:27:51.2128906+00:00",
+      "details": "",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "name": "Python files are syntactically valid",
+      "severity": "critical",
+      "message": "",
+      "id": "TYPE-001",
+      "timestamp": "2025-11-11T08:27:51.4681939+00:00",
+      "details": "Checked 5 Python files",
+      "status": "PASS",
+      "category": "typeSafety"
+    },
+    {
+      "name": "pytest tests exist",
+      "severity": "critical",
+      "message": "",
+      "id": "UNIT-001",
+      "timestamp": "2025-11-11T08:27:51.4709275+00:00",
+      "details": "Found 2 test files",
+      "status": "PASS",
+      "category": "unitTests"
+    },
+    {
+      "name": "All pytest tests pass",
+      "severity": "critical",
+      "message": "pytest not installed or not in PATH",
+      "id": "UNIT-002",
+      "timestamp": "2025-11-11T08:27:51.7791294+00:00",
+      "details": "",
+      "status": "SKIP",
+      "category": "unitTests"
+    },
+    {
+      "name": "Frontend wiring checks pass",
+      "severity": "medium",
+      "message": "qa-check.ps1 reported issues (may be implementation details not in architecture)",
+      "id": "WIRE-001",
+      "timestamp": "2025-11-11T08:27:52.0097678+00:00",
+      "details": "",
+      "status": "FAIL",
+      "category": "wiring"
+    },
+    {
+      "name": "No sensitive keys in source code",
+      "severity": "critical",
+      "message": "",
+      "id": "SEC-001",
+      "timestamp": "2025-11-11T08:27:52.0431809+00:00",
+      "details": "",
+      "status": "PASS",
+      "category": "security"
+    },
+    {
+      "name": "GitHub Pages workflow exists",
+      "severity": "critical",
+      "message": "",
+      "id": "DEPLOY-001",
+      "timestamp": "2025-11-11T08:27:52.0442856+00:00",
+      "details": "",
+      "status": "PASS",
+      "category": "deployment"
+    },
+    {
+      "name": "Frontend index.html exists",
+      "severity": "critical",
+      "message": "",
+      "id": "DEPLOY-002",
+      "timestamp": "2025-11-11T08:27:52.0450825+00:00",
+      "details": "",
+      "status": "PASS",
+      "category": "deployment"
+    },
+    {
+      "name": "Frontend assets directory exists",
+      "severity": "critical",
+      "message": "",
+      "id": "DEPLOY-003",
+      "timestamp": "2025-11-11T08:27:52.0464450+00:00",
+      "details": "",
+      "status": "PASS",
+      "category": "deployment"
+    },
+    {
+      "name": ".nojekyll file exists",
+      "severity": "critical",
+      "message": "",
+      "id": "DEPLOY-004",
+      "timestamp": "2025-11-11T08:27:52.0472568+00:00",
+      "details": "",
+      "status": "PASS",
+      "category": "deployment"
+    },
+    {
+      "name": "Deploy workflow configured for main branch",
+      "severity": "critical",
+      "message": "",
+      "id": "DEPLOY-005",
+      "timestamp": "2025-11-11T08:27:52.0485495+00:00",
+      "details": "",
+      "status": "PASS",
+      "category": "deployment"
+    },
+    {
+      "name": "Current branch deployment status",
+      "severity": "high",
+      "message": "On branch 'copilot/setup-qa-automation-system'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.",
+      "id": "DEPLOY-006",
+      "timestamp": "2025-11-11T08:27:52.0621614+00:00",
+      "details": "",
+      "status": "FAIL",
+      "category": "deployment"
+    }
+  ],
+  "overallStatus": "AMBER",
+  "summary": {
+    "failed": 2,
+    "skipped": 1,
+    "total": 18,
+    "passed": 15
+  },
+  "metadata": {
+    "skipTests": {
+      "IsPresent": false
+    },
+    "strictMode": {
+      "IsPresent": false
+    },
+    "runner": "run-qa.ps1"
+  },
+  "timestamp": "2025-11-11T08:27:52.0766815+00:00",
+  "version": "1.0.0",
+  "startTime": "2025-11-11T08:27:50.9988801+00:00",
+  "durationSeconds": 1.06,
+  "endTime": "2025-11-11T08:27:52.0624655+00:00"
+}

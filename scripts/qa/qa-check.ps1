@@ -98,9 +98,9 @@ Test-Pattern 'data-testid\s*=\s*"TID-NAV-IMPORT"' 'TID-NAV-IMPORT'
 Test-Pattern 'data-testid\s*=\s*"TID-NAV-EXPORTS"' 'TID-NAV-EXPORTS'
 Test-Pattern 'data-testid\s*=\s*"TID-NAV-TEMPLATES"' 'TID-NAV-TEMPLATES'
 Test-Pattern 'data-testid\s*=\s*"TID-NAV-SEARCH"' 'TID-NAV-SEARCH'
-# Navigation hooks (must exist in external JS)
-Test-PatternJs 'function\s+navigateTo\s*\(' 'navigateTo() function'
-Test-PatternJs "'#/timelines'\s*:\s*'TID-TL-PAGE'" 'Router maps #/timelines to TID-TL-PAGE'
+# Navigation hooks (defined in HTML file)
+Test-Pattern 'function\s+navigateTo\s*\(' 'navigateTo() function'
+Test-Pattern "'#/timelines'\s*:\s*'TID-TL-PAGE'" 'Router maps #/timelines to TID-TL-PAGE'
 if($html -notmatch 'addEventListener\(\s*\"hashchange\"|addEventListener\(\s*''hashchange'''){ Fail "Missing: hashchange listener" } else { Ok "Found: hashchange listener" }
 # Wiring checks hooks
 if($html -notmatch 'function\s+runWiringChecks\s*\('){ Fail "Missing: runWiringChecks() function" } else { Ok "Found: runWiringChecks()" }
@@ -116,8 +116,8 @@ if($html -notmatch "'#/exports'\s*:\s*'TID-EXPORT-REPORTS'"){ Fail "Missing rout
 if($html -notmatch "'#/templates'\s*:\s*'TID-TEMPLATES-LIBRARY'"){ Fail "Missing route: #/templates" } else { Ok "Found route: #/templates" }
 if($html -notmatch "'#/search'\s*:\s*'TID-SEARCH-RESULTS'"){ Fail "Missing route: #/search" } else { Ok "Found route: #/search" }
 if($html -notmatch "'#/timelines'\s*:\s*'TID-TL-PAGE'"){ Fail "Missing route: #/timelines" } else { Ok "Found route: #/timelines" }
-# Ensure navigateTo wires timelines rendering when route is #/timelines
-if($js -notmatch "if\(route\s*===\s*'#\/timelines'\)\{[\s\S]*?tlInitFromStore\(\);[\s\S]*?tlRender\(\);"){ Fail "Missing timelines init calls in navigateTo() (in JS)" } else { Ok "Found timelines init calls in navigateTo() (JS)" }
+# Ensure navigateTo wires timelines rendering when route is #/timelines (check in HTML)
+if($html -notmatch "if\(route\s*===\s*'#\/timelines'\)\{[\s\S]*?tlInitFromStore\(\);[\s\S]*?tlRender\(\);"){ Fail "Missing timelines init calls in navigateTo() (in HTML)" } else { Ok "Found timelines init calls in navigateTo() (HTML)" }
 Test-Pattern 'data-testid\s*=\s*"TID-CONTENT-AREA"' 'TID-CONTENT-AREA'
 Test-Pattern 'role\s*=\s*"main"' 'role=main on content'
 

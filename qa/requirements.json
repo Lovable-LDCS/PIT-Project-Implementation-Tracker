@@ -361,6 +361,47 @@
           "severity": "high"
         }
       ]
+    },
+    "deployment": {
+      "description": "GitHub Pages deployment readiness checks",
+      "checks": [
+        {
+          "id": "DEPLOY-001",
+          "name": "GitHub Pages workflow exists",
+          "type": "file_exists",
+          "target": ".github/workflows/deploy-pages.yml",
+          "severity": "critical"
+        },
+        {
+          "id": "DEPLOY-002",
+          "name": "Frontend index.html exists",
+          "type": "file_exists",
+          "target": "src/frontend/index.html",
+          "severity": "critical"
+        },
+        {
+          "id": "DEPLOY-003",
+          "name": "Frontend assets directory exists",
+          "type": "directory_exists",
+          "target": "src/frontend/assets",
+          "severity": "critical"
+        },
+        {
+          "id": "DEPLOY-004",
+          "name": ".nojekyll file exists (bypass Jekyll)",
+          "type": "file_exists",
+          "target": "src/frontend/.nojekyll",
+          "severity": "critical"
+        },
+        {
+          "id": "DEPLOY-005",
+          "name": "Deploy workflow configured for main branch",
+          "type": "workflow_branch_check",
+          "target": ".github/workflows/deploy-pages.yml",
+          "expectedBranch": "main",
+          "severity": "critical"
+        }
+      ]
     }
   },
   "redGreenCriteria": {
