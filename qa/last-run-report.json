@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-10T15:51:53.633243",
+  "timestamp": "2025-11-11T09:18:19.129741",
   "strictMode": false,
   "checks": {
     "architecture": [
@@ -86,14 +86,14 @@
         "name": "pytest tests exist",
         "severity": "critical",
         "passed": true,
-        "message": "Directory exists with 4 items: tests"
+        "message": "Directory exists with 3 items: tests"
       },
       {
         "id": "UNIT-002",
         "name": "All pytest tests pass",
         "severity": "critical",
-        "passed": true,
-        "message": "pytest passed: 6 tests"
+        "passed": false,
+        "message": "pytest failed:\n"
       }
     ],
     "e2eTests": [
@@ -256,12 +256,56 @@
         "passed": true,
         "message": "Element with test ID 'TID-HEALTH-STRICT-MODE-TOGGLE' exists"
       }
+    ],
+    "deployment": [
+      {
+        "id": "DEPLOY-001",
+        "name": "GitHub Pages workflow exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "File exists: .github/workflows/deploy-pages.yml"
+      },
+      {
+        "id": "DEPLOY-002",
+        "name": "Frontend index.html exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "File exists: src/frontend/index.html"
+      },
+      {
+        "id": "DEPLOY-003",
+        "name": "Frontend assets directory exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "Directory exists: src/frontend/assets"
+      },
+      {
+        "id": "DEPLOY-004",
+        "name": ".nojekyll file exists (bypass Jekyll)",
+        "severity": "critical",
+        "passed": true,
+        "message": "File exists: src/frontend/.nojekyll"
+      },
+      {
+        "id": "DEPLOY-005",
+        "name": "Deploy workflow configured for main branch",
+        "severity": "critical",
+        "passed": true,
+        "message": "Workflow configured for branch 'main'"
+      },
+      {
+        "id": "DEPLOY-006",
+        "name": "Deploy workflow has environment configuration",
+        "severity": "critical",
+        "passed": true,
+        "message": "Deployment job 'deploy' has environment 'github-pages'"
+      }
     ]
   },
   "summary": {
-    "total": 33,
-    "passed": 33,
-    "failed": 0,
+    "total": 39,
+    "passed": 38,
+    "failed": 1,
     "skipped": 0
   }
 }

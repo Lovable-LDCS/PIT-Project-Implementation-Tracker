@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Dict, List, Tuple, Any
 from datetime import datetime
 import glob
+import yaml
 
 # Color codes for terminal output
 class Colors:
@@ -273,6 +274,74 @@ class QARunner:
         except Exception as e:
             return False, f"Error checking test IDs: {e}"
     
+    def check_workflow_branch(self, target: str, expected_branch: str) -> Tuple[bool, str]:
+        """Check if workflow is configured for the expected branch"""
+        workflow_file = self.repo_root / target
+        if not workflow_file.exists():
+            return False, f"Workflow file not found: {target}"
+        
+        try:
+            with open(workflow_file, 'r') as f:
+                workflow = yaml.safe_load(f)
+            
+            # Check if workflow has push triggers for the expected branch
+            # Note: 'on' is a YAML boolean, so it gets loaded as True
+            on_config = workflow.get(True) or workflow.get('on', {})
+            if isinstance(on_config, dict):
+                push_config = on_config.get('push', {})
+                if isinstance(push_config, dict):
+                    branches = push_config.get('branches', [])
+                    if expected_branch in branches:
+                        return True, f"Workflow configured for branch '{expected_branch}'"
+            
+            return False, f"Workflow not configured for branch '{expected_branch}'"
+        except Exception as e:
+            return False, f"Error checking workflow: {e}"
+    
+    def check_workflow_environment(self, target: str, expected_env: str) -> Tuple[bool, str]:
+        """Check if workflow deployment job has environment configuration"""
+        workflow_file = self.repo_root / target
+        if not workflow_file.exists():
+            return False, f"Workflow file not found: {target}"
+        
+        try:
+            with open(workflow_file, 'r') as f:
+                workflow = yaml.safe_load(f)
+            
+            # Check if workflow has jobs
+            jobs = workflow.get('jobs', {})
+            if not jobs:
+                return False, f"No jobs found in workflow: {target}"
+            
+            # Look for deployment-related jobs (deploy, deployment, etc.)
+            deploy_jobs = []
+            for job_name, job_config in jobs.items():
+                if 'deploy' in job_name.lower() or 'deployment' in job_name.lower():
+                    deploy_jobs.append((job_name, job_config))
+            
+            if not deploy_jobs:
+                return False, f"No deployment job found in workflow: {target}"
+            
+            # Check if deployment job has environment configuration
+            for job_name, job_config in deploy_jobs:
+                if isinstance(job_config, dict):
+                    env_config = job_config.get('environment')
+                    if env_config:
+                        # Environment can be a string or a dict with 'name' key
+                        if isinstance(env_config, str):
+                            env_name = env_config
+                        elif isinstance(env_config, dict):
+                            env_name = env_config.get('name', '')
+                        else:
+                            env_name = ''
+                        
+                        if env_name == expected_env:
+                            return True, f"Deployment job '{job_name}' has environment '{expected_env}'"
+            
+            return False, f"Deployment job missing environment configuration. Expected: '{expected_env}'"
+        except Exception as e:
+            return False, f"Error checking workflow environment: {e}"
+    
     def run_check(self, check: Dict) -> Tuple[bool, str]:
         """Execute a single check based on its type"""
         check_type = check['type']
@@ -301,6 +370,12 @@ class QARunner:
         elif check_type == 'testid_check':
             test_ids = check.get('testIds', [])
             return self.check_testid_check(test_ids)
+        elif check_type == 'workflow_branch_check':
+            expected_branch = check.get('expectedBranch', 'main')
+            return self.check_workflow_branch(target, expected_branch)
+        elif check_type == 'workflow_environment_check':
+            expected_env = check.get('expectedEnvironment', 'github-pages')
+            return self.check_workflow_environment(target, expected_env)
         elif check_type in ['route_smoke', 'wiring_runtime', 'state_persistence', 
                              'admin_gating', 'responsive_check', 'access_control',
                              'route_check', 'static_analysis']:
