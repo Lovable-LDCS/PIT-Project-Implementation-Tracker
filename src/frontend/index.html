@@ -54,21 +54,16 @@
         </div>
         <nav class="nav">
           <a href="#/" data-testid="TID-NAV-DASHBOARD" aria-current="page" onclick="return appNavTo(this)">Dashboard</a>
-          <a href="#/projects" data-testid="TID-NAV-PROJECTS" onclick="return appNavTo(this)">Projects</a>
+          <a href="#/projects" data-testid="TID-NAV-PROJECTS" onclick="return appNavTo(this)">Implementation</a>
           <a href="#/reports" data-testid="TID-NAV-REPORTS" onclick="return appNavTo(this)">Reports</a>
           <a href="#/permissions" data-testid="TID-NAV-PERMISSIONS" onclick="return appNavTo(this)">Permissions</a>
-          <a href="#/workitem" data-testid="TID-NAV-WORKITEM" onclick="return appNavTo(this)">Work Item</a>
           <a href="#/evidence" data-testid="TID-NAV-EVIDENCE" onclick="return appNavTo(this)">Evidence</a>
           <a href="#/gantt" data-testid="TID-NAV-GANTT" onclick="return appNavTo(this)">Gantt</a>
           <a href="#/timelines" data-testid="TID-NAV-TIMELINES" onclick="return appNavTo(this)">Timelines</a>
-          <a href="#/tl-test" data-testid="TID-NAV-TL-TEST" onclick="return appNavTo(this)">Timelines (Test)</a>
           <a href="#/audit" data-testid="TID-NAV-AUDIT" onclick="return appNavTo(this)">Audit Log</a>
           <a href="#/notify" data-testid="TID-NAV-NOTIFY" onclick="return appNavTo(this)">Notifications</a>
           <a href="#/import" data-testid="TID-NAV-IMPORT" onclick="return appNavTo(this)">Import</a>
-          <a href="#/exports" data-testid="TID-NAV-EXPORTS" onclick="return appNavTo(this)">Exports</a>
           <a href="#/templates" data-testid="TID-NAV-TEMPLATES" onclick="return appNavTo(this)">Templates</a>
-          <a href="#/settings" data-testid="TID-NAV-SETTINGS" onclick="return appNavTo(this)">Settings</a>
-          <a href="#/search" data-testid="TID-NAV-SEARCH" onclick="return appNavTo(this)">Search</a>
           <a href="#/qa" data-testid="TID-NAV-QA" onclick="return appNavTo(this)">Quality Assurance</a>
           <!-- Admin-only navigation items -->
           <div data-admin-only hidden>
@@ -721,19 +716,16 @@
         const routes = {
           '#/': 'TID-DASHBOARD',
           '#/projects': 'TID-PAGE-PROJECTS',
-          '#/timelines': 'TID-TL-PAGE',
+          '#/timelines': 'TID-TL-TEST-PAGE',
           '#/reports': 'TID-PAGE-REPORTS',
           '#/permissions': 'TID-ROLE-MATRIX',
-          '#/workitem': 'TID-WORKITEM-DETAIL',
           '#/evidence': 'TID-EVIDENCE-UPLOAD',
           '#/gantt': 'TID-GANTT-VIEW',
           '#/audit': 'TID-AUDIT-LOG',
           '#/notify': 'TID-NOTIFY-PREFERENCES',
           '#/import': 'TID-IMPORT-WIZARD',
-          '#/exports': 'TID-EXPORT-REPORTS',
           '#/templates': 'TID-TEMPLATES-LIBRARY',
-          '#/settings': 'TID-SETTINGS-PAGE',
-          '#/search': 'TID-SEARCH-RESULTS',
+          '#/qa': 'TID-QA-PAGE',
           '#/invite-members': 'TID-INVITE-MEMBERS-PAGE',
           '#/security-dashboard': 'TID-SECURITY-DASHBOARD-PAGE',
           '#/health-checker': 'TID-HEALTH-CHECKER-ROOT'
@@ -773,13 +765,9 @@
         if(route === '#/audit'){ try{ auditInit(); }catch(e){} }
         if(route === '#/notify'){ try{ notifyInit(); }catch(e){} }
         if(route === '#/import'){ try{ importInit(); }catch(e){} }
-        if(route === '#/exports'){ try{ exportsInit(); }catch(e){} }
         if(route === '#/templates'){ try{ templatesInit(); }catch(e){} }
-        if(route === '#/search'){ try{ searchInit(); }catch(e){} }
-        if(route === '#/timelines'){ try{ tlInitFromStore(); tlRender(); }catch(e){} }
-        if(route === '#/settings'){ try{ settingsInit(); }catch(e){} }
-        try{ runWiringChecks(); }catch(e){}
-      }
+        if(route === '#/timelines'){ try{ if(window.initTestTimeline){ window.initTestTimeline(); } }catch(e){} }
+        try{ runWiringChecks(); }catch(e){} }
       window.addEventListener('hashchange', ()=> { closeProjectSetup(); navigateTo(location.hash || '#/'); });
       // Ensure sidebar nav always navigates even if default is blocked
       document.addEventListener('DOMContentLoaded', ()=>{
