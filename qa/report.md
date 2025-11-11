@@ -1,28 +1,29 @@
 # QA Run Report
 
-**Generated:** 2025-11-10 15:51:44  
-**Duration:** 0.81 seconds  
-**Overall Status:** GREEN
+**Generated:** 2025-11-11 08:27:52  
+**Duration:** 1.06 seconds  
+**Overall Status:** AMBER
 
 ## Summary
 
 | Metric | Count |
 |--------|-------|
-| Total Checks | 12 |
-| Passed | 11 |
-| Failed | 1 |
-| Skipped | 0 |
+| Total Checks | 18 |
+| Passed | 15 |
+| Failed | 2 |
+| Skipped | 1 |
 
 ## Status Breakdown
 
 ### Overall Result
-✓ **GREEN** - All critical and high severity checks passed
+⚠ **AMBER** - All critical checks passed, but some high severity checks failed
 
 ### Critical Issues
 ✓ No critical issues
 
 ### High Severity Issues
-✓ No high severity issues
+- **[DEPLOY-006]** Current branch deployment status: On branch 'copilot/setup-qa-automation-system'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
+
 
 ## Check Results by Category
 
@@ -46,6 +47,18 @@
 | BUILD-003 | CSS stylesheet exists | ✓ PASS | critical |
 
 
+### DEPLOYMENT
+
+| ID | Name | Status | Severity |
+|----|------|--------|----------|
+| DEPLOY-001 | GitHub Pages workflow exists | ✓ PASS | critical |
+| DEPLOY-002 | Frontend index.html exists | ✓ PASS | critical |
+| DEPLOY-003 | Frontend assets directory exists | ✓ PASS | critical |
+| DEPLOY-004 | .nojekyll file exists | ✓ PASS | critical |
+| DEPLOY-005 | Deploy workflow configured for main branch | ✓ PASS | critical |
+| DEPLOY-006 | Current branch deployment status | ✗ FAIL | high |
+
+
 ### SECURITY
 
 | ID | Name | Status | Severity |
@@ -65,7 +78,7 @@
 | ID | Name | Status | Severity |
 |----|------|--------|----------|
 | UNIT-001 | pytest tests exist | ✓ PASS | critical |
-| UNIT-002 | All pytest tests pass | ✓ PASS | critical |
+| UNIT-002 | All pytest tests pass | - SKIP | critical |
 
 
 ### WIRING
@@ -88,6 +101,11 @@ The following checks failed and must be addressed:
 - **Message:** qa-check.ps1 reported issues (may be implementation details not in architecture)
 
 
+#### [DEPLOY-006] Current branch deployment status
+- **Severity:** high
+- **Message:** On branch 'copilot/setup-qa-automation-system'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
+
+
 
 According to the **True North** methodology:
 1. If failure is due to missing/incorrect implementation → fix code/tests
@@ -100,7 +118,7 @@ According to the **True North** methodology:
 - **Strict Mode:** False
 - **Skip Tests:** False
 - **Runner:** run-qa.ps1 v1.0.0
-- **Report Generated:** 2025-11-10T15:51:44.1575437+00:00
+- **Report Generated:** 2025-11-11T08:27:52.0624655+00:00
 
 ---
 *This report follows the True North Build Methodology - Architecture → QA → Implementation → GREEN*

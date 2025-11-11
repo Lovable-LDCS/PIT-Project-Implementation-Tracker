@@ -379,6 +379,103 @@ if (Test-Path $srcPath) {
 }
 
 # ============================================================================
+# SECTION 7: Deployment Readiness Checks
+# ============================================================================
+
+Write-Section "7. Deployment Readiness Checks"
+
+# DEPLOY-001: GitHub Pages workflow exists
+$deployWorkflow = ".github/workflows/deploy-pages.yml"
+if (Test-Path $deployWorkflow) {
+    Write-Success "DEPLOY-001: GitHub Pages workflow exists"
+    Record-Check -Id "DEPLOY-001" -Name "GitHub Pages workflow exists" `
+        -Category "deployment" -Status "PASS" -Severity "critical"
+} else {
+    Write-Failure "DEPLOY-001: GitHub Pages workflow missing at $deployWorkflow"
+    Record-Check -Id "DEPLOY-001" -Name "GitHub Pages workflow exists" `
+        -Category "deployment" -Status "FAIL" -Severity "critical" `
+        -Message "Workflow file not found: $deployWorkflow"
+}
+
+# DEPLOY-002: Frontend index.html exists
+$frontendIndex = "src/frontend/index.html"
+if (Test-Path $frontendIndex) {
+    Write-Success "DEPLOY-002: Frontend index.html exists"
+    Record-Check -Id "DEPLOY-002" -Name "Frontend index.html exists" `
+        -Category "deployment" -Status "PASS" -Severity "critical"
+} else {
+    Write-Failure "DEPLOY-002: Frontend index.html missing at $frontendIndex"
+    Record-Check -Id "DEPLOY-002" -Name "Frontend index.html exists" `
+        -Category "deployment" -Status "FAIL" -Severity "critical" `
+        -Message "Missing entry point: $frontendIndex"
+}
+
+# DEPLOY-003: Frontend assets directory exists
+$assetsDir = "src/frontend/assets"
+if (Test-Path $assetsDir -PathType Container) {
+    Write-Success "DEPLOY-003: Frontend assets directory exists"
+    Record-Check -Id "DEPLOY-003" -Name "Frontend assets directory exists" `
+        -Category "deployment" -Status "PASS" -Severity "critical"
+} else {
+    Write-Failure "DEPLOY-003: Frontend assets directory missing at $assetsDir"
+    Record-Check -Id "DEPLOY-003" -Name "Frontend assets directory exists" `
+        -Category "deployment" -Status "FAIL" -Severity "critical" `
+        -Message "Assets directory not found: $assetsDir"
+}
+
+# DEPLOY-004: .nojekyll file exists (bypass Jekyll processing)
+$noJekyll = "src/frontend/.nojekyll"
+if (Test-Path $noJekyll) {
+    Write-Success "DEPLOY-004: .nojekyll file exists (Jekyll bypass)"
+    Record-Check -Id "DEPLOY-004" -Name ".nojekyll file exists" `
+        -Category "deployment" -Status "PASS" -Severity "critical"
+} else {
+    Write-Failure "DEPLOY-004: .nojekyll file missing at $noJekyll"
+    Record-Check -Id "DEPLOY-004" -Name ".nojekyll file exists" `
+        -Category "deployment" -Status "FAIL" -Severity "critical" `
+        -Message "Missing .nojekyll - GitHub Pages may not serve files correctly"
+}
+
+# DEPLOY-005: Deploy workflow configured for main branch
+if (Test-Path $deployWorkflow) {
+    $workflowContent = Get-Content $deployWorkflow -Raw
+    if ($workflowContent -match "branches:\s*-\s*main") {
+        Write-Success "DEPLOY-005: Deploy workflow configured for main branch"
+        Record-Check -Id "DEPLOY-005" -Name "Deploy workflow configured for main branch" `
+            -Category "deployment" -Status "PASS" -Severity "critical"
+    } else {
+        Write-Failure "DEPLOY-005: Deploy workflow not configured for main branch"
+        Record-Check -Id "DEPLOY-005" -Name "Deploy workflow configured for main branch" `
+            -Category "deployment" -Status "FAIL" -Severity "critical" `
+            -Message "Workflow must trigger on main branch push"
+    }
+} else {
+    Record-Check -Id "DEPLOY-005" -Name "Deploy workflow configured for main branch" `
+        -Category "deployment" -Status "SKIP" -Severity "critical" `
+        -Message "Workflow file not found"
+}
+
+# DEPLOY-006: Current branch deployment status
+$currentBranch = git branch --show-current 2>$null
+if ($currentBranch) {
+    if ($currentBranch -eq "main") {
+        Write-Success "DEPLOY-006: On main branch - deployment will trigger"
+        Record-Check -Id "DEPLOY-006" -Name "Current branch deployment status" `
+            -Category "deployment" -Status "PASS" -Severity "high" `
+            -Message "On main branch - GitHub Pages will deploy automatically"
+    } else {
+        Write-Host "[ℹ INFO] DEPLOY-006: On branch '$currentBranch' - GitHub Pages deploys from 'main' only" -ForegroundColor Yellow
+        Record-Check -Id "DEPLOY-006" -Name "Current branch deployment status" `
+            -Category "deployment" -Status "FAIL" -Severity "high" `
+            -Message "On branch '$currentBranch'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed."
+    }
+} else {
+    Record-Check -Id "DEPLOY-006" -Name "Current branch deployment status" `
+        -Category "deployment" -Status "SKIP" -Severity "high" `
+        -Message "Could not determine current branch"
+}
+
+# ============================================================================
 # Generate Results
 # ============================================================================
 $EndTime = Get-Date
