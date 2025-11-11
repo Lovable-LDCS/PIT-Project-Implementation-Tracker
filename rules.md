@@ -185,6 +185,88 @@ D) Release Checklist
 - [ ] Audit & monitoring dashboards updated
 - [ ] Feature flags toggled as specified
 
+E) Deployment Verification Checklist
+- [ ] GitHub Pages deployment workflow configured
+- [ ] Environment protection rules validated (no blocking rules for main branch)
+- [ ] Deployment permissions configured (pages: write, id-token: write)
+- [ ] Deployment environment exists and is accessible
+- [ ] .nojekyll file present (bypasses Jekyll processing)
+- [ ] Build artifacts uploadable and deployable
+- [ ] Deployment completes successfully without errors
+- [ ] Live URL accessible (https://lovable-ldcs.github.io/PIT-Project-Implementation-Tracker/)
+- [ ] Application loads without 404 errors
+- [ ] All critical routes functional on deployed site
+
+Deployment Architecture Requirements
+-----------------------------------------
+**Purpose:** Guarantee that every GREEN build is automatically deployable and verifiably accessible to end users.
+
+**Core Principle:** Deployment is NOT complete until the live application is accessible and functional. QA MUST verify actual deployment success, not just file existence.
+
+**Deployment Prerequisites:**
+1. **GitHub Pages Configuration**
+   - Repository Settings → Pages → Source set to "GitHub Actions"
+   - Custom domain configured (if applicable)
+   - HTTPS enforced
+
+2. **GitHub Environment Configuration**
+   - Environment name: `github-pages`
+   - Branch protection: `main` branch MUST be allowed to deploy
+   - Required reviewers: NONE (or explicitly configured and documented)
+   - Wait timer: NONE (or explicitly configured and documented)
+   - Deployment branches: Only selected branches → `main`
+
+3. **Workflow Requirements**
+   - Workflow file: `.github/workflows/deploy-pages.yml`
+   - Permissions: `contents: read`, `pages: write`, `id-token: write`
+   - Environment declaration: `environment: { name: github-pages, url: ${{ steps.deployment.outputs.page_url }} }`
+   - Artifact upload path: `./src/frontend`
+   - Deployment action: `actions/deploy-pages@v4`
+
+4. **Static Site Requirements**
+   - Entry point: `src/frontend/index.html`
+   - Assets directory: `src/frontend/assets/`
+   - Styles: `src/frontend/styles.css`
+   - Jekyll bypass: `src/frontend/.nojekyll` (empty file)
+   - Base path handling: All routes must work with repository subpath
+
+5. **Deployment Verification**
+   - Workflow must complete with SUCCESS status
+   - GitHub deployment must show "Active" status
+   - Live URL must return HTTP 200
+   - index.html must load without errors
+   - Critical test IDs must be present in deployed HTML
+
+**QA Requirements for Deployment:**
+- Check existence of all deployment prerequisite files
+- Validate workflow configuration syntax and settings
+- Verify environment configuration (via GitHub API or documentation)
+- Test deployment workflow execution (actual run)
+- Verify live URL accessibility (HTTP request to deployed URL)
+- Validate critical UI elements present in deployed version
+
+**Failure Modes and Detection:**
+- Missing .nojekyll → Jekyll processing breaks JS/CSS → QA MUST detect
+- Wrong artifact path → 404 errors → QA MUST detect via URL check
+- Environment protection rules blocking → Workflow fails → QA MUST detect
+- Incorrect permissions → Deployment rejected → QA MUST detect
+- Network/DNS issues → URL inaccessible → QA MUST detect
+
+**Deployment Evidence Required:**
+- Workflow run ID and status (SUCCESS)
+- GitHub deployment ID and status (Active)
+- Live URL HTTP response code (200)
+- Live URL response content includes expected test IDs
+- Screenshot or HTML snapshot of deployed application
+
+**Acceptance Criteria:**
+- [ ] Deployment workflow completes successfully
+- [ ] GitHub deployment shows Active status
+- [ ] Live URL returns HTTP 200
+- [ ] Application loads and displays correctly
+- [ ] All critical routes accessible on deployed site
+- [ ] No console errors on deployed site (checked via automated test)
+
 Importing Rules from Other Projects
 - Place external rules into docs/rules-inbox/ as separate files.
 - Propose merges into rules.md via PR; tag with RULE-EXT-<source> IDs.
