@@ -476,6 +476,49 @@ if ($currentBranch) {
 }
 
 # ============================================================================
+# SECTION 7: Deployment Verification (GitHub Pages Runtime Checks)
+# ============================================================================
+Write-Section "7. Deployment Verification"
+
+# Run Python deployment checker
+$deploymentChecker = "scripts/qa/check-deployment.py"
+if (Test-Path $deploymentChecker) {
+    Write-Host "Running deployment verification checks..." -ForegroundColor Cyan
+    
+    # Run the Python script
+    $pythonCmd = if (Get-Command python3 -ErrorAction SilentlyContinue) { "python3" } else { "python" }
+    $deployOutput = & $pythonCmd $deploymentChecker 2>&1
+    
+    # Display output
+    Write-Host $deployOutput
+    
+    # Load results if available
+    $deployResultsPath = "qa/deployment-check-results.json"
+    if (Test-Path $deployResultsPath) {
+        try {
+            $deployResults = Get-Content $deployResultsPath -Raw | ConvertFrom-Json
+            
+            # Add deployment check results to global results
+            foreach ($check in $deployResults.checks) {
+                Record-Check -Id $check.id -Name $check.name `
+                    -Category "deployment" -Status $check.status `
+                    -Severity $check.severity -Message $check.message `
+                    -Details $check.details
+            }
+            
+            Write-Host "`n✓ Deployment verification completed: $($deployResults.summary.passed) passed, $($deployResults.summary.failed) failed, $($deployResults.summary.skipped) skipped" -ForegroundColor Green
+        } catch {
+            Write-Warning "Could not parse deployment check results: $_"
+        }
+    }
+} else {
+    Write-Warning "DEPLOY-VERIFY: Deployment checker script not found at $deploymentChecker"
+    Record-Check -Id "DEPLOY-VERIFY" -Name "Deployment verification checks" `
+        -Category "deployment" -Status "SKIP" -Severity "high" `
+        -Message "Deployment checker script not found"
+}
+
+# ============================================================================
 # Generate Results
 # ============================================================================
 $EndTime = Get-Date

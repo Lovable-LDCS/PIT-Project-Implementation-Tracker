@@ -363,7 +363,7 @@
       ]
     },
     "deployment": {
-      "description": "GitHub Pages deployment readiness checks",
+      "description": "GitHub Pages deployment verification and runtime checks",
       "checks": [
         {
           "id": "DEPLOY-001",
@@ -407,6 +407,78 @@
           "type": "workflow_environment_check",
           "target": ".github/workflows/deploy-pages.yml",
           "expectedEnvironment": "github-pages",
+          "severity": "critical"
+        },
+        {
+          "id": "DEPLOY-007",
+          "name": "GitHub Pages environment allows main branch deployment",
+          "type": "github_environment_check",
+          "target": "github-pages",
+          "repository": "Lovable-LDCS/PIT-Project-Implementation-Tracker",
+          "allowedBranch": "main",
+          "description": "Validates that the github-pages environment protection rules allow main branch to deploy",
+          "severity": "critical",
+          "remediationSteps": [
+            "Go to repository Settings → Environments → github-pages",
+            "Under 'Deployment branches', select 'Selected branches'",
+            "Add 'main' to the allowed branches list",
+            "Remove any required reviewers that block automated deployments",
+            "Remove any wait timers that delay deployments"
+          ]
+        },
+        {
+          "id": "DEPLOY-008",
+          "name": "Latest deployment workflow run succeeded",
+          "type": "github_workflow_run_check",
+          "target": ".github/workflows/deploy-pages.yml",
+          "expectedStatus": "success",
+          "description": "Verifies the most recent GitHub Pages deployment workflow completed successfully",
+          "severity": "critical",
+          "remediationSteps": [
+            "Check GitHub Actions tab for deployment failures",
+            "Review workflow logs for specific error messages",
+            "Verify environment protection rules are not blocking deployment",
+            "Ensure all workflow permissions are correctly configured"
+          ]
+        },
+        {
+          "id": "DEPLOY-009",
+          "name": "Live deployment URL is accessible",
+          "type": "url_accessibility_check",
+          "target": "https://lovable-ldcs.github.io/PIT-Project-Implementation-Tracker/",
+          "expectedStatus": 200,
+          "description": "Validates that the deployed application is accessible at the live URL",
+          "severity": "critical",
+          "remediationSteps": [
+            "Verify GitHub Pages is enabled in repository settings",
+            "Check that deployment workflow completed successfully",
+            "Wait 2-5 minutes for GitHub Pages CDN to propagate",
+            "Verify DNS and CDN configuration if using custom domain"
+          ]
+        },
+        {
+          "id": "DEPLOY-010",
+          "name": "Deployed application contains expected content",
+          "type": "url_content_check",
+          "target": "https://lovable-ldcs.github.io/PIT-Project-Implementation-Tracker/",
+          "expectedContent": ["TID-SHELL-ROOT", "PIT - Project Implementation Tracker"],
+          "description": "Validates that the deployed application contains critical UI elements and test IDs",
+          "severity": "critical",
+          "remediationSteps": [
+            "Verify artifact upload path is correct (./src/frontend)",
+            "Ensure .nojekyll file is present to bypass Jekyll",
+            "Check that all assets are being uploaded correctly",
+            "Review deployment logs for upload errors"
+          ]
+        },
+        {
+          "id": "DEPLOY-011",
+          "name": "GitHub deployment status is Active",
+          "type": "github_deployment_status_check",
+          "repository": "Lovable-LDCS/PIT-Project-Implementation-Tracker",
+          "environment": "github-pages",
+          "expectedStatus": "active",
+          "description": "Verifies that GitHub shows an active deployment for the github-pages environment",
           "severity": "critical"
         }
       ]
