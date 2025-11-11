@@ -400,6 +400,14 @@
           "target": ".github/workflows/deploy-pages.yml",
           "expectedBranch": "main",
           "severity": "critical"
+        },
+        {
+          "id": "DEPLOY-006",
+          "name": "Deploy workflow has environment configuration",
+          "type": "workflow_environment_check",
+          "target": ".github/workflows/deploy-pages.yml",
+          "expectedEnvironment": "github-pages",
+          "severity": "critical"
         }
       ]
     }
