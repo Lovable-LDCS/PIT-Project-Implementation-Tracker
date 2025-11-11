@@ -1,42 +1,36 @@
-# GitHub Pages Deployment Environment Protection Fix
+# GitHub Pages Deployment Environment Configuration Fix
 
 ## Issue Fixed
 
 The deployment workflow was failing with the error:
 ```
-Branch "main" is not allowed to deploy to github-pages due to environment protection rules.
-The deployment was rejected or didn't satisfy other protection rules.
+Error: Failed to create deployment (status: 400)
+Missing environment. Ensure your workflow's deployment job has an environment.
 ```
 
 ## Root Cause
 
-The workflow file `.github/workflows/deploy-pages.yml` was configured with an `environment` specification:
+The workflow file `.github/workflows/deploy-pages.yml` was missing the required `environment` specification. The `actions/deploy-pages@v4` action requires an environment to be configured for the deployment to work properly.
+
+## Solution Applied
+
+Added the `environment` specification to the workflow. The updated workflow now looks like:
 ```yaml
 jobs:
   deploy:
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 ```
 
-This caused GitHub Actions to enforce environment protection rules for the `github-pages` environment, which was not properly configured in the repository settings.
-
-## Solution Applied
-
-Removed the `environment` specification from the workflow. The updated workflow now looks like:
-```yaml
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-```
-
-This allows the workflow to deploy directly to GitHub Pages without requiring environment configuration.
+This provides the required environment configuration that GitHub Pages deployment needs.
 
 ## What This Means
 
-✅ **The workflow will now run successfully** - No environment protection rules to block it
-✅ **Deployment still secure** - The workflow still has the required permissions (`pages: write`, `id-token: write`)
-✅ **No manual configuration needed** - The workflow will work out of the box
+✅ **The workflow will now run successfully** - Environment is properly configured
+✅ **Deployment still secure** - The workflow has the required permissions (`pages: write`, `id-token: write`)
+✅ **QA Check passes** - DEPLOY-006 now validates environment configuration exists
 
 ## Next Steps
 
@@ -45,16 +39,14 @@ This allows the workflow to deploy directly to GitHub Pages without requiring en
 3. **Wait 1-2 minutes** - The deployment typically takes less than 2 minutes
 4. **Access your app** - Visit https://lovable-ldcs.github.io/PIT-Project-Implementation-Tracker/
 
-## Alternative: Using Environment Protection (Optional)
+## Environment Protection Rules (Optional)
 
-If you want to use environment protection rules in the future, you can:
+If you want to add environment protection rules (e.g., required reviewers before deployment):
 
 1. Go to **Settings** > **Environments** in your repository
-2. Create an environment named `github-pages`
-3. Configure the protection rules as needed (e.g., required reviewers)
-4. Re-add the environment section to the workflow
-
-However, this is **not required** for the deployment to work. The current fix allows immediate deployment without any additional configuration.
+2. Click on the `github-pages` environment (it will be created automatically on first deployment)
+3. Configure protection rules as needed
+4. The workflow will continue to work but will respect these additional rules
 
 ## Verification
 
