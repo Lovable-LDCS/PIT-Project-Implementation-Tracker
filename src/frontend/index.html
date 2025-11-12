@@ -123,16 +123,56 @@
               <h2 class="modal-title">Start a new project</h2>
               <button class="btn" type="button" data-testid="TID-PSETUP-CLOSE" aria-label="Close" onclick="closeProjectSetup()">✕</button>
             </div>
-            <div class="grid-2">              <label>Project name <input data-testid="TID-PSETUP-NAME" /></label>
-              <label>Assignee <select data-testid="TID-PSETUP-ASSIGNEE"><option>Current User</option></select></label>
+            <div class="grid-2">
+              <label>Project name <input data-testid="TID-PSETUP-NAME" /></label>
+              <label>Project Leader 
+                <select data-testid="TID-PSETUP-LEADER">
+                  <option value="current">Current User (Default)</option>
+                  <option value="other">Select Team Member...</option>
+                </select>
+              </label>
               <label class="grid-span-full">Project outcome <textarea class="textarea-full" data-testid="TID-PSETUP-OUTCOME" placeholder="SMART outcome"></textarea></label>
               <label class="grid-span-full">Project description <textarea class="textarea-full" data-testid="TID-PSETUP-DESCRIPTION"></textarea></label>
-              <div class="actions-right grid-span-full"><button class="btn" type="button" data-testid="TID-PSETUP-OPEN-TIMELINE" onclick="openTimelines('project')">Set timeline…</button></div>
-              
+              <div class="grid-span-full">
+                <button class="btn" type="button" data-testid="TID-PSETUP-OPEN-TIMELINE" onclick="openTimelines('project')">Set timeline…</button>
+              </div>
+              <div class="grid-span-full" data-testid="TID-PSETUP-INVITE-SECTION">
+                <h3 style="margin: 12px 0 8px 0; font-size: 1rem;">Invite Member (Optional)</h3>
+                <div class="grid-2">
+                  <label>Select existing member
+                    <select data-testid="TID-PSETUP-MEMBER-SELECT">
+                      <option value="">-- Select member --</option>
+                    </select>
+                  </label>
+                  <div style="display: flex; align-items: flex-end;">
+                    <button class="btn" type="button" data-testid="TID-PSETUP-INVITE-NEW-BTN" onclick="openInviteModal('project')">Invite New Member</button>
+                  </div>
+                </div>
+                <p style="font-size: 0.875rem; color: #64748b; margin: 8px 0 0 0;">If no member is assigned, the project leader (you) will be responsible for assigning milestones, deliverables, and tasks.</p>
+              </div>
             </div>
             <div class="actions-right">
               <button class="btn" type="button" data-testid="TID-PSETUP-CANCEL" onclick="closeProjectSetup()">Cancel</button>
               <button class="btn primary" type="button" data-testid="TID-PSETUP-SAVE" onclick="saveProject()">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Invite Member Sub-Modal -->
+        <div data-testid="TID-INVITE-MODAL" hidden class="modal-overlay" style="z-index: 1100;">
+          <div data-testid="TID-INVITE-DIALOG" role="dialog" aria-modal="true" class="modal-dialog" style="width: 480px;">
+            <div class="modal-header">
+              <h2 class="modal-title">Invite New Member</h2>
+              <button class="btn" type="button" aria-label="Close" onclick="closeInviteModal()">✕</button>
+            </div>
+            <div>
+              <label>Name <input data-testid="TID-INVITE-NAME" placeholder="Full name" /></label>
+              <label>Email <input type="email" data-testid="TID-INVITE-EMAIL" placeholder="email@example.com" /></label>
+              <p style="font-size: 0.875rem; color: #64748b; margin: 12px 0;">An email will be sent with a signup link. The new member will have access to this <span id="invite-context">project</span> only.</p>
+            </div>
+            <div class="actions-right">
+              <button class="btn" type="button" onclick="closeInviteModal()">Cancel</button>
+              <button class="btn primary" type="button" data-testid="TID-INVITE-SEND" onclick="sendInvite()">Send Invitation</button>
             </div>
           </div>
         </div>
@@ -146,12 +186,35 @@
             </div>
             <div class="grid-2">
               <label>Project <select data-testid="TID-MS-PROJECT-SELECT"></select></label>
-              <button class="btn" type="button" data-testid="TID-MS-OPEN-TIMELINE" onclick="openTimelines('milestones')">Edit in Timelines…</button>
-              <label>Milestones <select data-testid="TID-MS-DROPDOWN" aria-label="Milestone selector"><option>Choose existing…</option><option data-testid="TID-MS-ADD-NEW" value="__add_new__">Add milestone…</option></select></label>
-              <label class="grid-span-full" hidden data-testid="TID-MS-NEW-LABEL">New milestone <input data-testid="TID-MS-NEW-TEXT" spellcheck="true" /></label>
-
-              <div data-testid="TID-MS-DUPLICATE-ALERT" hidden>Milestone already exists. Replace?</div>
-              
+              <div style="display: flex; align-items: flex-end;">
+                <button class="btn" type="button" data-testid="TID-MS-OPEN-TIMELINE" onclick="openTimelines('milestones')">Edit in Timelines…</button>
+              </div>
+              <label class="grid-span-full">Milestone
+                <select data-testid="TID-MS-DROPDOWN" aria-label="Milestone selector">
+                  <option>Choose existing…</option>
+                  <option data-testid="TID-MS-ADD-NEW" value="__add_new__">Add milestone…</option>
+                </select>
+              </label>
+              <label class="grid-span-full" hidden data-testid="TID-MS-NEW-LABEL">New milestone name
+                <input data-testid="TID-MS-NEW-TEXT" spellcheck="true" />
+              </label>
+              <div data-testid="TID-MS-DUPLICATE-ALERT" class="grid-span-full" hidden style="color: #dc2626; font-size: 0.875rem;">
+                Milestone already exists. Replace?
+              </div>
+              <div class="grid-span-full" data-testid="TID-MS-INVITE-SECTION">
+                <h3 style="margin: 12px 0 8px 0; font-size: 1rem;">Invite Member (Optional)</h3>
+                <div class="grid-2">
+                  <label>Select existing member
+                    <select data-testid="TID-MS-MEMBER-SELECT">
+                      <option value="">-- Select member --</option>
+                    </select>
+                  </label>
+                  <div style="display: flex; align-items: flex-end;">
+                    <button class="btn" type="button" data-testid="TID-MS-INVITE-NEW-BTN" onclick="openInviteModal('milestone')">Invite New Member</button>
+                  </div>
+                </div>
+                <p style="font-size: 0.875rem; color: #64748b; margin: 8px 0 0 0;">If no member is assigned, responsibility defaults to the project leader.</p>
+              </div>
             </div>
             <div class="actions-right">
               <button class="btn" type="button" data-testid="TID-MS-CANCEL" onclick="closeMilestoneSetup()">Cancel</button>
@@ -168,11 +231,37 @@
               <button class="btn" type="button" data-testid="TID-DL-CLOSE" aria-label="Close" onclick="closeDeliverableSetup()">✕</button>
             </div>
             <div class="grid-2">
-              <label>Milestone <select data-testid="TID-DL-MILESTONE"></select></label>
-              <label>Deliverables <select data-testid="TID-DL-DROPDOWN" aria-label="Deliverable selector"><option>Choose existing…</option><option data-testid="TID-DL-ADD-NEW" value="__add_new__">Add deliverable…</option></select></label>
-              <label class="grid-span-full" hidden data-testid="TID-DL-NEW-LABEL">New deliverable <input data-testid="TID-DL-NEW-TEXT" spellcheck="true" /></label>
-              <label>Person responsible <select data-testid="TID-DL-ASSIGNEE"><option>Unassigned</option></select></label>
-              
+              <label class="grid-span-full">Milestone (Required)
+                <select data-testid="TID-DL-MILESTONE">
+                  <option value="">-- Select milestone --</option>
+                </select>
+              </label>
+              <label class="grid-span-full">Deliverable
+                <select data-testid="TID-DL-DROPDOWN" aria-label="Deliverable selector">
+                  <option>Choose existing…</option>
+                  <option data-testid="TID-DL-ADD-NEW" value="__add_new__">Add deliverable…</option>
+                </select>
+              </label>
+              <label class="grid-span-full" hidden data-testid="TID-DL-NEW-LABEL">New deliverable description
+                <input data-testid="TID-DL-NEW-TEXT" spellcheck="true" />
+              </label>
+              <div class="grid-span-full" data-testid="TID-DL-INVITE-SECTION">
+                <h3 style="margin: 12px 0 8px 0; font-size: 1rem;">Assign / Invite Member (Optional)</h3>
+                <div class="grid-2">
+                  <label>Select existing member
+                    <select data-testid="TID-DL-ASSIGNEE">
+                      <option value="">Unassigned</option>
+                    </select>
+                  </label>
+                  <div style="display: flex; align-items: flex-end;">
+                    <button class="btn" type="button" data-testid="TID-DL-INVITE-NEW-BTN" onclick="openInviteModal('deliverable')">Invite New Member</button>
+                  </div>
+                </div>
+                <p style="font-size: 0.875rem; color: #64748b; margin: 8px 0 0 0;">If no member is assigned, responsibility defaults to the milestone leader.</p>
+              </div>
+              <p class="grid-span-full" style="font-size: 0.875rem; color: #64748b; margin: 8px 0 0 0;">
+                <strong>Note:</strong> Deliverable start and end dates are automatically calculated from assigned tasks.
+              </p>
             </div>
             <div class="actions-right">
               <button class="btn" type="button" data-testid="TID-DL-CANCEL" onclick="closeDeliverableSetup()">Cancel</button>
@@ -189,16 +278,109 @@
               <button class="btn" type="button" data-testid="TID-TASK-CLOSE" aria-label="Close" onclick="closeTaskSetup()">✕</button>
             </div>
             <div class="grid-2">
-              <label>Title <input data-testid="TID-TASK-TITLE" /></label>
-              <label>Responsible <select data-testid="TID-TASK-ASSIGNEE"><option>Current User</option></select></label>
-              <label>Start date <input type="date" data-testid="TID-TASK-START" /></label>
-              <label>End date <input type="date" data-testid="TID-TASK-END" /></label>
-              <label>Milestone <select data-testid="TID-TASK-MILESTONE"></select></label>
-              <label>Deliverable <select data-testid="TID-TASK-DELIVERABLE"></select></label>
-              <label>Task cluster? <select data-testid="TID-TASK-CLUSTER-TOGGLE" aria-label="Use task cluster"><option value="no">No</option><option value="yes">Yes</option></select></label>
-              <label class="grid-span-full">Cluster name <select data-testid="TID-CLUSTER-NAME-SELECT"><option>Choose cluster…</option><option data-testid="TID-CLUSTER-ADD-NEW" value="__add_new__">Add cluster…</option></select></label>
-              <div class="grid-span-full" data-testid="TID-CLUSTER-PRELOAD" hidden><!-- Preloaded tasks will list here --></div>
+              <label class="grid-span-full">Deliverable (Required)
+                <select data-testid="TID-TASK-DELIVERABLE">
+                  <option value="">-- Select deliverable --</option>
+                </select>
+              </label>
               
+              <label class="grid-span-full">Do you want to create a task cluster?
+                <select data-testid="TID-TASK-CLUSTER-TOGGLE" aria-label="Use task cluster" onchange="toggleTaskCluster(this.value)">
+                  <option value="no">No (Single Task)</option>
+                  <option value="yes">Yes (Task Cluster)</option>
+                </select>
+              </label>
+              
+              <!-- Single Task Fields -->
+              <div id="single-task-fields" class="grid-span-full">
+                <div class="grid-2">
+                  <label>Task Title
+                    <input data-testid="TID-TASK-TITLE" placeholder="Task description" />
+                  </label>
+                </div>
+              </div>
+              
+              <!-- Task Cluster Fields -->
+              <div id="cluster-task-fields" class="grid-span-full" hidden>
+                <label>Task Cluster Name
+                  <select data-testid="TID-CLUSTER-NAME-SELECT">
+                    <option>Choose existing cluster…</option>
+                    <option data-testid="TID-CLUSTER-ADD-NEW" value="__add_new__">Create new cluster…</option>
+                  </select>
+                </label>
+                <div data-testid="TID-CLUSTER-PRELOAD" style="margin-top: 12px;">
+                  <!-- Preloaded tasks from cluster template will appear here -->
+                  <p style="font-size: 0.875rem; color: #64748b;">Select a cluster to see pre-defined tasks, or create a new one.</p>
+                </div>
+              </div>
+              
+              <!-- Date Calculation Section -->
+              <div class="grid-span-full" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                <h3 style="margin: 0 0 12px 0; font-size: 1rem;">Task Timing</h3>
+                
+                <label>Link to another task (for timing)
+                  <select data-testid="TID-TASK-LINK-DROPDOWN">
+                    <option value="">First task (uses milestone start date)</option>
+                    <option value="task1">Task 1 - Example</option>
+                  </select>
+                </label>
+                
+                <div style="margin: 12px 0;">
+                  <p style="font-size: 0.875rem; color: #0D2850; margin-bottom: 8px;"><strong>Initial Date:</strong> <span id="task-initial-date">--</span></p>
+                  
+                  <label style="display: block; margin-bottom: 12px;">Offset from initial date (when should this task start?)
+                    <div style="display: flex; gap: 8px; margin-top: 4px;">
+                      <div>
+                        <input type="number" min="0" value="0" style="width: 60px;" data-testid="TID-TASK-OFFSET-DAYS" /> days
+                      </div>
+                      <div>
+                        <input type="number" min="0" max="23" value="0" style="width: 60px;" data-testid="TID-TASK-OFFSET-HOURS" /> hours
+                      </div>
+                      <div>
+                        <input type="number" min="0" max="59" value="0" style="width: 60px;" data-testid="TID-TASK-OFFSET-MINUTES" /> minutes
+                      </div>
+                    </div>
+                    <p style="font-size: 0.75rem; color: #64748b; margin-top: 4px;">Leave at 00:00:00 to start on the same date</p>
+                  </label>
+                  
+                  <label style="display: block;">Task duration (how long will it take?)
+                    <div style="display: flex; gap: 8px; margin-top: 4px;">
+                      <div>
+                        <input type="number" min="0" value="0" style="width: 60px;" data-testid="TID-TASK-DUR-DAYS" /> days
+                      </div>
+                      <div>
+                        <input type="number" min="0" max="23" value="0" style="width: 60px;" data-testid="TID-TASK-DUR-HOURS" /> hours
+                      </div>
+                      <div>
+                        <input type="number" min="0" max="59" value="10" style="width: 60px;" data-testid="TID-TASK-DUR-MINUTES" /> minutes
+                      </div>
+                    </div>
+                    <p style="font-size: 0.75rem; color: #64748b; margin-top: 4px;">Can be as short as 10 minutes (e.g., "Arrange a meeting")</p>
+                  </label>
+                  
+                  <p style="font-size: 0.875rem; color: #0D2850; margin-top: 12px;">
+                    <strong>Calculated Start:</strong> <span id="task-calc-start">--</span><br>
+                    <strong>Calculated End:</strong> <span id="task-calc-end">--</span>
+                  </p>
+                </div>
+              </div>
+              
+              <!-- Invite Member Section -->
+              <div class="grid-span-full" data-testid="TID-TASK-INVITE-SECTION" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                <h3 style="margin: 0 0 8px 0; font-size: 1rem;">Assign / Invite Member (Optional)</h3>
+                <div class="grid-2">
+                  <label>Select existing member
+                    <select data-testid="TID-TASK-ASSIGNEE">
+                      <option value="">Unassigned</option>
+                      <option value="current">Current User</option>
+                    </select>
+                  </label>
+                  <div style="display: flex; align-items: flex-end;">
+                    <button class="btn" type="button" data-testid="TID-TASK-INVITE-NEW-BTN" onclick="openInviteModal('task')">Invite New Member</button>
+                  </div>
+                </div>
+                <p style="font-size: 0.875rem; color: #64748b; margin: 8px 0 0 0;">Assigned members can update task progress and add evidence. Defaults to deliverable leader if unassigned.</p>
+              </div>
             </div>
             <div class="actions-right">
               <button class="btn" type="button" data-testid="TID-TASK-CANCEL" onclick="closeTaskSetup()">Cancel</button>
@@ -949,6 +1131,50 @@
           const val = e.target.value.trim();
           projectSetRowsCount(val.length ? 0 : 1);
         });
+      }
+
+      // Invite Modal Functions
+      let inviteContext = 'project'; // project, milestone, deliverable, task
+      function openInviteModal(context) {
+        inviteContext = context || 'project';
+        const contextSpan = document.getElementById('invite-context');
+        if (contextSpan) contextSpan.textContent = context;
+        const modal = document.querySelector('[data-testid="TID-INVITE-MODAL"]');
+        if (modal) modal.removeAttribute('hidden');
+      }
+      function closeInviteModal() {
+        const modal = document.querySelector('[data-testid="TID-INVITE-MODAL"]');
+        if (modal) modal.setAttribute('hidden', '');
+        // Clear fields
+        const nameInput = document.querySelector('[data-testid="TID-INVITE-NAME"]');
+        const emailInput = document.querySelector('[data-testid="TID-INVITE-EMAIL"]');
+        if (nameInput) nameInput.value = '';
+        if (emailInput) emailInput.value = '';
+      }
+      function sendInvite() {
+        const name = document.querySelector('[data-testid="TID-INVITE-NAME"]')?.value || '';
+        const email = document.querySelector('[data-testid="TID-INVITE-EMAIL"]')?.value || '';
+        if (!name || !email) {
+          alert('Please enter both name and email');
+          return;
+        }
+        // TODO: Send actual email invitation
+        console.log('Sending invitation to:', { name, email, context: inviteContext });
+        alert(`Invitation sent to ${name} (${email}) for ${inviteContext}`);
+        closeInviteModal();
+      }
+
+      // Task Cluster Toggle
+      function toggleTaskCluster(value) {
+        const singleFields = document.getElementById('single-task-fields');
+        const clusterFields = document.getElementById('cluster-task-fields');
+        if (value === 'yes') {
+          if (singleFields) singleFields.setAttribute('hidden', '');
+          if (clusterFields) clusterFields.removeAttribute('hidden');
+        } else {
+          if (singleFields) singleFields.removeAttribute('hidden');
+          if (clusterFields) clusterFields.setAttribute('hidden', '');
+        }
       }
 
       // Wiring self-checks to populate Problems panel if anything is off
