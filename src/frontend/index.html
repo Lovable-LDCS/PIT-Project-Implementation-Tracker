@@ -1840,6 +1840,143 @@
           clone.addEventListener('click', saveProject);
         }
       }
+
+      // Render hierarchical project table with color-coded rows
+      function renderProjectHierarchy() {
+        const project = window.projectState;
+        if (!project) return;
+
+        // Show indicators
+        const indicators = document.querySelector('[data-testid="TID-PROJ-INDICATORS"]');
+        if (indicators) {
+          indicators.removeAttribute('hidden');
+          
+          // Calculate metrics
+          const milestones = project.milestones || [];
+          const deliverables = milestones.flatMap(m => m.deliverables || []);
+          const tasks = deliverables.flatMap(d => d.tasks || []);
+          
+          // Update counts
+          document.querySelector('[data-testid="TID-IND-MS-COUNT"]').textContent = milestones.length;
+          document.querySelector('[data-testid="TID-IND-DL-COUNT"]').textContent = deliverables.length;
+          document.querySelector('[data-testid="TID-IND-TASK-COUNT"]').textContent = tasks.length;
+          document.querySelector('[data-testid="TID-IND-TEAM-SIZE"]').textContent = '1'; // TODO: Calculate unique team members
+          
+          // Calculate duration progress
+          if (project.start && project.end) {
+            const now = new Date();
+            const start = new Date(project.start);
+            const end = new Date(project.end);
+            const total = end - start;
+            const elapsed = now - start;
+            const progress = Math.max(0, Math.min(100, (elapsed / total) * 100));
+            const durationEl = document.querySelector('[data-testid="TID-IND-DURATION"]');
+            const durationProgress = document.querySelector('[data-testid="TID-IND-DURATION-PROGRESS"]');
+            if (durationEl && durationProgress) {
+              const days = Math.ceil(total / (1000*60*60*24));
+              durationEl.textContent = `${days}d`;
+              durationProgress.style.width = progress + '%';
+            }
+          }
+          
+          // Calculate overall progress
+          const avgProgress = tasks.length > 0 
+            ? tasks.reduce((sum, t) => sum + (t.progress || 0), 0) / tasks.length 
+            : 0;
+          const overallEl = document.querySelector('[data-testid="TID-IND-OVERALL-PROGRESS"]');
+          const overallBar = document.querySelector('[data-testid="TID-IND-OVERALL-PROGRESS-BAR"]');
+          if (overallEl && overallBar) {
+            overallEl.textContent = Math.round(avgProgress) + '%';
+            overallBar.style.width = avgProgress + '%';
+          }
+          
+          document.querySelector('[data-testid="TID-IND-PROGRESS-VS-PLAN"]').textContent = '--';
+        }
+
+        // Show table headers and build area
+        const colsHeader = document.querySelector('[data-testid="TID-PROJ-COLS-HEADER"]');
+        const buildArea = document.querySelector('[data-testid="TID-PROJ-BUILD"]');
+        const tree = document.querySelector('[data-testid="TID-PROJ-TREE"]');
+        
+        if (colsHeader) colsHeader.removeAttribute('hidden');
+        if (buildArea) buildArea.removeAttribute('hidden');
+        if (!tree) return;
+        
+        tree.removeAttribute('hidden');
+        tree.innerHTML = ''; // Clear previous content
+        
+        // Render project row (level 0)
+        const projRow = document.createElement('div');
+        projRow.className = 'proj-row';
+        projRow.innerHTML = `
+          <div class="row-project" data-testid="TID-PROJ-ROW-0">
+            <strong>${project.name}</strong>
+            ${project.start && project.end ? `<br><small>Planned: ${project.start} to ${project.end}</small>` : ''}
+          </div>
+          <div>${project.start || 'Not set'}</div>
+          <div>${project.end || 'Not set'}</div>
+          <div>${project.start && project.end ? Math.ceil((new Date(project.end) - new Date(project.start))/(1000*60*60*24)) + 'd' : '--'}</div>
+          <div>Project Leader</div>
+          <div>0%</div>
+        `;
+        tree.appendChild(projRow);
+        
+        // Render milestones (level 1)
+        (project.milestones || []).forEach((milestone, msIdx) => {
+          const msRow = document.createElement('div');
+          msRow.className = 'proj-row';
+          msRow.style.marginLeft = '20px';
+          msRow.innerHTML = `
+            <div class="row-milestone" data-testid="TID-MS-ROW-${msIdx}">
+              <strong>${milestone.title || milestone.name || 'Milestone ' + (msIdx + 1)}</strong>
+              ${milestone.start && milestone.end ? `<br><small>Planned: ${milestone.start} to ${milestone.end}</small>` : ''}
+            </div>
+            <div>${milestone.start || 'TBD'}</div>
+            <div>${milestone.end || 'TBD'}</div>
+            <div>${milestone.start && milestone.end ? Math.ceil((new Date(milestone.end) - new Date(milestone.start))/(1000*60*60*24)) + 'd' : '--'}</div>
+            <div>${milestone.lead || 'Unassigned'}</div>
+            <div>0%</div>
+          `;
+          tree.appendChild(msRow);
+          
+          // Render deliverables (level 2)
+          (milestone.deliverables || []).forEach((deliverable, dlIdx) => {
+            const dlRow = document.createElement('div');
+            dlRow.className = 'proj-row';
+            dlRow.style.marginLeft = '40px';
+            dlRow.innerHTML = `
+              <div class="row-deliverable" data-testid="TID-DL-ROW-${msIdx}-${dlIdx}">
+                ${deliverable.title || deliverable.name || 'Deliverable ' + (dlIdx + 1)}
+              </div>
+              <div>${deliverable.start || 'From tasks'}</div>
+              <div>${deliverable.end || 'From tasks'}</div>
+              <div>${deliverable.start && deliverable.end ? Math.ceil((new Date(deliverable.end) - new Date(deliverable.start))/(1000*60*60*24)) + 'd' : '--'}</div>
+              <div>${deliverable.lead || 'Unassigned'}</div>
+              <div>0%</div>
+            `;
+            tree.appendChild(dlRow);
+            
+            // Render tasks (level 3)
+            (deliverable.tasks || []).forEach((task, taskIdx) => {
+              const taskRow = document.createElement('div');
+              taskRow.className = 'proj-row';
+              taskRow.style.marginLeft = '60px';
+              taskRow.innerHTML = `
+                <div class="row-task" data-testid="TID-TASK-ROW-${msIdx}-${dlIdx}-${taskIdx}">
+                  ${task.title || task.name || 'Task ' + (taskIdx + 1)}
+                </div>
+                <div>${task.start || 'TBD'}</div>
+                <div>${task.end || 'TBD'}</div>
+                <div>${task.start && task.end ? Math.ceil((new Date(task.end) - new Date(task.start))/(1000*60*60*24)) + 'd' : '--'}</div>
+                <div>${task.assignee || 'Unassigned'}</div>
+                <div>${task.progress || 0}%</div>
+              `;
+              tree.appendChild(taskRow);
+            });
+          });
+        });
+      }
+
       function saveProject(){
         const name = /** @type {HTMLInputElement} */(document.querySelector('[data-testid="TID-PSETUP-NAME"]'))?.value?.trim();
         const outcome = /** @type {HTMLTextAreaElement} */(document.querySelector('[data-testid="TID-PSETUP-OUTCOME"]'))?.value?.trim();
@@ -1889,6 +2026,8 @@
             if(el){ el.setAttribute('hidden',''); }
           });
         }
+        // Render hierarchical table
+        renderProjectHierarchy();
         closeProjectSetup();
         navigateTo('#/projects');
       }
