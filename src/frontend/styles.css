@@ -41,6 +41,21 @@ input, select, textarea { padding: 6px 8px; border: 1px solid #cbd5e1; border-ra
 .proj-summary { display:grid; grid-template-columns: repeat(8, minmax(80px, auto)); gap: 8px; align-items:center; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px; margin: 12px 0; }
 .design-ref { padding: 12px; border: 1px dashed var(--brand-secondary1); background: #fff; }
 
+/* Project indicators row */
+.proj-indicators { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; padding: 12px 16px; background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px; margin: 16px 0; }
+.proj-indicator { display: flex; flex-direction: column; gap: 4px; }
+.proj-indicator-label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+.proj-indicator-value { font-size: 1.25rem; font-weight: 600; color: #0D2850; }
+.proj-indicator-progress { display: flex; align-items: center; gap: 8px; }
+.progress-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; flex: 1; min-width: 80px; }
+.progress-fill { height: 100%; background: var(--brand-primary); transition: width 0.3s ease; }
+
+/* Hierarchy row color coding */
+.row-project { background-color: #0D2850; color: #ffffff; padding: 8px; border-radius: 4px; font-weight: 600; }
+.row-milestone { background-color: #006B92; color: #ffffff; padding: 8px; border-radius: 4px; font-weight: 500; }
+.row-deliverable { background-color: #4C95B0; color: #ffffff; padding: 8px; border-radius: 4px; }
+.row-task { background-color: #ffffff; color: #0D2850; padding: 8px; border: 1px solid #e5e7eb; border-radius: 4px; }
+
 /* Filters banner card */
 .filter-card { display:grid; grid-template-columns: repeat(7, minmax(120px, 1fr)); gap: 12px; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #f8fafc; margin-bottom: 12px; }
 

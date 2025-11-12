@@ -211,25 +211,51 @@
         <div data-testid="TID-DUR-MODAL" hidden class="modal-overlay">
           <div data-testid="TID-DUR-DIALOG" role="dialog" aria-modal="true" class="modal-dialog">
             <div class="modal-header">
-              <h2 class="modal-title">Duration filter</h2>
+              <h2 class="modal-title">Duration Filter</h2>
               <button class="btn" type="button" aria-label="Close" onclick="closeDurationModal()">✕</button>
             </div>
             <div>
-              <div>
-                <label><input type="radio" name="dur-op" data-testid="TID-DUR-OP-LT" /> Less than</label>
-                <label><input type="radio" name="dur-op" data-testid="TID-DUR-OP-GT" /> More than</label>
-                <label><input type="radio" name="dur-op" data-testid="TID-DUR-OP-EQ" /> Equal to</label>
-                <label><input type="radio" name="dur-op" data-testid="TID-DUR-OP-BETWEEN" /> Between</label>
+              <div class="my-8">
+                <label><input type="radio" name="dur-op" value="lt" data-testid="TID-DUR-OP-LT" /> &lt; Less than</label>
+                <label><input type="radio" name="dur-op" value="gt" data-testid="TID-DUR-OP-GT" /> &gt; Greater than</label>
+                <label><input type="radio" name="dur-op" value="eq" data-testid="TID-DUR-OP-EQ" /> = Equal to</label>
+                <label><input type="radio" name="dur-op" value="lte" data-testid="TID-DUR-OP-LTE" /> ≤ Less than or equal</label>
+                <label><input type="radio" name="dur-op" value="gte" data-testid="TID-DUR-OP-GTE" /> ≥ Greater than or equal</label>
               </div>
               <div class="inline-flex-center">
-                <input type="number" min="0" class="w-64" data-testid="TID-DUR-DAYS-1" />
-                <span id="dur-and-sep" hidden>&nbsp;and&nbsp;</span>
-                <input type="number" min="0" class="w-64" data-testid="TID-DUR-DAYS-2" hidden /> days
+                <input type="number" min="0" class="w-64" placeholder="Days" data-testid="TID-DUR-DAYS-1" />
+                <span>days</span>
               </div>
             </div>
             <div class="actions-right">
               <button class="btn" type="button" data-testid="TID-DUR-CANCEL" onclick="closeDurationModal()">Cancel</button>
               <button class="btn primary" type="button" data-testid="TID-DUR-APPLY" onclick="applyDurationFilter()">Apply</button>
+            </div>
+          </div>
+        </div>
+        <!-- Progress Filter Modal -->
+        <div data-testid="TID-PROGRESS-MODAL" hidden class="modal-overlay">
+          <div data-testid="TID-PROGRESS-DIALOG" role="dialog" aria-modal="true" class="modal-dialog">
+            <div class="modal-header">
+              <h2 class="modal-title">Progress Filter</h2>
+              <button class="btn" type="button" aria-label="Close" onclick="closeProgressModal()">✕</button>
+            </div>
+            <div>
+              <div class="my-8">
+                <label><input type="radio" name="progress-op" value="lt" data-testid="TID-PROGRESS-OP-LT" /> &lt; Less than</label>
+                <label><input type="radio" name="progress-op" value="gt" data-testid="TID-PROGRESS-OP-GT" /> &gt; Greater than</label>
+                <label><input type="radio" name="progress-op" value="eq" data-testid="TID-PROGRESS-OP-EQ" /> = Equal to</label>
+                <label><input type="radio" name="progress-op" value="lte" data-testid="TID-PROGRESS-OP-LTE" /> ≤ Less than or equal</label>
+                <label><input type="radio" name="progress-op" value="gte" data-testid="TID-PROGRESS-OP-GTE" /> ≥ Greater than or equal</label>
+              </div>
+              <div class="inline-flex-center">
+                <input type="number" min="0" max="100" class="w-64" placeholder="0-100" data-testid="TID-PROGRESS-PCT-1" />
+                <span>%</span>
+              </div>
+            </div>
+            <div class="actions-right">
+              <button class="btn" type="button" data-testid="TID-PROGRESS-CANCEL" onclick="closeProgressModal()">Cancel</button>
+              <button class="btn primary" type="button" data-testid="TID-PROGRESS-APPLY" onclick="applyProgressFilter()">Apply</button>
             </div>
           </div>
         </div>
@@ -264,24 +290,34 @@
           </div>
           <div data-testid="TID-PROJ-HEADER" hidden></div>
           <div data-testid="TID-PROJ-DETAIL" class="proj-detail" hidden>
-            <div data-testid="TID-FILTER-CARD" class="filter-card">
-              <label>Projects
-                <select multiple data-testid="TID-FILTER-PROJECTS" aria-label="Filter projects"></select>
+            <div data-testid="TID-FILTER-BAR" class="filter-card">
+              <label>Project Status
+                <select data-testid="TID-FILTER-STATUS" aria-label="Project status filter">
+                  <option value="">All</option>
+                  <option value="not-active">Not Yet Active</option>
+                  <option value="countdown">Starting Soon</option>
+                  <option value="active">Active</option>
+                  <option value="due">Due Today</option>
+                  <option value="overdue">Past Due</option>
+                  <option value="critical">Critical (10+ days)</option>
+                </select>
               </label>
-              <label>Milestones
-                <select multiple data-testid="TID-FILTER-MILESTONES" aria-label="Filter milestones"></select>
+              <label>Start Date
+                <input type="date" data-testid="TID-FILTER-START" aria-label="Start date filter" />
               </label>
-              <label>Deliverables
-                <select multiple data-testid="TID-FILTER-DELIVERABLES" aria-label="Filter deliverables"></select>
+              <label>End Date
+                <input type="date" data-testid="TID-FILTER-END" aria-label="End date filter" />
               </label>
-              <label>Tasks
-                <select multiple data-testid="TID-FILTER-TASKS" aria-label="Filter tasks"></select>
+              <label>Duration
+                <button class="btn" type="button" data-testid="TID-FILTER-DURATION-BTN" onclick="openDurationModal()">Set Duration…</button>
               </label>
-              <label>Start date <input type="date" data-testid="TID-FILTER-START" /></label>
-              <label>End date <input type="date" data-testid="TID-FILTER-END" /></label>
-              <label>Duration <button class="btn" type="button" data-testid="TID-FILTER-DURATION" onclick="openDurationModal()">Set…</button></label>
-              <label>Responsible
-                <select multiple data-testid="TID-FILTER-RESP" aria-label="Filter responsible"></select>
+              <label>Responsible Person
+                <select data-testid="TID-FILTER-RESP" aria-label="Filter by responsible person">
+                  <option value="">All</option>
+                </select>
+              </label>
+              <label>Progress
+                <button class="btn" type="button" data-testid="TID-FILTER-PROGRESS-BTN" onclick="openProgressModal()">Set Progress…</button>
               </label>
             </div>
             <label>Project <select data-testid="TID-PROJ-SELECT"><option value="current">Current Project</option></select></label>
@@ -289,6 +325,47 @@
             <div data-testid="TID-PROJ-META" class="proj-meta">
               <span>Start: <span data-testid="TID-PROJ-START"></span></span>
               <span> • End: <span data-testid="TID-PROJ-END"></span></span>
+            </div>
+            <!-- Project Indicators Row -->
+            <div data-testid="TID-PROJ-INDICATORS" class="proj-indicators" hidden>
+              <div class="proj-indicator">
+                <span class="proj-indicator-label">Duration</span>
+                <div class="proj-indicator-progress">
+                  <span data-testid="TID-IND-DURATION" class="proj-indicator-value">--</span>
+                  <div class="progress-bar" style="width: 120px;">
+                    <div class="progress-fill" data-testid="TID-IND-DURATION-PROGRESS" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="proj-indicator">
+                <span class="proj-indicator-label"># Milestones</span>
+                <span data-testid="TID-IND-MS-COUNT" class="proj-indicator-value">0</span>
+              </div>
+              <div class="proj-indicator">
+                <span class="proj-indicator-label"># Deliverables</span>
+                <span data-testid="TID-IND-DL-COUNT" class="proj-indicator-value">0</span>
+              </div>
+              <div class="proj-indicator">
+                <span class="proj-indicator-label"># Tasks</span>
+                <span data-testid="TID-IND-TASK-COUNT" class="proj-indicator-value">0</span>
+              </div>
+              <div class="proj-indicator">
+                <span class="proj-indicator-label">Team Size</span>
+                <span data-testid="TID-IND-TEAM-SIZE" class="proj-indicator-value">0</span>
+              </div>
+              <div class="proj-indicator">
+                <span class="proj-indicator-label">Progress vs Plan</span>
+                <span data-testid="TID-IND-PROGRESS-VS-PLAN" class="proj-indicator-value">--</span>
+              </div>
+              <div class="proj-indicator">
+                <span class="proj-indicator-label">Overall Progress</span>
+                <div class="proj-indicator-progress">
+                  <span data-testid="TID-IND-OVERALL-PROGRESS" class="proj-indicator-value">0%</span>
+                  <div class="progress-bar" style="width: 100px;">
+                    <div class="progress-fill" data-testid="TID-IND-OVERALL-PROGRESS-BAR" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div data-testid="TID-PROJ-SUMMARY" class="proj-summary" hidden>
               <span data-testid="TID-PROJ-SUM-STATUS"></span>
@@ -787,12 +864,66 @@
       function openDurationModal(){ const m = document.querySelector('[data-testid="TID-DUR-MODAL"]'); if(m){ m.removeAttribute('hidden'); } }
       function closeDurationModal(){ const m = document.querySelector('[data-testid="TID-DUR-MODAL"]'); if(m){ m.setAttribute('hidden',''); } }
       function applyDurationFilter(){
-        const op = document.querySelector('[data-testid="TID-DUR-OP-LT"]')?.checked ? 'lt'
-          : document.querySelector('[data-testid="TID-DUR-OP-GT"]')?.checked ? 'gt'
-          : document.querySelector('[data-testid="TID-DUR-OP-EQ"]')?.checked ? 'eq' : null;
+        const radios = document.querySelectorAll('[name="dur-op"]');
+        let op = null;
+        radios.forEach(r => { if(r.checked) op = r.value; });
         const days = parseInt(document.querySelector('[data-testid="TID-DUR-DAYS-1"]')?.value||'0', 10) || 0;
         window.durationFilter = op ? { op, days } : null;
         closeDurationModal();
+      }
+
+      // Progress filter modal wiring
+      function openProgressModal(){ const m = document.querySelector('[data-testid="TID-PROGRESS-MODAL"]'); if(m){ m.removeAttribute('hidden'); } }
+      function closeProgressModal(){ const m = document.querySelector('[data-testid="TID-PROGRESS-MODAL"]'); if(m){ m.setAttribute('hidden',''); } }
+      function applyProgressFilter(){
+        const radios = document.querySelectorAll('[name="progress-op"]');
+        let op = null;
+        radios.forEach(r => { if(r.checked) op = r.value; });
+        const pct = parseInt(document.querySelector('[data-testid="TID-PROGRESS-PCT-1"]')?.value||'0', 10) || 0;
+        window.progressFilter = op ? { op, pct } : null;
+        closeProgressModal();
+      }
+
+      // Status computation function per architecture
+      function computeStatusDescriptor(startDate, endDate, today = new Date()) {
+        if (!startDate || !endDate) return "No dates";
+        
+        const todayMs = today.getTime();
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const startMs = start.getTime();
+        const endMs = end.getTime();
+        
+        // Future project
+        if (todayMs < startMs) {
+          const daysUntil = Math.ceil((startMs - todayMs) / (1000*60*60*24));
+          if (daysUntil <= 5) {
+            return `Starting in ${daysUntil} days`;
+          }
+          return "Not yet active";
+        }
+        
+        // Past due
+        if (todayMs > endMs) {
+          const daysOver = Math.ceil((todayMs - endMs) / (1000*60*60*24));
+          if (daysOver >= 10) {
+            return `Critical: ${daysOver} days overdue`;
+          }
+          return `${daysOver} days past due`;
+        }
+        
+        // Active
+        const daysRemaining = Math.ceil((endMs - todayMs) / (1000*60*60*24));
+        if (daysRemaining === 0) {
+          return "Due today";
+        }
+        if (daysRemaining <= 5) {
+          const totalDays = Math.ceil((endMs - startMs) / (1000*60*60*24));
+          const elapsed = totalDays - daysRemaining;
+          return `Started ${elapsed}/${totalDays} days`;
+        }
+        
+        return "On track";
       }
 
       // Projects page behavior hooks for QA
