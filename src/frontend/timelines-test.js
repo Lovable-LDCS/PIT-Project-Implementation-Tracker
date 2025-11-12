@@ -142,16 +142,37 @@
       else if(r.kind==='dl'){ bar.style.background = getComputedStyle(document.documentElement).getPropertyValue('--tl-dl').trim(); }
       else { bar.style.background = getComputedStyle(document.documentElement).getPropertyValue('--tl-task').trim(); }
       const overlay=document.createElement('div'); overlay.className='overlay'; overlay.style.width = Math.max(0, Math.min(100, r.progress||0)) + '%'; bar.appendChild(overlay);
-      // draggable & resizable bar
+      
+      // Real-time date tooltip during drag
+      const tooltip=document.createElement('div'); 
+      tooltip.style.position='absolute'; 
+      tooltip.style.top='-24px'; 
+      tooltip.style.left='50%'; 
+      tooltip.style.transform='translateX(-50%)'; 
+      tooltip.style.background='rgba(13,40,80,0.95)'; 
+      tooltip.style.color='white'; 
+      tooltip.style.padding='4px 8px'; 
+      tooltip.style.borderRadius='4px'; 
+      tooltip.style.fontSize='11px'; 
+      tooltip.style.whiteSpace='nowrap'; 
+      tooltip.style.display='none'; 
+      tooltip.style.zIndex='1000';
+      tooltip.style.pointerEvents='none';
+      bar.appendChild(tooltip);
+      
+      // draggable & resizable bar with real-time date display
       let dragging=false, resizingLeft=false, resizingRight=false; let startX=0; let origStart=r.start; let origEnd=r.end;
-      function onDownBody(e){ dragging=true; startX=e.clientX; origStart=r.start; origEnd=r.end; document.body.style.cursor='ew-resize'; e.preventDefault(); }
-      function onDownLeft(e){ resizingLeft=true; startX=e.clientX; origStart=r.start; document.body.style.cursor='col-resize'; e.stopPropagation(); e.preventDefault(); }
-      function onDownRight(e){ resizingRight=true; startX=e.clientX; origEnd=r.end; document.body.style.cursor='col-resize'; e.stopPropagation(); e.preventDefault(); }
-      const hL=document.createElement('div'); hL.style.position='absolute'; hL.style.left='-4px'; hL.style.top='0'; hL.style.bottom='0'; hL.style.width='8px'; hL.style.cursor='col-resize'; bar.appendChild(hL);
-      const hR=document.createElement('div'); hR.style.position='absolute'; hR.style.right='-4px'; hR.style.top='0'; hR.style.bottom='0'; hR.style.width='8px'; hR.style.cursor='col-resize'; bar.appendChild(hR);
+      function showTooltip(start, end){ tooltip.textContent = start + ' → ' + end; tooltip.style.display='block'; }
+      function hideTooltip(){ tooltip.style.display='none'; }
+      function onDownBody(e){ dragging=true; startX=e.clientX; origStart=r.start; origEnd=r.end; document.body.style.cursor='ew-resize'; showTooltip(r.start, r.end); e.preventDefault(); }
+      function onDownLeft(e){ resizingLeft=true; startX=e.clientX; origStart=r.start; document.body.style.cursor='col-resize'; showTooltip(r.start, r.end); e.stopPropagation(); e.preventDefault(); }
+      function onDownRight(e){ resizingRight=true; startX=e.clientX; origEnd=r.end; document.body.style.cursor='col-resize'; showTooltip(r.start, r.end); e.stopPropagation(); e.preventDefault(); }
+      const hL=document.createElement('div'); hL.style.position='absolute'; hL.style.left='-4px'; hL.style.top='0'; hL.style.bottom='0'; hL.style.width='8px'; hL.style.cursor='col-resize'; hL.title='Drag to change start date'; bar.appendChild(hL);
+      const hR=document.createElement('div'); hR.style.position='absolute'; hR.style.right='-4px'; hR.style.top='0'; hR.style.bottom='0'; hR.style.width='8px'; hR.style.cursor='col-resize'; hR.title='Drag to change end date'; bar.appendChild(hR);
       bar.addEventListener('mousedown', onDownBody);
+      bar.title='Drag to move entire timeline';
       hL.addEventListener('mousedown', onDownLeft); hR.addEventListener('mousedown', onDownRight);
-      document.addEventListener('mouseup', ()=>{ if(dragging||resizingLeft||resizingRight){ dragging=false; resizingLeft=false; resizingRight=false; document.body.style.cursor=''; } });
+      document.addEventListener('mouseup', ()=>{ if(dragging||resizingLeft||resizingRight){ dragging=false; resizingLeft=false; resizingRight=false; document.body.style.cursor=''; hideTooltip(); } });
       document.addEventListener('mousemove', (e)=>{
         if(!(dragging||resizingLeft||resizingRight)) return; const dx=e.clientX-startX; const days=Math.round(dx/(state.pxPerDay||6));
         let s=parseLocal(origStart); let eD=parseLocal(origEnd);
@@ -161,6 +182,8 @@
         // snapping
         s=snapByFilter(s); eD=snapByFilter(eD);
         r.start=fmt(s); r.end=fmt(eD);
+        // Show real-time dates during drag
+        showTooltip(r.start, r.end);
         const left=xForDate(r.start); const right=xForDate(r.end); bar.style.left=left+'px'; bar.style.width=Math.max(12, right-left)+'px';
       });
       canvas.appendChild(bar);
