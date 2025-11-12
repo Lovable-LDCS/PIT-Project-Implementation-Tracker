@@ -2054,23 +2054,167 @@
         });
       })();
 
+      // Milestone modal helpers
+      function openMilestoneSetup() {
+        const modal = document.querySelector('[data-testid="TID-MS-MODAL"]');
+        if (modal) modal.removeAttribute('hidden');
+      }
+      function closeMilestoneSetup() {
+        const modal = document.querySelector('[data-testid="TID-MS-MODAL"]');
+        if (modal) modal.setAttribute('hidden', '');
+      }
+      function saveMilestone() {
+        const dropdown = document.querySelector('[data-testid="TID-MS-DROPDOWN"]');
+        const newText = document.querySelector('[data-testid="TID-MS-NEW-TEXT"]');
+        
+        let title = '';
+        if (dropdown?.value === '__add_new__' && newText) {
+          title = newText.value.trim();
+        } else if (dropdown) {
+          title = dropdown.options[dropdown.selectedIndex]?.text || '';
+        }
+        
+        if (!title) {
+          alert('Please enter a milestone name');
+          return;
+        }
+        
+        if (!window.projectState) {
+          alert('No project selected');
+          return;
+        }
+        
+        // Initialize milestones array if needed
+        window.projectState.milestones = window.projectState.milestones || [];
+        
+        // Add milestone
+        window.projectState.milestones.push({
+          title: title,
+          name: title,
+          start: null,
+          end: null,
+          lead: 'Unassigned',
+          deliverables: []
+        });
+        
+        // Persist and re-render
+        projectsUpsert(window.projectState);
+        renderProjectHierarchy();
+        closeMilestoneSetup();
+      }
+
+      // Deliverable modal helpers
+      function openDeliverableSetup() {
+        const modal = document.querySelector('[data-testid="TID-DL-MODAL"]');
+        if (modal) modal.removeAttribute('hidden');
+        
+        // Populate milestone dropdown
+        const msSelect = document.querySelector('[data-testid="TID-DL-MILESTONE"]');
+        if (msSelect && window.projectState?.milestones) {
+          msSelect.innerHTML = '<option value="">-- Select milestone --</option>' +
+            window.projectState.milestones.map((ms, idx) => 
+              `<option value="${idx}">${ms.title || ms.name || 'Milestone ' + (idx + 1)}</option>`
+            ).join('');
+        }
+      }
+      function closeDeliverableSetup() {
+        const modal = document.querySelector('[data-testid="TID-DL-MODAL"]');
+        if (modal) modal.setAttribute('hidden', '');
+      }
+      function saveDeliverable() {
+        const msSelect = document.querySelector('[data-testid="TID-DL-MILESTONE"]');
+        const msIndex = parseInt(msSelect?.value || '', 10);
+        
+        if (isNaN(msIndex) || !window.projectState?.milestones?.[msIndex]) {
+          alert('Please select a milestone');
+          return;
+        }
+        
+        const dropdown = document.querySelector('[data-testid="TID-DL-DROPDOWN"]');
+        const newText = document.querySelector('[data-testid="TID-DL-NEW-TEXT"]');
+        
+        let title = '';
+        if (dropdown?.value === '__add_new__' && newText) {
+          title = newText.value.trim();
+        } else if (dropdown) {
+          title = dropdown.options[dropdown.selectedIndex]?.text || '';
+        }
+        
+        if (!title) {
+          alert('Please enter a deliverable description');
+          return;
+        }
+        
+        const milestone = window.projectState.milestones[msIndex];
+        milestone.deliverables = milestone.deliverables || [];
+        
+        // Add deliverable
+        milestone.deliverables.push({
+          title: title,
+          name: title,
+          start: null,
+          end: null,
+          lead: 'Unassigned',
+          tasks: []
+        });
+        
+        // Persist and re-render
+        projectsUpsert(window.projectState);
+        renderProjectHierarchy();
+        closeDeliverableSetup();
+      }
+
       // Task modal helpers and simple persistence for Projects
+      function openTaskSetup() {
+        const modal = document.querySelector('[data-testid="TID-TASK-MODAL"]');
+        if (modal) modal.removeAttribute('hidden');
+        
+        // Populate deliverable dropdown
+        const dlSelect = document.querySelector('[data-testid="TID-TASK-DELIVERABLE"]');
+        if (dlSelect && window.projectState?.milestones) {
+          let options = '<option value="">-- Select deliverable --</option>';
+          window.projectState.milestones.forEach((ms, msIdx) => {
+            (ms.deliverables || []).forEach((dl, dlIdx) => {
+              options += `<option value="${msIdx}-${dlIdx}">${dl.title || dl.name || 'Deliverable'}</option>`;
+            });
+          });
+          dlSelect.innerHTML = options;
+        }
+      }
       function closeTaskSetup(){ const m = document.querySelector('[data-testid="TID-TASK-MODAL"]'); if(m){ m.setAttribute('hidden',''); } }
       function saveTask(){
-        const msIndex = parseInt(document.querySelector('[data-testid="TID-TASK-MILESTONE"]')?.value||'0',10) || 0;
-        const dlIndex = parseInt(document.querySelector('[data-testid="TID-TASK-DELIVERABLE"]')?.value||'0',10) || 0;
-        const title = /** @type {HTMLInputElement} */(document.querySelector('[data-testid="TID-TASK-TITLE"]'))?.value?.trim() || 'Task';
-        const start = /** @type {HTMLInputElement} */(document.querySelector('[data-testid="TID-TASK-START"]'))?.value || '';
-        const end = /** @type {HTMLInputElement} */(document.querySelector('[data-testid="TID-TASK-END"]'))?.value || '';
-        const respSel = /** @type {HTMLSelectElement} */(document.querySelector('[data-testid="TID-TASK-ASSIGNEE"]'));
-        if(!window.projectState || !window.projectState.milestones?.[msIndex]){ alert('Invalid milestone'); return; }
-        const ms = window.projectState.milestones[msIndex];
-        if(!ms.deliverables?.[dlIndex]){ alert('Invalid deliverable'); return; }
-        const dl = ms.deliverables[dlIndex];
-        dl.tasks = dl.tasks || [];
-        dl.tasks.push({ title, start, end, resp: respSel?.value || '' });
-        renderProjectTree();
-        ensureBuildVisible();
+        const dlSelect = document.querySelector('[data-testid="TID-TASK-DELIVERABLE"]');
+        const dlValue = dlSelect?.value || '';
+        
+        if (!dlValue) {
+          alert('Please select a deliverable');
+          return;
+        }
+        
+        const [msIdx, dlIdx] = dlValue.split('-').map(n => parseInt(n, 10));
+        const title = document.querySelector('[data-testid="TID-TASK-TITLE"]')?.value?.trim() || 'Task';
+        
+        if (!window.projectState?.milestones?.[msIdx]?.deliverables?.[dlIdx]) {
+          alert('Invalid deliverable selection');
+          return;
+        }
+        
+        const deliverable = window.projectState.milestones[msIdx].deliverables[dlIdx];
+        deliverable.tasks = deliverable.tasks || [];
+        
+        // Add task
+        deliverable.tasks.push({
+          title: title,
+          name: title,
+          start: null,
+          end: null,
+          assignee: 'Unassigned',
+          progress: 0
+        });
+        
+        // Persist and re-render
+        projectsUpsert(window.projectState);
+        renderProjectHierarchy();
         closeTaskSetup();
       }
       function projectsLoad(){ try { return JSON.parse(localStorage.getItem('pm_projects')||'[]'); } catch(e){ return []; } }
