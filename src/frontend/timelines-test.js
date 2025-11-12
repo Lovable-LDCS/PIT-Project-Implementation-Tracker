@@ -23,15 +23,101 @@
     if(!state.viewStart){ state.viewStart = new Date(state.projectStart); }
   }
 
-  // Build example rows for test page (project + one milestone + one deliverable + one task)
+  // Build rows from actual project data or fallback to example
   function buildRows(){
     const ps = fmt(state.projectStart), pe = fmt(state.projectEnd);
-    state.rows = [
-      { kind:'proj', title: (window.projectState?.name || 'Project'), level:0, start: ps, end: pe, progress: 35 },
-      { kind:'ms', title: 'M1', level:1, start: ps, end: pe, progress: 50 },
-      { kind:'dl', title: 'D1.1', level:2, start: ps, end: pe, progress: 20 },
-      { kind:'task', title: 'T1.1.1', level:3, start: ps, end: pe, progress: 10 },
-    ];
+    
+    // If we have actual project data, use it
+    if(window.projectState && window.projectState.milestones && window.projectState.milestones.length > 0){
+      state.rows = [];
+      // Project row
+      state.rows.push({ 
+        kind:'proj', 
+        title: window.projectState.name || 'Project', 
+        level:0, 
+        start: window.projectState.start || ps, 
+        end: window.projectState.end || pe, 
+        progress: 0,
+        dataRef: window.projectState
+      });
+      
+      // Milestone rows
+      window.projectState.milestones.forEach((ms, msIdx) => {
+        state.rows.push({ 
+          kind:'ms', 
+          title: ms.title || ms.name || 'Milestone ' + (msIdx+1), 
+          level:1, 
+          start: ms.start || ps, 
+          end: ms.end || pe, 
+          progress: 0,
+          dataRef: ms,
+          msIdx: msIdx
+        });
+        
+        // Deliverable rows
+        if(ms.deliverables){
+          ms.deliverables.forEach((dl, dlIdx) => {
+            state.rows.push({ 
+              kind:'dl', 
+              title: dl.title || dl.name || 'Deliverable ' + (dlIdx+1), 
+              level:2, 
+              start: dl.start || ps, 
+              end: dl.end || pe, 
+              progress: 0,
+              dataRef: dl,
+              msIdx: msIdx,
+              dlIdx: dlIdx
+            });
+            
+            // Task rows
+            if(dl.tasks){
+              dl.tasks.forEach((task, taskIdx) => {
+                state.rows.push({ 
+                  kind:'task', 
+                  title: task.title || task.name || 'Task ' + (taskIdx+1), 
+                  level:3, 
+                  start: task.start || ps, 
+                  end: task.end || pe, 
+                  progress: task.progress || 0,
+                  dataRef: task,
+                  msIdx: msIdx,
+                  dlIdx: dlIdx,
+                  taskIdx: taskIdx
+                });
+              });
+            }
+          });
+        }
+      });
+    } else {
+      // Fallback to example rows for testing
+      state.rows = [
+        { kind:'proj', title: (window.projectState?.name || 'Project'), level:0, start: ps, end: pe, progress: 35 },
+        { kind:'ms', title: 'M1', level:1, start: ps, end: pe, progress: 50 },
+        { kind:'dl', title: 'D1.1', level:2, start: ps, end: pe, progress: 20 },
+        { kind:'task', title: 'T1.1.1', level:3, start: ps, end: pe, progress: 10 },
+      ];
+    }
+  }
+  
+  // Persist timeline changes back to project data
+  function saveTimelineChanges(row){
+    if(!row.dataRef) return;
+    
+    // Update the data reference
+    row.dataRef.start = row.start;
+    row.dataRef.end = row.end;
+    
+    // Update project start/end at top level
+    if(row.kind === 'proj' && window.projectState){
+      window.projectState.start = row.start;
+      window.projectState.end = row.end;
+    }
+    
+    // Persist to localStorage
+    if(window.projectState && window.projectsUpsert){
+      window.projectsUpsert(window.projectState);
+    }
   }
 
   function xForDate(d){ const start = new Date(state.projectStart.getFullYear(), state.projectStart.getMonth(), 1); const dt=parseLocal(d); const days=(dt-start)/(1000*60*60*24); return Math.round((state.pxPerDay||6)*days); }
@@ -172,7 +258,13 @@
       bar.addEventListener('mousedown', onDownBody);
       bar.title='Drag to move entire timeline';
       hL.addEventListener('mousedown', onDownLeft); hR.addEventListener('mousedown', onDownRight);
-      document.addEventListener('mouseup', ()=>{ if(dragging||resizingLeft||resizingRight){ dragging=false; resizingLeft=false; resizingRight=false; document.body.style.cursor=''; hideTooltip(); } });
+      document.addEventListener('mouseup', ()=>{ 
+        if(dragging||resizingLeft||resizingRight){ 
+          // Save changes when drag ends
+          saveTimelineChanges(r);
+          dragging=false; resizingLeft=false; resizingRight=false; document.body.style.cursor=''; hideTooltip(); 
+        } 
+      });
       document.addEventListener('mousemove', (e)=>{
         if(!(dragging||resizingLeft||resizingRight)) return; const dx=e.clientX-startX; const days=Math.round(dx/(state.pxPerDay||6));
         let s=parseLocal(origStart); let eD=parseLocal(origEnd);
