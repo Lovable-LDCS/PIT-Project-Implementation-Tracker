@@ -935,8 +935,9 @@
       </main>
     </div>
     <script src="app-main.js"></script>
+    <script src="timelines.js"></script>
     <script src="timelines-test.js"></script>
-    <script type="text/plain" data-disabled="true">
+    <script>
       // Early global fallbacks to prevent ReferenceError if bundling/binding is delayed
       (function(){
         if(typeof window.appNavTo !== 'function'){
@@ -2314,3 +2315,13 @@
         const within = (s, e)=>{
           if(!from && !to) return true;
    
+          const s = new Date(startDate);
+          const e = new Date(endDate);
+          return s >= from && s <= to;
+        };
+        // Filter and render tree
+        // ... rest of filter logic would go here
+      }
+    </script>
+  </body>
+</html>

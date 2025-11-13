@@ -498,7 +498,14 @@
           "type": "table_structure_check",
           "target": "#TID-PROJ-HIERARCHY-TABLE",
           "expectedColumns": 6,
-          "columnNames": ["Descriptor", "Start", "End", "Duration", "Responsible", "Progress"],
+          "columnNames": [
+            "Descriptor",
+            "Start",
+            "End",
+            "Duration",
+            "Responsible",
+            "Progress"
+          ],
           "severity": "critical"
         }
       ]
@@ -726,14 +733,20 @@
           "id": "UI-001",
           "name": "Responsive layout works (Desktop)",
           "type": "responsive_check",
-          "viewport": { "width": 1920, "height": 1080 },
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
           "severity": "high"
         },
         {
           "id": "UI-002",
           "name": "Responsive layout works (Mobile)",
           "type": "responsive_check",
-          "viewport": { "width": 375, "height": 667 },
+          "viewport": {
+            "width": 375,
+            "height": 667
+          },
           "severity": "high"
         },
         {
@@ -874,7 +887,7 @@
           "description": "Validates that the github-pages environment protection rules allow main branch to deploy",
           "severity": "critical",
           "remediationSteps": [
-            "Go to repository Settings → Environments → github-pages",
+            "Go to repository Settings \u2192 Environments \u2192 github-pages",
             "Under 'Deployment branches', select 'Selected branches'",
             "Add 'main' to the allowed branches list",
             "Remove any required reviewers that block automated deployments",
@@ -916,7 +929,10 @@
           "name": "Deployed application contains expected content",
           "type": "url_content_check",
           "target": "https://lovable-ldcs.github.io/PIT-Project-Implementation-Tracker/",
-          "expectedContent": ["TID-SHELL-ROOT", "PIT - Project Implementation Tracker"],
+          "expectedContent": [
+            "TID-SHELL-ROOT",
+            "PIT - Project Implementation Tracker"
+          ],
           "description": "Validates that the deployed application contains critical UI elements and test IDs",
           "severity": "critical",
           "remediationSteps": [
@@ -934,6 +950,152 @@
           "environment": "github-pages",
           "expectedStatus": "active",
           "description": "Verifies that GitHub shows an active deployment for the github-pages environment",
+          "severity": "critical"
+        }
+      ]
+    },
+    "scriptIntegrity": {
+      "description": "Script loading and execution integrity (CRITICAL)",
+      "checks": [
+        {
+          "id": "SCRIPT-001",
+          "name": "HTML files are complete with closing tags",
+          "type": "html_completeness",
+          "target": "src/frontend/**/*.html",
+          "mustContain": [
+            "</script>",
+            "</body>",
+            "</html>"
+          ],
+          "severity": "critical"
+        },
+        {
+          "id": "SCRIPT-002",
+          "name": "No disabled script blocks with executable code",
+          "type": "disabled_script_check",
+          "target": "src/frontend/**/*.html",
+          "mustNotContain": [
+            "type=\"text/plain\"",
+            "data-disabled=\"true\""
+          ],
+          "severity": "critical",
+          "note": "Script blocks must never use type='text/plain' or data-disabled='true' for executable code"
+        },
+        {
+          "id": "SCRIPT-003",
+          "name": "Core JavaScript files load without errors",
+          "type": "js_load_check",
+          "target": [
+            "src/frontend/app-boot.js",
+            "src/frontend/app-main.js",
+            "src/frontend/timelines.js"
+          ],
+          "severity": "critical"
+        },
+        {
+          "id": "SCRIPT-004",
+          "name": "Critical functions are defined in window scope",
+          "type": "window_function_check",
+          "target": "src/frontend/",
+          "requiredFunctions": [
+            "navigateTo",
+            "appNavTo",
+            "tlRender",
+            "tlInitFromStore",
+            "tlSetZoom",
+            "openProjectSetup"
+          ],
+          "severity": "critical"
+        }
+      ]
+    },
+    "timelinesCompliance": {
+      "description": "Timelines page architecture compliance (ARC-TIMELINES-002)",
+      "architectureRef": "docs/architecture/ARC-TIMELINES-002-MATRIX-REDESIGN.md",
+      "checks": [
+        {
+          "id": "TL-001",
+          "name": "Timelines page route exists",
+          "type": "route_exists",
+          "target": "#/timelines",
+          "severity": "critical"
+        },
+        {
+          "id": "TL-002",
+          "name": "Timeline toolbar with zoom controls present",
+          "type": "element_exists",
+          "testIds": [
+            "TID-TL-Z-YEAR",
+            "TID-TL-Z-QUARTER",
+            "TID-TL-Z-MONTH",
+            "TID-TL-Z-WEEK",
+            "TID-TL-Z-DAY"
+          ],
+          "severity": "critical"
+        },
+        {
+          "id": "TL-003",
+          "name": "Timeline controls present",
+          "type": "element_exists",
+          "testIds": [
+            "TID-TL-VIEW-START",
+            "TID-TL-PROJECT-SELECT",
+            "TID-TL-CREATE-PROJECT",
+            "TID-TL-APPLY",
+            "TID-TL-BACK"
+          ],
+          "severity": "critical"
+        },
+        {
+          "id": "TL-004",
+          "name": "Timeline canvas and lanes render",
+          "type": "element_exists",
+          "testIds": [
+            "TID-TL-CANVAS"
+          ],
+          "severity": "critical"
+        },
+        {
+          "id": "TL-005",
+          "name": "Timeline filter controls present",
+          "type": "element_exists",
+          "testIds": [
+            "TID-TL-FSHOW-PROJ",
+            "TID-TL-FSHOW-MS",
+            "TID-TL-FSHOW-DL",
+            "TID-TL-FSHOW-TASK",
+            "TID-TL-FRESP"
+          ],
+          "severity": "critical"
+        },
+        {
+          "id": "TL-006",
+          "name": "Timeline renders project bars",
+          "type": "visual_check",
+          "description": "Project timeline bar must be visible when project exists",
+          "testIds": [
+            "TID-TL-BAR-PROJ-0"
+          ],
+          "severity": "critical"
+        },
+        {
+          "id": "TL-007",
+          "name": "Timeline navigation from modals works",
+          "type": "integration_check",
+          "description": "Set timeline button in project modal must navigate to timelines page",
+          "testIds": [
+            "TID-PSETUP-OPEN-TIMELINE"
+          ],
+          "severity": "critical"
+        },
+        {
+          "id": "TL-008",
+          "name": "Timeline Apply button works",
+          "type": "integration_check",
+          "description": "Apply button must save project and return to projects page",
+          "testIds": [
+            "TID-TL-APPLY"
+          ],
           "severity": "critical"
         }
       ]

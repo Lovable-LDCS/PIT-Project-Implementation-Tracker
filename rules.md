@@ -52,9 +52,16 @@ A. Architecture Component (True North Spec)
      - PII handling, evidence storage policy, retention, AV/DLP steps.
   9. Internationalization & Time:
      - Default locale (en-ZA), timezone handling (UTC stored), formatting rules.
-  10. Telemetry & Audit:
+  10. Script Integrity (CRITICAL):
+     - HTML files must be complete with all closing tags (</script>, </body>, </html>).
+     - Script blocks must NEVER use type="text/plain" or data-disabled="true" attributes unless explicitly for template/data purposes.
+     - All core functionality JavaScript files must load and execute successfully without errors.
+     - Critical functions defined in Architecture must be available in window scope (e.g., tlRender, tlInitFromStore for Timelines).
+     - JavaScript syntax must be valid with no undefined references or broken closures.
+     - QA MUST verify that disabled scripts do not contain executable code required for functionality.
+  11. Telemetry & Audit:
      - Audit log entries to produce; chain-hash rules; metrics to emit.
-  11. Acceptance Criteria:
+  12. Acceptance Criteria:
      - BDD-style or structured list of verifiable outcomes with test IDs.
   12. Open Questions & Risks.
 
