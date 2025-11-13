@@ -98,3 +98,7 @@ desktop.ini
 # Playwright test results
 test-results/
 playwright-report/
+
+# Runtime PID files
+scripts/.pids/
+*.pid
