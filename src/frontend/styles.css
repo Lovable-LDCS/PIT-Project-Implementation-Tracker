@@ -323,3 +323,97 @@ section[data-testid="TID-TL-PAGE"] .tl-grid { margin-left: 8px; margin-right: 8p
   gap: 8px;
   margin: 0;
 }
+
+/* Utility classes for inline style removal */
+.section-title {
+  margin: 12px 0 8px 0;
+  font-size: 1rem;
+}
+
+.flex-end {
+  display: flex;
+  align-items: flex-end;
+}
+
+.flex-gap-8 {
+  display: flex;
+  gap: 8px;
+}
+
+.muted-note {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 8px 0 0 0;
+}
+
+.small-muted {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.modal-top {
+  z-index: 1100;
+}
+
+.modal-dialog-medium {
+  width: 480px;
+}
+
+.w-60 {
+  width: 60px;
+}
+
+.progress-fill {
+  width: 0%;
+  transition: width 0.2s ease;
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+.section-divider {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.timing-header {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+}
+
+.task-timing-block {
+  margin: 12px 0;
+}
+
+.task-initial-label {
+  font-size: 0.875rem;
+  color: #0D2850;
+  margin-bottom: 8px;
+}
+
+.label-block {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.label-block-simple {
+  display: block;
+}
+
+.input-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.cluster-preload {
+  margin-top: 12px;
+}
+
+.hidden {
+  display: none !important;
+}
