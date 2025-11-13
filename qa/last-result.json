@@ -1,255 +1,255 @@
 {
+  "startTime": "2025-11-13T09:18:26.1366984+00:00",
+  "overallStatus": "AMBER",
   "metadata": {
+    "skipTests": {
+      "IsPresent": true
+    },
+    "runner": "run-qa.ps1",
     "strictMode": {
       "IsPresent": false
-    },
-    "skipTests": {
-      "IsPresent": false
-    },
-    "runner": "run-qa.ps1"
+    }
   },
-  "version": "1.0.0",
+  "durationSeconds": 1.08,
+  "timestamp": "2025-11-13T09:18:27.2287546+00:00",
   "summary": {
-    "skipped": 3,
-    "passed": 16,
+    "skipped": 4,
     "total": 23,
-    "failed": 4
+    "failed": 3,
+    "passed": 16
   },
-  "startTime": "2025-11-13T08:58:31.7105960+00:00",
-  "durationSeconds": 1.46,
-  "overallStatus": "AMBER",
   "checks": [
     {
+      "message": "",
+      "severity": "critical",
       "id": "ARCH-001",
-      "status": "PASS",
-      "timestamp": "2025-11-13T08:58:31.7893400+00:00",
-      "details": "",
-      "severity": "critical",
-      "message": "",
+      "category": "architecture",
       "name": "rules.md exists and is valid",
-      "category": "architecture"
+      "status": "PASS",
+      "details": "",
+      "timestamp": "2025-11-13T09:18:26.1877583+00:00"
     },
     {
+      "message": "",
+      "severity": "critical",
       "id": "ARCH-002",
-      "status": "PASS",
-      "timestamp": "2025-11-13T08:58:31.8025629+00:00",
-      "details": "Found 29 architecture documents",
-      "severity": "critical",
-      "message": "",
+      "category": "architecture",
       "name": "Architecture documents present",
-      "category": "architecture"
+      "status": "PASS",
+      "details": "Found 29 architecture documents",
+      "timestamp": "2025-11-13T09:18:26.1949803+00:00"
     },
     {
+      "message": "",
+      "severity": "critical",
       "id": "ARCH-003",
-      "status": "PASS",
-      "timestamp": "2025-11-13T08:58:31.8059516+00:00",
-      "details": "Found 12 QA specification documents",
-      "severity": "critical",
-      "message": "",
+      "category": "architecture",
       "name": "QA specifications present",
-      "category": "architecture"
+      "status": "PASS",
+      "details": "Found 12 QA specification documents",
+      "timestamp": "2025-11-13T09:18:26.1976493+00:00"
     },
     {
+      "message": "",
+      "severity": "critical",
       "id": "ARCH-004",
-      "status": "PASS",
-      "timestamp": "2025-11-13T08:58:31.8211267+00:00",
-      "details": "Version: 1.0.0",
-      "severity": "critical",
-      "message": "",
+      "category": "architecture",
       "name": "qa/requirements.json is valid JSON",
-      "category": "architecture"
+      "status": "PASS",
+      "details": "Version: 1.0.0",
+      "timestamp": "2025-11-13T09:18:26.2038424+00:00"
     },
     {
+      "message": "",
+      "severity": "critical",
       "id": "BUILD-001",
-      "status": "PASS",
-      "timestamp": "2025-11-13T08:58:31.8222292+00:00",
-      "details": "",
-      "severity": "critical",
-      "message": "",
+      "category": "build",
       "name": "Frontend index.html exists",
-      "category": "build"
+      "status": "PASS",
+      "details": "",
+      "timestamp": "2025-11-13T09:18:26.2046130+00:00"
     },
     {
+      "message": "",
+      "severity": "high",
       "id": "BUILD-002",
-      "status": "PASS",
-      "timestamp": "2025-11-13T08:58:31.8231510+00:00",
-      "details": "",
-      "severity": "high",
-      "message": "",
+      "category": "build",
       "name": "Frontend assets directory exists",
-      "category": "build"
+      "status": "PASS",
+      "details": "",
+      "timestamp": "2025-11-13T09:18:26.2053584+00:00"
     },
     {
+      "message": "",
+      "severity": "critical",
       "id": "BUILD-003",
-      "status": "PASS",
-      "timestamp": "2025-11-13T08:58:31.8308574+00:00",
-      "details": "",
-      "severity": "critical",
-      "message": "",
+      "category": "build",
       "name": "CSS stylesheet exists",
-      "category": "build"
+      "status": "PASS",
+      "details": "",
+      "timestamp": "2025-11-13T09:18:26.2125626+00:00"
     },
     {
+      "message": "",
+      "severity": "critical",
       "id": "TYPE-001",
-      "status": "PASS",
-      "timestamp": "2025-11-13T08:58:32.1222098+00:00",
-      "details": "Checked 6 Python files",
-      "severity": "critical",
-      "message": "",
+      "category": "typeSafety",
       "name": "Python files are syntactically valid",
-      "category": "typeSafety"
+      "status": "PASS",
+      "details": "Checked 6 Python files",
+      "timestamp": "2025-11-13T09:18:26.4921237+00:00"
     },
     {
+      "message": "Tests skipped via -SkipTests flag",
+      "severity": "critical",
       "id": "UNIT-001",
-      "status": "PASS",
-      "timestamp": "2025-11-13T08:58:32.1248591+00:00",
-      "details": "Found 2 test files",
-      "severity": "critical",
-      "message": "",
+      "category": "unitTests",
       "name": "pytest tests exist",
-      "category": "unitTests"
+      "status": "SKIP",
+      "details": "",
+      "timestamp": "2025-11-13T09:18:26.4936756+00:00"
     },
     {
+      "message": "Tests skipped via -SkipTests flag",
+      "severity": "critical",
       "id": "UNIT-002",
-      "status": "SKIP",
-      "timestamp": "2025-11-13T08:58:32.5101084+00:00",
-      "details": "",
-      "severity": "critical",
-      "message": "pytest not installed or not in PATH",
+      "category": "unitTests",
       "name": "All pytest tests pass",
-      "category": "unitTests"
+      "status": "SKIP",
+      "details": "",
+      "timestamp": "2025-11-13T09:18:26.4951071+00:00"
     },
     {
+      "message": "",
+      "severity": "critical",
       "id": "WIRE-001",
-      "status": "FAIL",
-      "timestamp": "2025-11-13T08:58:32.7473117+00:00",
-      "details": "",
-      "severity": "medium",
-      "message": "qa-check.ps1 reported issues (may be implementation details not in architecture)",
+      "category": "wiring",
       "name": "Frontend wiring checks pass",
-      "category": "wiring"
+      "status": "PASS",
+      "details": "Executed scripts/qa/qa-check.ps1",
+      "timestamp": "2025-11-13T09:18:26.7730292+00:00"
     },
     {
+      "message": "",
+      "severity": "critical",
       "id": "SEC-001",
-      "status": "PASS",
-      "timestamp": "2025-11-13T08:58:32.7744673+00:00",
-      "details": "",
-      "severity": "critical",
-      "message": "",
+      "category": "security",
       "name": "No sensitive keys in source code",
-      "category": "security"
+      "status": "PASS",
+      "details": "",
+      "timestamp": "2025-11-13T09:18:26.8001533+00:00"
     },
     {
+      "message": "",
+      "severity": "critical",
       "id": "DEPLOY-001",
-      "status": "PASS",
-      "timestamp": "2025-11-13T08:58:32.7757391+00:00",
-      "details": "",
-      "severity": "critical",
-      "message": "",
+      "category": "deployment",
       "name": "GitHub Pages workflow exists",
-      "category": "deployment"
+      "status": "PASS",
+      "details": "",
+      "timestamp": "2025-11-13T09:18:26.8016430+00:00"
     },
     {
+      "message": "",
+      "severity": "critical",
       "id": "DEPLOY-002",
-      "status": "PASS",
-      "timestamp": "2025-11-13T08:58:32.7766098+00:00",
-      "details": "",
-      "severity": "critical",
-      "message": "",
+      "category": "deployment",
       "name": "Frontend index.html exists",
-      "category": "deployment"
+      "status": "PASS",
+      "details": "",
+      "timestamp": "2025-11-13T09:18:26.8026921+00:00"
     },
     {
+      "message": "",
+      "severity": "critical",
       "id": "DEPLOY-003",
-      "status": "PASS",
-      "timestamp": "2025-11-13T08:58:32.7781648+00:00",
-      "details": "",
-      "severity": "critical",
-      "message": "",
+      "category": "deployment",
       "name": "Frontend assets directory exists",
-      "category": "deployment"
+      "status": "PASS",
+      "details": "",
+      "timestamp": "2025-11-13T09:18:26.8045117+00:00"
     },
     {
+      "message": "",
+      "severity": "critical",
       "id": "DEPLOY-004",
-      "status": "PASS",
-      "timestamp": "2025-11-13T08:58:32.7790538+00:00",
-      "details": "",
-      "severity": "critical",
-      "message": "",
+      "category": "deployment",
       "name": ".nojekyll file exists",
-      "category": "deployment"
+      "status": "PASS",
+      "details": "",
+      "timestamp": "2025-11-13T09:18:26.8055663+00:00"
     },
     {
-      "id": "DEPLOY-005",
-      "status": "PASS",
-      "timestamp": "2025-11-13T08:58:32.7804083+00:00",
-      "details": "",
-      "severity": "critical",
       "message": "",
+      "severity": "critical",
+      "id": "DEPLOY-005",
+      "category": "deployment",
       "name": "Deploy workflow configured for main branch",
-      "category": "deployment"
-    },
-    {
-      "id": "DEPLOY-006",
-      "status": "FAIL",
-      "timestamp": "2025-11-13T08:58:32.7937249+00:00",
-      "details": "",
-      "severity": "high",
-      "message": "On branch 'copilot/fix-qa-validation-error'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.",
-      "name": "Current branch deployment status",
-      "category": "deployment"
-    },
-    {
-      "id": "DEPLOY-007",
-      "status": "SKIP",
-      "timestamp": "2025-11-13T08:58:33.1704512+00:00",
-      "details": "Environment may not exist yet or gh CLI is not authenticated. First deployment will create it.",
-      "severity": "high",
-      "message": "Could not retrieve environment configuration: ",
-      "name": "GitHub Pages environment allows main branch deployment",
-      "category": "deployment"
-    },
-    {
-      "id": "DEPLOY-008",
-      "status": "FAIL",
-      "timestamp": "2025-11-13T08:58:33.1709792+00:00",
-      "details": "",
-      "severity": "high",
-      "message": "Could not retrieve workflow runs: ",
-      "name": "Latest deployment workflow run succeeded",
-      "category": "deployment"
-    },
-    {
-      "id": "DEPLOY-009",
       "status": "PASS",
-      "timestamp": "2025-11-13T08:58:33.1714047+00:00",
       "details": "",
-      "severity": "high",
-      "message": "URL https://lovable-ldcs.github.io/PIT-Project-Implementation-Tracker/ is accessible (HTTP 200)",
-      "name": "Live deployment URL is accessible",
-      "category": "deployment"
+      "timestamp": "2025-11-13T09:18:26.8072614+00:00"
     },
     {
-      "id": "DEPLOY-010",
+      "message": "On branch 'copilot/fix-qa-validation-error'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.",
+      "severity": "high",
+      "id": "DEPLOY-006",
+      "category": "deployment",
+      "name": "Current branch deployment status",
       "status": "FAIL",
-      "timestamp": "2025-11-13T08:58:33.1718684+00:00",
-      "details": "The deployed page does not contain all expected test IDs and content. This may indicate an incorrect artifact upload path or Jekyll processing issues.",
-      "severity": "high",
-      "message": "Missing expected content: PIT - Project Implementation Tracker",
-      "name": "Deployed application contains expected content",
-      "category": "deployment"
+      "details": "",
+      "timestamp": "2025-11-13T09:18:26.8226587+00:00"
     },
     {
-      "id": "DEPLOY-011",
-      "status": "SKIP",
-      "timestamp": "2025-11-13T08:58:33.1722878+00:00",
-      "details": "First deployment will create the deployment record",
+      "message": "Could not retrieve environment configuration: ",
       "severity": "high",
+      "id": "DEPLOY-007",
+      "category": "deployment",
+      "name": "GitHub Pages environment allows main branch deployment",
+      "status": "SKIP",
+      "details": "Environment may not exist yet or gh CLI is not authenticated. First deployment will create it.",
+      "timestamp": "2025-11-13T09:18:27.2104867+00:00"
+    },
+    {
+      "message": "Could not retrieve workflow runs: ",
+      "severity": "high",
+      "id": "DEPLOY-008",
+      "category": "deployment",
+      "name": "Latest deployment workflow run succeeded",
+      "status": "FAIL",
+      "details": "",
+      "timestamp": "2025-11-13T09:18:27.2110892+00:00"
+    },
+    {
+      "message": "URL https://lovable-ldcs.github.io/PIT-Project-Implementation-Tracker/ is accessible (HTTP 200)",
+      "severity": "high",
+      "id": "DEPLOY-009",
+      "category": "deployment",
+      "name": "Live deployment URL is accessible",
+      "status": "PASS",
+      "details": "",
+      "timestamp": "2025-11-13T09:18:27.2115406+00:00"
+    },
+    {
+      "message": "Missing expected content: PIT - Project Implementation Tracker",
+      "severity": "high",
+      "id": "DEPLOY-010",
+      "category": "deployment",
+      "name": "Deployed application contains expected content",
+      "status": "FAIL",
+      "details": "The deployed page does not contain all expected test IDs and content. This may indicate an incorrect artifact upload path or Jekyll processing issues.",
+      "timestamp": "2025-11-13T09:18:27.2119938+00:00"
+    },
+    {
       "message": "No deployments found for github-pages environment",
+      "severity": "high",
+      "id": "DEPLOY-011",
+      "category": "deployment",
       "name": "GitHub deployment status is Active",
-      "category": "deployment"
+      "status": "SKIP",
+      "details": "First deployment will create the deployment record",
+      "timestamp": "2025-11-13T09:18:27.2124110+00:00"
     }
   ],
-  "timestamp": "2025-11-13T08:58:33.1904004+00:00",
-  "endTime": "2025-11-13T08:58:33.1755923+00:00"
+  "version": "1.0.0",
+  "endTime": "2025-11-13T09:18:27.2158351+00:00"
 }

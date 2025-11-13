@@ -1,7 +1,7 @@
 # QA Run Report
 
-**Generated:** 2025-11-13 08:58:33  
-**Duration:** 1.46 seconds  
+**Generated:** 2025-11-13 09:18:27  
+**Duration:** 1.08 seconds  
 **Overall Status:** AMBER
 
 ## Summary
@@ -10,8 +10,8 @@
 |--------|-------|
 | Total Checks | 23 |
 | Passed | 16 |
-| Failed | 4 |
-| Skipped | 3 |
+| Failed | 3 |
+| Skipped | 4 |
 
 ## Status Breakdown
 
@@ -84,7 +84,7 @@
 
 | ID | Name | Status | Severity |
 |----|------|--------|----------|
-| UNIT-001 | pytest tests exist | ✓ PASS | critical |
+| UNIT-001 | pytest tests exist | - SKIP | critical |
 | UNIT-002 | All pytest tests pass | - SKIP | critical |
 
 
@@ -92,7 +92,7 @@
 
 | ID | Name | Status | Severity |
 |----|------|--------|----------|
-| WIRE-001 | Frontend wiring checks pass | ✗ FAIL | medium |
+| WIRE-001 | Frontend wiring checks pass | ✓ PASS | critical |
 
 
 
@@ -101,11 +101,6 @@
 ### Failed Checks Require Action
 
 The following checks failed and must be addressed:
-
-
-#### [WIRE-001] Frontend wiring checks pass
-- **Severity:** medium
-- **Message:** qa-check.ps1 reported issues (may be implementation details not in architecture)
 
 
 #### [DEPLOY-006] Current branch deployment status
@@ -136,9 +131,9 @@ According to the **True North** methodology:
 ## Metadata
 
 - **Strict Mode:** False
-- **Skip Tests:** False
+- **Skip Tests:** True
 - **Runner:** run-qa.ps1 v1.0.0
-- **Report Generated:** 2025-11-13T08:58:33.1755923+00:00
+- **Report Generated:** 2025-11-13T09:18:27.2158351+00:00
 
 ---
 *This report follows the True North Build Methodology - Architecture → QA → Implementation → GREEN*

@@ -18,6 +18,9 @@ Core Principles
 5) No regressions: A previously passing QA check must never be silently removed or degraded.
 6) Compliance by design: Security, privacy, and accessibility are specified in Architecture and enforced by QA.
 7) Hierarchical roll-up by design: Data models, APIs, and UI must support company → department → person → project drilldowns and roll-ups across the group.
+8) QA validates FULL functionality: QA must verify complete app functionality and wiring, not just code availability. All components defined in Architecture must be wired and functional. Wiring failures are CRITICAL severity and cause RED status.
+9) Legacy components must be removed: If Architecture states a component should not exist, it must be deleted from code and QA checks (nuked, not bypassed). If code has features not in Architecture, either add to Architecture or remove from code.
+10) Architecture is comprehensive: Architecture (True North) contains ALL aspects: build requirements, functionality, UI/UX, wiring, routing, deployment, data flows, etc. If the app fails, either Architecture or QA is outdated - both must be updated to maintain alignment.
 
 Artifacts (Canonical Sources)
 A. Architecture Component (True North Spec)
@@ -63,6 +66,13 @@ B. QA Specification (Automated, Machine-Checkable)
   3. Red/Amber/Green Criteria: precise pass/fail thresholds; surfaces Red X on failure.
   4. Non-regression Rules: snapshot baselines, contract tests.
   5. CI mapping: which jobs run, artifacts produced (reports, coverage, screenshots).
+  6. Wiring Validation: ALL routes, event handlers, and component interactions defined in Architecture must be verified as functional. Missing wiring = CRITICAL failure.
+  7. Severity Guidelines:
+     - CRITICAL: Architecture-defined functionality missing/broken, security issues, build failures, wiring failures
+     - HIGH: Important features degraded, accessibility issues, performance degradation
+     - MEDIUM: Nice-to-have features, cosmetic issues
+     - Deployment checks on non-main branches use HIGH severity (not CRITICAL) to allow AMBER status
+  8. Legacy Removal: QA must NOT check for components that Architecture explicitly removes. If Architecture says "remove X", QA check for X must also be removed.
 
 C. Implementation (Code)
 - Must reference Architecture and QA by IDs in PR descriptions and commits.
@@ -83,10 +93,14 @@ Process (End-to-End Loop)
    - Build strictly to Architecture and QA. Do not improvise un-specified behaviors.
 4) Automated QA (Every commit/PR and after merge)
    - Run full test suite: unit, integration, e2e, a11y, schema, security checks.
-   - Any failure yields Red X. No handover.
+   - Verify ALL wiring and functionality defined in Architecture.
+   - Any CRITICAL failure yields Red X. No handover.
+   - AMBER status (high severity failures only) is acceptable for feature branch PRs but not for main branch deployments.
 5) Fix Cycle on Failure
    - If failure is due to missing/incorrect implementation → fix code/tests.
    - If failure is due to Architecture gap or changed understanding → update Architecture first, then QA, then code.
+   - If failure is due to legacy component still present → REMOVE (nuke) the component from code and QA checks.
+   - NEVER bypass or downgrade QA check severity to hide issues.
 6) UI Review (Manual)
    - Product Owner reviews deployed preview.
    - If UI is off: update Architecture to reflect correct requirement; update QA to fail; then implement fixes; rerun QA until Green.
@@ -102,6 +116,8 @@ Definitions of “Evidence” (What QA Looks For)
 - Security/Privacy Evidence: headers (CSP, HSTS), CSRF tokens, RLS policies; permissions enforced; audit entries created; AV/DLP scan logs.
 - Accessibility Evidence: a11y test pass; no color-only cues; keyboard navigation; focus management.
 - Performance Evidence: P50/P95 latencies; bundle size budgets; DB query counts within thresholds.
+- Wiring Evidence: ALL routes map to correct pages; ALL event handlers are attached; ALL navigation links work; ALL functions called by routes exist and are wired correctly. Wiring failures are CRITICAL severity.
+- Negative Evidence (Legacy Removal): Components that Architecture says to remove MUST NOT be present in code or QA checks.
 
 Roles & Responsibilities
 - Main Admin (Owner): approves Architecture, final UI acceptance; controls releases.
@@ -135,6 +151,51 @@ Security, Privacy, Accessibility (Baked-in)
 - POPIA/GDPR alignment: DSR workflows; data minimization; retention; breach notification plan.
 - Audit: tamper-evident (hash-chained) logs for key events.
 - Accessibility: WCAG 2.2 AA; keyboard-only usable; visible focus; screen reader labels; avoid color-only semantics.
+
+QA Validation Philosophy (Critical Requirements)
+1. QA Validates FULL Functionality, Not Just Code Availability
+   - QA must verify that the application actually WORKS per architecture, not just that files exist
+   - Wiring checks (routes, event handlers, navigation) are CRITICAL severity
+   - If a route is defined in architecture but doesn't work in code → RED status, block merge
+   - If a button exists but has no click handler → RED status, block merge
+   - "Code exists" ≠ "App works" - QA must validate the latter
+
+2. Legacy Components Must Be Removed (Nuked), Not Bypassed
+   - If Architecture says "remove component X", then:
+     a) Remove X from code (HTML, JS, CSS)
+     b) Remove X from QA validation checks
+     c) Document removal in architecture doc
+   - NEVER bypass a failing check by downgrading severity or adding "may be implementation details" notes
+   - NEVER keep dead code "just in case" - if not in Architecture, it must not exist
+
+3. Architecture-QA-Code Alignment Must Be Perfect
+   - If Architecture defines feature X:
+     → QA must check for X with appropriate severity
+     → Code must implement X
+   - If Code has feature Y not in Architecture:
+     → Either add Y to Architecture (if needed)
+     → Or remove Y from Code (if not needed)
+   - If QA checks for feature Z not in Architecture:
+     → Either add Z to Architecture (if needed)
+     → Or remove Z from QA checks (if not needed)
+   - NEVER allow misalignment to persist
+
+4. Severity Guidelines Are Strict
+   - CRITICAL: Architecture-defined functionality missing/broken, security issues, build failures, WIRING FAILURES
+   - HIGH: Important features degraded, accessibility issues, performance degradation
+   - MEDIUM: Nice-to-have features, cosmetic issues
+   - Exception: Deployment checks on non-main branches use HIGH (not CRITICAL) to allow AMBER status for PRs
+   - NEVER downgrade severity to hide problems or make dashboards look better
+
+5. Final Handover Must Be GREEN with Full Functionality
+   - AMBER is acceptable for feature branch PRs (allows deployment failures on non-main branches)
+   - AMBER is NOT acceptable for main branch or final handover
+   - Final handover requires:
+     → GREEN status (all critical checks pass)
+     → Full functional application per architecture
+     → All wiring validated and working
+     → Zero legacy/undefined components remaining
+     → Deployment successful (on main branch)
 
 Hierarchical Roll-up Requirement (True North Rule)
 - The platform must enable roll-up and drill-down views across:

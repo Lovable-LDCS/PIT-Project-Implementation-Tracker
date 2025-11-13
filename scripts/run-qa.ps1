@@ -309,32 +309,30 @@ Write-Section "5. Frontend Wiring Checks"
 
 $qaCheckScript = "scripts/qa/qa-check.ps1"
 if (Test-Path $qaCheckScript) {
-    Write-Host "  Running existing PowerShell QA checks..." -ForegroundColor Gray
-    Write-Host "  NOTE: qa-check.ps1 may check implementation details beyond architecture requirements" -ForegroundColor Yellow
+    Write-Host "  Running frontend wiring validation..." -ForegroundColor Gray
     try {
         $qaCheckOutput = & $qaCheckScript 2>&1
         $qaCheckExitCode = $LASTEXITCODE
         
         if ($qaCheckExitCode -eq 0) {
             Record-Check -Id "WIRE-001" -Name "Frontend wiring checks pass" `
-                -Category "wiring" -Status "PASS" -Severity "medium" `
+                -Category "wiring" -Status "PASS" -Severity "critical" `
                 -Details "Executed $qaCheckScript"
         } else {
-            # qa-check.ps1 failure is MEDIUM severity - it checks implementation details
-            # Critical wiring checks are covered by E2E tests in requirements.json
+            # Wiring failures are CRITICAL - QA must verify full app functionality per True North
             Record-Check -Id "WIRE-001" -Name "Frontend wiring checks pass" `
-                -Category "wiring" -Status "FAIL" -Severity "medium" `
-                -Message "qa-check.ps1 reported issues (may be implementation details not in architecture)" `
+                -Category "wiring" -Status "FAIL" -Severity "critical" `
+                -Message "Frontend wiring validation failed - components not properly wired" `
                 -Details ($qaCheckOutput | Select-Object -Last 20 | Out-String)
         }
     } catch {
         Record-Check -Id "WIRE-001" -Name "Frontend wiring checks pass" `
-            -Category "wiring" -Status "FAIL" -Severity "medium" `
+            -Category "wiring" -Status "FAIL" -Severity "critical" `
             -Message "Error executing qa-check.ps1: $($_.Exception.Message)"
     }
 } else {
     Record-Check -Id "WIRE-001" -Name "Frontend wiring checks pass" `
-        -Category "wiring" -Status "SKIP" -Severity "medium" `
+        -Category "wiring" -Status "SKIP" -Severity "critical" `
         -Message "$qaCheckScript not found"
 }
 
