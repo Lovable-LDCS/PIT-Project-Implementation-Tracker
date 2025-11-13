@@ -27,63 +27,77 @@
   function buildRows(){
     const ps = fmt(state.projectStart), pe = fmt(state.projectEnd);
     
+    // Read filter checkboxes
+    const fShowProj = document.querySelector('[data-testid="TID-TLT-FSHOW-PROJ"]')?.checked !== false;
+    const fShowMs = document.querySelector('[data-testid="TID-TLT-FSHOW-MS"]')?.checked !== false;
+    const fShowDl = document.querySelector('[data-testid="TID-TLT-FSHOW-DL"]')?.checked !== false;
+    const fShowTask = document.querySelector('[data-testid="TID-TLT-FSHOW-TASK"]')?.checked !== false;
+    
     // If we have actual project data, use it
     if(window.projectState && window.projectState.milestones && window.projectState.milestones.length > 0){
       state.rows = [];
       // Project row
-      state.rows.push({ 
-        kind:'proj', 
-        title: window.projectState.name || 'Project', 
-        level:0, 
-        start: window.projectState.start || ps, 
-        end: window.projectState.end || pe, 
-        progress: 0,
-        dataRef: window.projectState
-      });
+      if(fShowProj){
+        state.rows.push({ 
+          kind:'proj', 
+          title: window.projectState.name || 'Project', 
+          level:0, 
+          start: window.projectState.start || ps, 
+          end: window.projectState.end || pe, 
+          progress: 0,
+          dataRef: window.projectState
+        });
+      }
       
       // Milestone rows
       window.projectState.milestones.forEach((ms, msIdx) => {
-        state.rows.push({ 
-          kind:'ms', 
-          title: ms.title || ms.name || 'Milestone ' + (msIdx+1), 
-          level:1, 
-          start: ms.start || ps, 
-          end: ms.end || pe, 
-          progress: 0,
-          dataRef: ms,
-          msIdx: msIdx
-        });
+        if(fShowMs){
+          state.rows.push({ 
+            kind:'ms', 
+            title: ms.title || ms.name || 'Milestone ' + (msIdx+1), 
+            level:1, 
+            start: ms.start || ps, 
+            end: ms.end || pe, 
+            progress: 0,
+            dataRef: ms,
+            msIdx: msIdx
+          });
+        }
         
         // Deliverable rows
         if(ms.deliverables){
           ms.deliverables.forEach((dl, dlIdx) => {
-            state.rows.push({ 
-              kind:'dl', 
-              title: dl.title || dl.name || 'Deliverable ' + (dlIdx+1), 
-              level:2, 
-              start: dl.start || ps, 
-              end: dl.end || pe, 
-              progress: 0,
-              dataRef: dl,
-              msIdx: msIdx,
-              dlIdx: dlIdx
-            });
+            if(fShowDl){
+              state.rows.push({ 
+                kind:'dl', 
+                title: dl.title || dl.name || 'Deliverable ' + (dlIdx+1), 
+                level:2, 
+                start: dl.start || ps, 
+                end: dl.end || pe, 
+                progress: 0,
+                dataRef: dl,
+                msIdx: msIdx,
+                dlIdx: dlIdx
+              });
+            }
             
             // Task rows
             if(dl.tasks){
               dl.tasks.forEach((task, taskIdx) => {
-                state.rows.push({ 
-                  kind:'task', 
-                  title: task.title || task.name || 'Task ' + (taskIdx+1), 
-                  level:3, 
-                  start: task.start || ps, 
-                  end: task.end || pe, 
-                  progress: task.progress || 0,
-                  dataRef: task,
-                  msIdx: msIdx,
-                  dlIdx: dlIdx,
-                  taskIdx: taskIdx
-                });
+                if(fShowTask){
+                  state.rows.push({ 
+                    kind:'task', 
+                    title: task.title || task.name || 'Task ' + (taskIdx+1), 
+                    level:3, 
+                    start: task.start || ps, 
+                    end: task.end || pe, 
+                    progress: task.progress || 0,
+                    dataRef: task,
+                    msIdx: msIdx,
+                    dlIdx: dlIdx,
+                    taskIdx: taskIdx
+                  });
+                }
               });
             }
           });
@@ -91,12 +105,11 @@
       });
     } else {
       // Fallback to example rows for testing
-      state.rows = [
-        { kind:'proj', title: (window.projectState?.name || 'Project'), level:0, start: ps, end: pe, progress: 35 },
-        { kind:'ms', title: 'M1', level:1, start: ps, end: pe, progress: 50 },
-        { kind:'dl', title: 'D1.1', level:2, start: ps, end: pe, progress: 20 },
-        { kind:'task', title: 'T1.1.1', level:3, start: ps, end: pe, progress: 10 },
-      ];
+      state.rows = [];
+      if(fShowProj) state.rows.push({ kind:'proj', title: (window.projectState?.name || 'Project'), level:0, start: ps, end: pe, progress: 35 });
+      if(fShowMs) state.rows.push({ kind:'ms', title: 'M1', level:1, start: ps, end: pe, progress: 50 });
+      if(fShowDl) state.rows.push({ kind:'dl', title: 'D1.1', level:2, start: ps, end: pe, progress: 20 });
+      if(fShowTask) state.rows.push({ kind:'task', title: 'T1.1.1', level:3, start: ps, end: pe, progress: 10 });
     }
   }
   
@@ -377,6 +390,38 @@
     const vs=document.querySelector('[data-testid="TID-TLT-VIEW-START"]'); if(vs && !vs._bound){ vs.value = fmt(state.viewStart||todayLocal()); vs.addEventListener('change', ()=>{ if(vs.value){ state.viewStart = parseLocal(vs.value); render(); } }); vs._bound=true; }
     // Row height control via wheel on label area (optional)
     const labels=document.querySelector('[data-testid="TID-TLT-LABELS"]'); if(labels && !labels._wheel){ labels.addEventListener('wheel', (e)=>{ if(e.ctrlKey){ e.preventDefault(); state.rowH = Math.max(20, Math.min(56, (state.rowH||28) + (e.deltaY>0? -2: 2))); render(); } }); labels._wheel=true; }
+    
+    // Bind filter checkboxes to re-render on change
+    const filterIds = ['TID-TLT-FSHOW-PROJ', 'TID-TLT-FSHOW-MS', 'TID-TLT-FSHOW-DL', 'TID-TLT-FSHOW-TASK'];
+    filterIds.forEach(tid => {
+      const el = document.querySelector(`[data-testid="${tid}"]`);
+      if(el && !el._bound){ 
+        el.addEventListener('change', () => render()); 
+        el._bound = true; 
+      }
+    });
+    
+    // Bind project selector
+    const projSel = document.querySelector('[data-testid="TID-TLT-PROJECT-SELECT"]');
+    if(projSel && !projSel._bound){
+      // Populate from stored projects
+      if(window.projectsLoad){
+        const projects = window.projectsLoad();
+        projSel.innerHTML = '<option>All Projects</option>' + 
+          projects.map((p, i) => `<option value="${i}">${p.name || 'Untitled'}</option>`).join('');
+      }
+      projSel.addEventListener('change', () => {
+        if(projSel.value && projSel.value !== 'All Projects' && window.projectsLoad){
+          const projects = window.projectsLoad();
+          const idx = parseInt(projSel.value, 10);
+          if(!isNaN(idx) && projects[idx]){
+            window.projectState = JSON.parse(JSON.stringify(projects[idx]));
+            render();
+          }
+        }
+      });
+      projSel._bound = true;
+    }
   }
 
   function init(){
