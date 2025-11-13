@@ -562,4 +562,27 @@
   }
 
   document.addEventListener('DOMContentLoaded', init);
+  
+  // Expose functions to window for navigation system (app-boot.js)
+  window.tlRender = render;
+  window.tlInitFromStore = function() {
+    // Initialize timeline with stored project data if available
+    const page = document.querySelector('[data-testid="TID-TL-TEST-PAGE"]');
+    if (!page) return;
+    
+    // If window.projectState exists, use it
+    if (window.projectState) {
+      // State is already set, just ensure rendering happens
+      render();
+    } else {
+      // Try to load from stored projects
+      if (window.projectsLoad) {
+        const projects = window.projectsLoad();
+        if (projects && projects.length > 0) {
+          window.projectState = JSON.parse(JSON.stringify(projects[0]));
+        }
+      }
+      render();
+    }
+  };
 })();
