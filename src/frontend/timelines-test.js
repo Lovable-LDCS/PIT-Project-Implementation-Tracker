@@ -382,6 +382,12 @@
       if(axesScroll && !scroll._syncBound){ scroll.addEventListener('scroll', ()=>{ axesScroll.scrollLeft = scroll.scrollLeft; }); scroll._syncBound=true; }
       if(axesScroll && !axesScroll._syncBound){ axesScroll.addEventListener('scroll', ()=>{ scroll.scrollLeft = axesScroll.scrollLeft; }); axesScroll._syncBound=true; }
     }
+    // Show/hide Apply button based on workflow context
+    const applyBtn = document.querySelector('[data-testid="TID-TLT-APPLY-BTN"]');
+    if(applyBtn){
+      if(window.returnToModal){ applyBtn.removeAttribute('hidden'); }
+      else { applyBtn.setAttribute('hidden', ''); }
+    }
     // viewport
     const vp=document.querySelector('[data-testid="TID-TLT-VIEWPORT"]'); if(vp){ vp.textContent = 'Viewport: '+ (window.innerWidth||document.documentElement.clientWidth)+'px'; }
     miniQA();
