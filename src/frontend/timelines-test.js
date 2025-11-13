@@ -15,11 +15,11 @@
   function fmt(d){ const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; }
   function parseLocal(s){ if(s instanceof Date) return new Date(s.getFullYear(), s.getMonth(), s.getDate()); const [y,m,d]=String(s||'').split('-').map(n=>parseInt(n,10)); return new Date(y||1970,(m?m-1:0), d||1); }
 
-  // Baseline when no project dates
+  // Baseline when no project dates - extend to 10 years for off-screen dragging
   function ensureBaseline(){
     const hasDates = !!(window.projectState && window.projectState.start && window.projectState.end);
     if(hasDates){ state.projectStart = parseLocal(window.projectState.start); state.projectEnd = parseLocal(window.projectState.end); }
-    else { const s=todayLocal(); const e=new Date(s); e.setFullYear(e.getFullYear()+5); state.projectStart=s; state.projectEnd=e; }
+    else { const s=todayLocal(); const e=new Date(s); e.setFullYear(e.getFullYear()+10); state.projectStart=s; state.projectEnd=e; }
     if(!state.viewStart){ state.viewStart = new Date(state.projectStart); }
   }
 
@@ -176,10 +176,12 @@
     const grid = document.querySelector('[data-testid="TID-TLT-GRID"]');
     if(axesWrap && grid){
       // compute width of timeline area and align axes left to progress right
+      // Ensure timeline extends full 10 years for off-screen dragging
       const canvas = document.querySelector('[data-testid="TID-TLT-CANVAS"]');
       const maxX = xForDate(state.projectEnd);
       const gridW = grid.getBoundingClientRect().width;
-      const timelineAreaW = Math.max((gridW - state.labelW - 6 - state.progressW - 6), maxX + 48);
+      // Add extra buffer (500px) to ensure smooth off-screen dragging
+      const timelineAreaW = Math.max((gridW - state.labelW - 6 - state.progressW - 6), maxX + 500);
       if(canvas){ canvas.style.width = timelineAreaW + 'px'; canvas.style.position='relative'; }
       axesWrap.style.width = timelineAreaW + 'px';
       if(axesScroll){
@@ -318,22 +320,28 @@
     // Required: axis filter applies and shows only selected axes
     const f = state.axisFilter || new Set(['year']);
     const axes={ y:document.querySelector('[data-testid="TID-TLT-AXIS-YEARS"]'), q:document.querySelector('[data-testid="TID-TLT-AXIS-QUARTERS"]'), m:document.querySelector('[data-testid="TID-TLT-AXIS-MONTHS"]'), w:document.querySelector('[data-testid="TID-TLT-AXIS-WEEKS"]'), d:document.querySelector('[data-testid="TID-TLT-AXIS-DAYS"]') };
+    
+    // Check each axis: if in filter, must be visible; if not in filter, must be hidden
     if(f.has('year') && axes.y && axes.y.hasAttribute('hidden')) out.push('Year axis hidden although filtered on');
     if(!f.has('year') && axes.y && !axes.y.hasAttribute('hidden')) out.push('Year axis visible although filtered off');
     if(f.has('quarter') && axes.q && axes.q.hasAttribute('hidden')) out.push('Quarters axis should be visible after toggle');
+    if(!f.has('quarter') && axes.q && !axes.q.hasAttribute('hidden')) out.push('QA-TLT: Quarters axis visible at Year zoom');
+    if(f.has('month') && axes.m && axes.m.hasAttribute('hidden')) out.push('Months axis should be visible after toggle');
+    if(!f.has('month') && axes.m && !axes.m.hasAttribute('hidden')) out.push('Months axis visible although filtered off');
+    if(f.has('week') && axes.w && axes.w.hasAttribute('hidden')) out.push('Weeks axis should be visible after toggle');
+    if(!f.has('week') && axes.w && !axes.w.hasAttribute('hidden')) out.push('Weeks axis visible although filtered off');
+    if(f.has('day') && axes.d && axes.d.hasAttribute('hidden')) out.push('Days axis should be visible after toggle');
+    if(!f.has('day') && axes.d && !axes.d.hasAttribute('hidden')) out.push('Days axis visible although filtered off');
+    
     // Min width check for progress column
     const progWidthEl = document.querySelector('[data-testid="TID-TLT-PROGRESS"]'); if(progWidthEl){ if(progWidthEl.getBoundingClientRect().width < 80) out.push('Progress column too small (<80px)'); }
-    // Baseline
+    // Baseline - extend to 10 years minimum
     const t=todayLocal(); const ps=state.projectStart, pe=state.projectEnd;
     if(!ps||!pe){ out.push('QA-TLT: Missing baseline projectStart/projectEnd'); }
     else{
       const ds=Math.abs((new Date(ps.getFullYear(),ps.getMonth(),ps.getDate())-t)/(1000*60*60*24)); if(ds>2) out.push('QA-TLT: Baseline start not today');
-      const years=(pe-ps)/(1000*60*60*24*365); if(years<4.9) out.push('QA-TLT: Baseline span < 5 years');
+      const years=(pe-ps)/(1000*60*60*24*365); if(years<9.9) out.push('QA-TLT: Baseline span < 10 years (required for off-screen dragging)');
     }
-    // Axes visible at zoom
-    const z=state.zoom; const ax={ y:document.querySelector('[data-testid="TID-TLT-AXIS-YEARS"]'), q:document.querySelector('[data-testid="TID-TLT-AXIS-QUARTERS"]'), m:document.querySelector('[data-testid="TID-TLT-AXIS-MONTHS"]') };
-    if(z==='year' && ax.q && !ax.q.hasAttribute('hidden')) out.push('QA-TLT: Quarters axis visible at Year zoom');
-    if(z==='quarter' && ax.m && ax.m.hasAttribute('hidden')) out.push('QA-TLT: Months axis hidden at Quarter zoom');
     // Anchoring check
     const scroll=document.querySelector('[data-testid="TID-TLT-SCROLL"]'); const canvas=document.querySelector('[data-testid="TID-TLT-CANVAS"]');
     if(scroll&&canvas){ const gutter = parseFloat(getComputedStyle(canvas).marginLeft)||0; const expectedLeft = Math.max(0, xForDate(state.viewStart)-gutter); const delta=Math.abs(scroll.scrollLeft-expectedLeft); if(delta>2) out.push('QA-TLT: View not anchored to View start'); }
@@ -341,6 +349,11 @@
     if(!document.querySelector('[data-testid="TID-TLT-LABELS"]')) out.push('QA-TLT: Labels not rendered');
     if(!document.querySelector('[data-testid="TID-TLT-PROGRESS"]')) out.push('QA-TLT: Progress column missing');
     if(!document.querySelector('[data-testid="TID-TLT-CANVAS"]')) out.push('QA-TLT: Timeline canvas missing');
+    // Check Apply button during project setup workflow
+    if(window.returnToModal && window.returnToModal === 'project'){
+      const applyBtn = document.querySelector('[data-testid="TID-TLT-APPLY-BTN"]');
+      if(!applyBtn) out.push('Apply button missing during project setup workflow');
+    }
 
     const p=document.querySelector('[data-testid="TID-TLT-PROBLEMS"]'); if(p){ if(out.length){ p.innerHTML='<ul>'+out.map(s=>'<li>'+s+'</li>').join('')+'</ul>'; p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); p.innerHTML=''; } }
   }
@@ -431,6 +444,14 @@
     bindToolbar();
     bindResizers();
     window.addEventListener('resize', ()=>{ render(); });
+    
+    // Show/hide Apply button based on workflow context
+    const applyBtn = document.querySelector('[data-testid="TID-TLT-APPLY-BTN"]');
+    if(applyBtn){
+      if(window.returnToModal){ applyBtn.removeAttribute('hidden'); }
+      else { applyBtn.setAttribute('hidden', ''); }
+    }
+    
     render();
   }
 

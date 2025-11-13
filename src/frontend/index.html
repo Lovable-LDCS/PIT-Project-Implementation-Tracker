@@ -696,6 +696,7 @@
             <label>Timeline start date <input type="date" data-testid="TID-TLT-VIEW-START" /></label>
             <label>Project <select data-testid="TID-TLT-PROJECT-SELECT"><option>All Projects</option></select></label>
             <button class="btn" type="button" data-testid="TID-TLT-CREATE-PROJECT" onclick="openProjectSetup()">Create project</button>
+            <button class="btn primary" type="button" data-testid="TID-TLT-APPLY-BTN" onclick="applyTimelineAndReturn()" hidden>Apply</button>
             <span data-testid="TID-TLT-VIEWPORT"></span>
           </div>
           <div class="timeline-filters" data-testid="TID-TLT-FILTERS">
@@ -1290,7 +1291,29 @@
         else if(mode === 'milestones'){ closeMilestoneSetup(); }
         // Navigate to timelines page
         navigateTo('#/timelines');
+        // Show Apply button when in workflow mode
+        setTimeout(() => {
+          const applyBtn = document.querySelector('[data-testid="TID-TLT-APPLY-BTN"]');
+          if(applyBtn && window.returnToModal){ applyBtn.removeAttribute('hidden'); }
+        }, 100);
       }
+      
+      function applyTimelineAndReturn(){
+        // Timeline data is already persisted in window.projectState via saveTimelineChanges
+        // Navigate back to the modal
+        if(window.returnToModal === 'project'){ 
+          navigateTo('#/projects');
+          setTimeout(() => openProjectSetup(), 100);
+        } else if(window.returnToModal === 'milestone'){ 
+          navigateTo('#/projects');
+          setTimeout(() => openMilestoneSetup(), 100);
+        }
+        window.returnToModal = null;
+        // Hide Apply button
+        const applyBtn = document.querySelector('[data-testid="TID-TLT-APPLY-BTN"]');
+        if(applyBtn){ applyBtn.setAttribute('hidden', ''); }
+      }
+      
       function backToProjects(){ navigateTo('#/projects'); if(window.returnToModal==='project'){ openProjectSetup(); } else if(window.returnToModal==='milestone'){ openMilestoneSetup(); } window.returnToModal=null; }
 
       // Timelines engine (very light MVP)
@@ -2238,9 +2261,13 @@
         window.closeTaskSetup = closeTaskSetup;
         // Timelines
         window.openTimelines = openTimelines;
+        window.applyTimelineAndReturn = applyTimelineAndReturn;
         window.backToProjects = backToProjects;
         window.tlSetZoom = tlSetZoom;
         window.tlApplyAndBack = tlApplyAndBack;
+        // Project persistence
+        window.projectsLoad = projectsLoad;
+        window.projectsUpsert = projectsUpsert;
         // Settings
         window.settingsSave = settingsSave;
       })();
