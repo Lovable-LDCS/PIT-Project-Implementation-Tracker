@@ -12,26 +12,26 @@
     "maxFailures": 0,
     "metadata": {
       "ci": {
-        "commitHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/commit/0b4c2d69e57e91b88555bc61d19dd7ecbf35b052",
-        "commitHash": "0b4c2d69e57e91b88555bc61d19dd7ecbf35b052",
-        "buildHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/actions/runs/19328852169"
+        "commitHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/commit/f1923bd26d727f3c28e20d14b5cf00b1bde1b160",
+        "commitHash": "f1923bd26d727f3c28e20d14b5cf00b1bde1b160",
+        "buildHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/actions/runs/19335582172"
       },
       "gitCommit": {
-        "shortHash": "98efe33",
-        "hash": "98efe33e391df4fb35aa1c4dc5933c1b44f6ec32",
-        "subject": "Update QA requirements and add architecture consolidation document",
-        "body": "Update QA requirements and add architecture consolidation document\n\nCo-authored-by: Lovable-LDCS <220024911+Lovable-LDCS@users.noreply.github.com>\n",
+        "shortHash": "8c6a4a0",
+        "hash": "8c6a4a07fa3c9131bc9d76f5a46863a6a68ec41c",
+        "subject": "Implement timeline critical fixes: date resizer, auto-scroll, axes alignment",
+        "body": "Implement timeline critical fixes: date resizer, auto-scroll, axes alignment\n\nCo-authored-by: Lovable-LDCS <220024911+Lovable-LDCS@users.noreply.github.com>\n",
         "author": {
           "name": "copilot-swe-agent[bot]",
           "email": "198982749+Copilot@users.noreply.github.com",
-          "time": 1763031146000
+          "time": 1763045972000
         },
         "committer": {
           "name": "copilot-swe-agent[bot]",
           "email": "198982749+Copilot@users.noreply.github.com",
-          "time": 1763031146000
+          "time": 1763045972000
         },
-        "branch": "copilot/fix-sidebar-navigation-issues"
+        "branch": "copilot/fix-date-line-slider-issues"
       }
     },
     "preserveOutput": "always",
@@ -59,26 +59,26 @@
         "retries": 2,
         "metadata": {
           "ci": {
-            "commitHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/commit/0b4c2d69e57e91b88555bc61d19dd7ecbf35b052",
-            "commitHash": "0b4c2d69e57e91b88555bc61d19dd7ecbf35b052",
-            "buildHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/actions/runs/19328852169"
+            "commitHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/commit/f1923bd26d727f3c28e20d14b5cf00b1bde1b160",
+            "commitHash": "f1923bd26d727f3c28e20d14b5cf00b1bde1b160",
+            "buildHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/actions/runs/19335582172"
           },
           "gitCommit": {
-            "shortHash": "98efe33",
-            "hash": "98efe33e391df4fb35aa1c4dc5933c1b44f6ec32",
-            "subject": "Update QA requirements and add architecture consolidation document",
-            "body": "Update QA requirements and add architecture consolidation document\n\nCo-authored-by: Lovable-LDCS <220024911+Lovable-LDCS@users.noreply.github.com>\n",
+            "shortHash": "8c6a4a0",
+            "hash": "8c6a4a07fa3c9131bc9d76f5a46863a6a68ec41c",
+            "subject": "Implement timeline critical fixes: date resizer, auto-scroll, axes alignment",
+            "body": "Implement timeline critical fixes: date resizer, auto-scroll, axes alignment\n\nCo-authored-by: Lovable-LDCS <220024911+Lovable-LDCS@users.noreply.github.com>\n",
             "author": {
               "name": "copilot-swe-agent[bot]",
               "email": "198982749+Copilot@users.noreply.github.com",
-              "time": 1763031146000
+              "time": 1763045972000
             },
             "committer": {
               "name": "copilot-swe-agent[bot]",
               "email": "198982749+Copilot@users.noreply.github.com",
-              "time": 1763031146000
+              "time": 1763045972000
             },
-            "branch": "copilot/fix-sidebar-navigation-issues"
+            "branch": "copilot/fix-date-line-slider-issues"
           }
         },
         "id": "chromium",
@@ -106,13 +106,13 @@
   "suites": [],
   "errors": [
     {
-      "message": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments.",
-      "stack": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments."
+      "message": "Error: http://localhost:8000 is already used, make sure that nothing is running on the port/url or set reuseExistingServer:true in config.webServer.",
+      "stack": "Error: http://localhost:8000 is already used, make sure that nothing is running on the port/url or set reuseExistingServer:true in config.webServer."
     }
   ],
   "stats": {
-    "startTime": "2025-11-13T10:52:58.668Z",
-    "duration": 131.596,
+    "startTime": "2025-11-13T15:00:09.784Z",
+    "duration": 15.68999999999994,
     "expected": 0,
     "skipped": 0,
     "unexpected": 0,
