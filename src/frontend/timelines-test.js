@@ -9,11 +9,54 @@
     labelW: 220,
     progressW: 160,
     rows: [],
+    autoScrollInterval: null,
   };
 
   function todayLocal(){ const t=new Date(); return new Date(t.getFullYear(), t.getMonth(), t.getDate()); }
   function fmt(d){ const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; }
   function parseLocal(s){ if(s instanceof Date) return new Date(s.getFullYear(), s.getMonth(), s.getDate()); const [y,m,d]=String(s||'').split('-').map(n=>parseInt(n,10)); return new Date(y||1970,(m?m-1:0), d||1); }
+
+  // Auto-scroll during drag near viewport edges
+  function startAutoScroll(direction, speed) {
+    if(state.autoScrollInterval) return; // Already scrolling
+    
+    const scroll = document.querySelector('[data-testid="TID-TLT-SCROLL"]');
+    if(!scroll) return;
+    
+    state.autoScrollInterval = setInterval(() => {
+      scroll.scrollLeft += direction * speed;
+    }, 16); // ~60fps
+  }
+
+  function stopAutoScroll() {
+    if(state.autoScrollInterval) {
+      clearInterval(state.autoScrollInterval);
+      state.autoScrollInterval = null;
+    }
+  }
+
+  function checkAutoScroll(e) {
+    const scroll = document.querySelector('[data-testid="TID-TLT-SCROLL"]');
+    if(!scroll) return;
+    
+    const rect = scroll.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const threshold = 50;
+    
+    if(x < threshold && x > 0) {
+      // Near left edge - scroll left
+      const proximity = (threshold - x) / threshold; // 0 to 1
+      const speed = 2 + (proximity * 8); // 2 to 10
+      startAutoScroll(-1, speed);
+    } else if(x > rect.width - threshold && x < rect.width) {
+      // Near right edge - scroll right
+      const proximity = (x - (rect.width - threshold)) / threshold;
+      const speed = 2 + (proximity * 8);
+      startAutoScroll(1, speed);
+    } else {
+      stopAutoScroll();
+    }
+  }
 
   // Baseline when no project dates - extend to 10 years for off-screen dragging
   function ensureBaseline(){
@@ -287,11 +330,17 @@
         if(dragging||resizingLeft||resizingRight){ 
           // Save changes when drag ends
           saveTimelineChanges(r);
+          stopAutoScroll(); // Stop auto-scroll on mouseup
           dragging=false; resizingLeft=false; resizingRight=false; document.body.style.cursor=''; hideTooltip(); 
         } 
       });
       document.addEventListener('mousemove', (e)=>{
-        if(!(dragging||resizingLeft||resizingRight)) return; const dx=e.clientX-startX; const days=Math.round(dx/(state.pxPerDay||6));
+        if(!(dragging||resizingLeft||resizingRight)) return; 
+        
+        // Check for auto-scroll near edges
+        checkAutoScroll(e);
+        
+        const dx=e.clientX-startX; const days=Math.round(dx/(state.pxPerDay||6));
         let s=parseLocal(origStart); let eD=parseLocal(origEnd);
         if(dragging){ s.setDate(s.getDate()+days); eD.setDate(eD.getDate()+days); }
         else if(resizingLeft){ s.setDate(s.getDate()+days); }
@@ -313,20 +362,61 @@
     function bind(el, cb){ if(!el||el._bound) return; let dragging=false; el.addEventListener('mousedown', e=>{ dragging=true; document.body.style.cursor='col-resize'; e.preventDefault(); }); document.addEventListener('mouseup', ()=>{ if(dragging){ dragging=false; document.body.style.cursor=''; }}); document.addEventListener('mousemove', e=>{ if(!dragging) return; cb(e); }); el._bound=true; }
     const r1=document.querySelector('[data-testid="TID-TLT-RESIZER"]');
     const r2=document.querySelector('[data-testid="TID-TLT-RESIZER-2"]');
+    const dateResizer=document.querySelector('[data-testid="TID-TLT-DATE-RESIZER"]');
+    
     bind(r1, (e)=>{ state.labelW = Math.max(140, Math.min(560, state.labelW + e.movementX)); document.documentElement.style.setProperty('--tl-label-w', state.labelW+'px'); });
     bind(r2, (e)=>{ state.progressW = Math.max(80, Math.min(360, state.progressW + e.movementX)); const grid=document.querySelector('[data-testid="TID-TLT-GRID"]'); if(grid){ grid.style.gridTemplateColumns = `var(--tl-label-w) 6px ${state.progressW}px 6px 1fr`; } });
+    
+    // Date column resizer - adjusts timeline density (pxPerDay)
+    if(dateResizer && !dateResizer._bound){
+      let dragging = false;
+      let startX = 0;
+      let startPxPerDay = state.pxPerDay;
+      
+      dateResizer.addEventListener('mousedown', (e) => {
+        dragging = true;
+        startX = e.clientX;
+        startPxPerDay = state.pxPerDay;
+        document.body.style.cursor = 'col-resize';
+        e.preventDefault();
+      });
+      
+      document.addEventListener('mousemove', (e) => {
+        if(!dragging) return;
+        const dx = e.clientX - startX;
+        // Scale based on movement (positive = wider, negative = narrower)
+        const scaleFactor = 1 + (dx / 500); // 500px movement = 2x scale
+        state.pxPerDay = Math.max(0.5, Math.min(100, startPxPerDay * scaleFactor));
+        render();
+      });
+      
+      document.addEventListener('mouseup', () => {
+        if(dragging) {
+          dragging = false;
+          document.body.style.cursor = '';
+        }
+      });
+      
+      dateResizer._bound = true;
+    }
   }
 
   // Mini QA — test page only
   function miniQA(){
     const out=[];
-    // Alignment: axes left must align with progress right edge
+    
+    // CRITICAL: Date column resizer must exist (TL-ENH-004)
+    const dateResizer = document.querySelector('[data-testid="TID-TLT-DATE-RESIZER"]');
+    if(!dateResizer) out.push('CRITICAL: Date column resize handle missing (TID-TLT-DATE-RESIZER)');
+    
+    // CRITICAL: Alignment: axes left must align with progress right edge (TL-ENH-005)
     const prog=document.querySelector('[data-testid="TID-TLT-PROGRESS"]');
     const axesWrap=document.querySelector('[data-testid="TID-TLT-AXES-CONTENT"]');
     if(prog && axesWrap){
       const pr=prog.getBoundingClientRect(); const ar=axesWrap.getBoundingClientRect();
-      if(Math.abs(pr.right - ar.left) > 2){ out.push('Left border of date rows not aligned with right border of progress table'); }
+      if(Math.abs(pr.right - ar.left) > 2){ out.push('CRITICAL: Left border of date rows not aligned with right border of progress table'); }
     }
+    
     // Required: axis filter applies and shows only selected axes
     const f = state.axisFilter || new Set(['year']);
     const axes={ y:document.querySelector('[data-testid="TID-TLT-AXIS-YEARS"]'), q:document.querySelector('[data-testid="TID-TLT-AXIS-QUARTERS"]'), m:document.querySelector('[data-testid="TID-TLT-AXIS-MONTHS"]'), w:document.querySelector('[data-testid="TID-TLT-AXIS-WEEKS"]'), d:document.querySelector('[data-testid="TID-TLT-AXIS-DAYS"]') };

@@ -140,8 +140,20 @@ input, select, textarea { padding: 6px 8px; border: 1px solid #cbd5e1; border-ra
 .tltest-grid { display:grid; grid-template-columns: var(--tl-label-w) 6px 160px 6px 1fr; gap:0; border:1px solid #e5e7eb; border-radius:8px; background:#fff; overflow-x:auto; overflow-y:hidden; }
 .tltest-left { position:sticky; left:0; top:0; border-right:1px solid #e5e7eb; background:#fff; pointer-events:none; }
 .tltest-resizer { cursor:col-resize; background: #e5e7eb; }
+.tltest-date-resizer { 
+  position: absolute; 
+  right: 0; 
+  top: 0; 
+  bottom: 0; 
+  width: 6px; 
+  background: #cbd5e1; 
+  cursor: col-resize; 
+  z-index: 100;
+  transition: background 0.2s;
+}
+.tltest-date-resizer:hover { background: var(--brand-primary); }
 .tltest-progress { background:#fff; border-right:1px solid #e5e7eb; min-width: 120px; }
-.tltest-right { min-width: 240px; }
+.tltest-right { min-width: 240px; position: relative; }
 .tltest-scroll { overflow:auto; position:relative; }
 .tltest-axis { height:24px; border-bottom:1px solid #e5e7eb; font-size:11px; color:#334155; position:relative; cursor:pointer; }
 .tltest-axis .tl-tick-label{ white-space:nowrap; background:#fff; }
