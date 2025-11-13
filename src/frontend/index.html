@@ -1027,8 +1027,8 @@
           });
         });
       });
-      // Initial nav
-      navigateTo(location.hash || '#/');
+      // Initial nav is handled by app-main.js DOMContentLoaded listener
+      // to ensure DOM elements are ready before navigation functions are called
 
       // Duration filter modal wiring
       function openDurationModal(){ const m = document.querySelector('[data-testid="TID-DUR-MODAL"]'); if(m){ m.removeAttribute('hidden'); } }
