@@ -1187,6 +1187,33 @@
           "description": "Excel-like collapse/expand for timeline rows without affecting underlying structure",
           "severity": "medium",
           "note": "Enhancement per ARC-TIMELINES-004. Collapse project hides milestones, etc. Planned for Phase 2."
+        },
+        {
+          "id": "TL-017",
+          "name": "Apply button exists during project setup workflow",
+          "type": "element_exists",
+          "description": "Apply button must be visible on Timeline page when returnToModal is set",
+          "testIds": [
+            "TID-TLT-APPLY-BTN"
+          ],
+          "severity": "critical",
+          "note": "User navigates from Project Setup -> Set Timeline -> Timeline page. After configuring timeline, Apply button returns to Project Setup modal."
+        },
+        {
+          "id": "TL-018",
+          "name": "Axes visibility matches filter selection",
+          "type": "integration_check",
+          "description": "Only selected axis buttons should have visible axes. If only Year is selected, Quarters/Months/Weeks/Days must be hidden",
+          "severity": "critical",
+          "note": "Fixes QA-TLT: Quarters axis visible at Year zoom. Each axis visibility must match its button selection state."
+        },
+        {
+          "id": "TL-019",
+          "name": "Axes alignment with Progress column",
+          "type": "visual_check",
+          "description": "Left border of date rows must align exactly with right border of Progress column",
+          "severity": "critical",
+          "note": "Fixes alignment issue. Axes must not overlap or misalign with grid columns."
         }
       ]
     },
