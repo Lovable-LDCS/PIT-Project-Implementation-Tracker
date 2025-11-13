@@ -153,16 +153,471 @@
             "#/projects",
             "#/reports",
             "#/permissions",
-            "#/workitem",
             "#/evidence",
             "#/gantt",
+            "#/timelines",
             "#/audit",
             "#/notify",
             "#/import",
-            "#/exports",
             "#/templates",
-            "#/search"
+            "#/qa"
           ],
+          "severity": "critical",
+          "note": "Removed obsolete routes: workitem, search, exports, settings per ARC-SIDEBAR-002"
+        }
+      ]
+    },
+    "sidebarNavigation": {
+      "description": "Sidebar navigation updates per ARC-SIDEBAR-002",
+      "checks": [
+        {
+          "id": "NAV-001",
+          "name": "Projects renamed to Implementation",
+          "type": "element_text_check",
+          "target": "a[href='#/projects']",
+          "expectedText": "Implementation",
+          "severity": "critical"
+        },
+        {
+          "id": "NAV-002",
+          "name": "Obsolete navigation items removed",
+          "type": "element_not_exists",
+          "targets": [
+            "a[href='#/workitem']",
+            "a[href='#/search']",
+            "a[href='#/exports']",
+            "a[href='#/settings']"
+          ],
+          "severity": "critical",
+          "note": "Work Item, Search, Exports, and Settings removed per architecture"
+        },
+        {
+          "id": "NAV-003",
+          "name": "Timelines route consolidated",
+          "type": "route_check",
+          "target": "#/timelines",
+          "expectedPage": "TID-TL-TEST-PAGE",
+          "severity": "critical",
+          "note": "Timelines route now points to test timeline page (TID-TL-TEST-PAGE)"
+        },
+        {
+          "id": "NAV-004",
+          "name": "Quality Assurance navigation exists",
+          "type": "element_exists",
+          "target": "a[href='#/qa']",
+          "severity": "high"
+        }
+      ]
+    },
+    "projectsPageIndicators": {
+      "description": "Project indicators row per ARC-PROJECTS-002",
+      "checks": [
+        {
+          "id": "PROJ-IND-001",
+          "name": "Project indicators container exists",
+          "type": "element_exists",
+          "target": "TID-PROJ-INDICATORS",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-IND-002",
+          "name": "Duration indicator with progress bar",
+          "type": "element_exists",
+          "target": "TID-IND-DURATION",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-IND-003",
+          "name": "Milestones count indicator",
+          "type": "element_exists",
+          "target": "TID-IND-MS-COUNT",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-IND-004",
+          "name": "Deliverables count indicator",
+          "type": "element_exists",
+          "target": "TID-IND-DL-COUNT",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-IND-005",
+          "name": "Tasks count indicator",
+          "type": "element_exists",
+          "target": "TID-IND-TASK-COUNT",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-IND-006",
+          "name": "Team size indicator",
+          "type": "element_exists",
+          "target": "TID-IND-TEAM-SIZE",
+          "severity": "high"
+        },
+        {
+          "id": "PROJ-IND-007",
+          "name": "Progress vs Plan indicator",
+          "type": "element_exists",
+          "target": "TID-IND-PROGRESS-VS-PLAN",
+          "severity": "high"
+        },
+        {
+          "id": "PROJ-IND-008",
+          "name": "Overall progress indicator with bar",
+          "type": "element_exists",
+          "target": "TID-IND-OVERALL-PROGRESS",
+          "severity": "critical"
+        }
+      ]
+    },
+    "projectsPageFilters": {
+      "description": "Enhanced filter system per ARC-PROJECTS-002",
+      "checks": [
+        {
+          "id": "PROJ-FILT-001",
+          "name": "Filter bar exists",
+          "type": "element_exists",
+          "target": "TID-FILTER-BAR",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-FILT-002",
+          "name": "Project status dropdown",
+          "type": "element_exists",
+          "target": "TID-FILTER-STATUS",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-FILT-003",
+          "name": "Start date filter",
+          "type": "element_exists",
+          "target": "TID-FILTER-START",
+          "severity": "high"
+        },
+        {
+          "id": "PROJ-FILT-004",
+          "name": "End date filter",
+          "type": "element_exists",
+          "target": "TID-FILTER-END",
+          "severity": "high"
+        },
+        {
+          "id": "PROJ-FILT-005",
+          "name": "Duration filter button",
+          "type": "element_exists",
+          "target": "TID-FILTER-DURATION-BTN",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-FILT-006",
+          "name": "Responsible person filter",
+          "type": "element_exists",
+          "target": "TID-FILTER-RESP",
+          "severity": "high"
+        },
+        {
+          "id": "PROJ-FILT-007",
+          "name": "Progress filter button",
+          "type": "element_exists",
+          "target": "TID-FILTER-PROGRESS-BTN",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-FILT-008",
+          "name": "Duration filter modal",
+          "type": "element_exists",
+          "target": "TID-DUR-MODAL",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-FILT-009",
+          "name": "Progress filter modal",
+          "type": "element_exists",
+          "target": "TID-PROGRESS-MODAL",
+          "severity": "critical"
+        }
+      ]
+    },
+    "projectsPageModals": {
+      "description": "Complete modal system per ARC-PROJECTS-002",
+      "checks": [
+        {
+          "id": "PROJ-MOD-001",
+          "name": "Project setup modal exists",
+          "type": "element_exists",
+          "target": "TID-PSETUP-MODAL",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-MOD-002",
+          "name": "Project leader dropdown in project modal",
+          "type": "element_exists",
+          "target": "TID-PSETUP-LEADER",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-MOD-003",
+          "name": "Invite member section in project modal",
+          "type": "element_exists",
+          "target": "TID-PSETUP-INVITE-SECTION",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-MOD-004",
+          "name": "Milestone setup modal exists",
+          "type": "element_exists",
+          "target": "TID-MS-MODAL",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-MOD-005",
+          "name": "Edit in Timelines button in milestone modal",
+          "type": "element_exists",
+          "target": "TID-MS-OPEN-TIMELINE",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-MOD-006",
+          "name": "Milestone new text input",
+          "type": "element_exists",
+          "target": "TID-MS-NEW-TEXT",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-MOD-007",
+          "name": "Deliverable setup modal exists",
+          "type": "element_exists",
+          "target": "TID-DL-MODAL",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-MOD-008",
+          "name": "Task setup modal exists",
+          "type": "element_exists",
+          "target": "TID-TASK-MODAL",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-MOD-009",
+          "name": "Task cluster toggle",
+          "type": "element_exists",
+          "target": "TID-TASK-CLUSTER-TOGGLE",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-MOD-010",
+          "name": "Task linking dropdown",
+          "type": "element_exists",
+          "target": "TID-TASK-LINK-DROPDOWN",
+          "severity": "high"
+        },
+        {
+          "id": "PROJ-MOD-011",
+          "name": "Task offset calculation fields",
+          "type": "element_exists",
+          "target": "TID-TASK-OFFSET-DAYS",
+          "severity": "high"
+        },
+        {
+          "id": "PROJ-MOD-012",
+          "name": "Task duration calculation fields",
+          "type": "element_exists",
+          "target": "TID-TASK-DUR-DAYS",
+          "severity": "high"
+        },
+        {
+          "id": "PROJ-MOD-013",
+          "name": "Invite member sub-modal exists",
+          "type": "element_exists",
+          "target": "TID-INVITE-MODAL",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-MOD-014",
+          "name": "Invite name input",
+          "type": "element_exists",
+          "target": "TID-INVITE-NAME",
+          "severity": "critical"
+        },
+        {
+          "id": "PROJ-MOD-015",
+          "name": "Invite email input",
+          "type": "element_exists",
+          "target": "TID-INVITE-EMAIL",
+          "severity": "critical"
+        }
+      ]
+    },
+    "projectsPageHierarchy": {
+      "description": "Hierarchical table rendering per ARC-PROJECTS-002",
+      "checks": [
+        {
+          "id": "PROJ-HIER-001",
+          "name": "Project row with color coding exists",
+          "type": "css_class_check",
+          "target": ".row-project",
+          "expectedStyles": {
+            "background-color": "#0D2850"
+          },
+          "severity": "critical",
+          "note": "Project level: #0D2850 (dark blue)"
+        },
+        {
+          "id": "PROJ-HIER-002",
+          "name": "Milestone row with color coding exists",
+          "type": "css_class_check",
+          "target": ".row-milestone",
+          "expectedStyles": {
+            "background-color": "#006B92"
+          },
+          "severity": "critical",
+          "note": "Milestone level: #006B92 (medium blue)"
+        },
+        {
+          "id": "PROJ-HIER-003",
+          "name": "Deliverable row with color coding exists",
+          "type": "css_class_check",
+          "target": ".row-deliverable",
+          "expectedStyles": {
+            "background-color": "#4C95B0"
+          },
+          "severity": "critical",
+          "note": "Deliverable level: #4C95B0 (light blue)"
+        },
+        {
+          "id": "PROJ-HIER-004",
+          "name": "Task row exists",
+          "type": "css_class_check",
+          "target": ".row-task",
+          "severity": "high",
+          "note": "Task level: white background with border"
+        },
+        {
+          "id": "PROJ-HIER-005",
+          "name": "Hierarchical table has 6 columns",
+          "type": "table_structure_check",
+          "target": "#TID-PROJ-HIERARCHY-TABLE",
+          "expectedColumns": 6,
+          "columnNames": ["Descriptor", "Start", "End", "Duration", "Responsible", "Progress"],
+          "severity": "critical"
+        }
+      ]
+    },
+    "timelineMatrix": {
+      "description": "Timeline matrix interactive features per ARC-TIMELINES-002",
+      "checks": [
+        {
+          "id": "TL-001",
+          "name": "Timeline test page exists",
+          "type": "element_exists",
+          "target": "TID-TL-TEST-PAGE",
+          "severity": "critical"
+        },
+        {
+          "id": "TL-002",
+          "name": "Timeline calendar axes render",
+          "type": "element_exists",
+          "target": ".tl-axes-row",
+          "severity": "critical"
+        },
+        {
+          "id": "TL-003",
+          "name": "Timeline axis filter toggles exist",
+          "type": "element_exists",
+          "target": ".tl-axis-filter",
+          "severity": "critical",
+          "note": "Year/Quarter/Month/Week/Day toggles for zoom control"
+        },
+        {
+          "id": "TL-004",
+          "name": "Timeline slider bars are draggable",
+          "type": "element_attribute_check",
+          "target": ".tl-bar",
+          "expectedAttribute": "draggable",
+          "severity": "critical"
+        },
+        {
+          "id": "TL-005",
+          "name": "Timeline bar has drag handles",
+          "type": "element_exists",
+          "target": ".tl-bar-handle",
+          "severity": "critical",
+          "note": "Left and right handles for resizing"
+        },
+        {
+          "id": "TL-006",
+          "name": "Timeline date tooltip exists",
+          "type": "element_exists",
+          "target": "#tl-date-tooltip",
+          "severity": "critical",
+          "note": "Real-time date display during drag"
+        },
+        {
+          "id": "TL-007",
+          "name": "Timeline loads project data",
+          "type": "javascript_check",
+          "target": "window.projectState",
+          "expectedType": "object",
+          "severity": "critical"
+        },
+        {
+          "id": "TL-008",
+          "name": "Timeline save function exists",
+          "type": "javascript_check",
+          "target": "window.saveTimelineChanges",
+          "expectedType": "function",
+          "severity": "critical"
+        }
+      ]
+    },
+    "dataPersistence": {
+      "description": "Data persistence and synchronization checks",
+      "checks": [
+        {
+          "id": "DATA-001",
+          "name": "Project data persists to localStorage",
+          "type": "localstorage_check",
+          "target": "projectState",
+          "severity": "critical"
+        },
+        {
+          "id": "DATA-002",
+          "name": "projectsUpsert function exists",
+          "type": "javascript_check",
+          "target": "window.projectsUpsert",
+          "expectedType": "function",
+          "severity": "critical"
+        },
+        {
+          "id": "DATA-003",
+          "name": "renderProjectHierarchy function exists",
+          "type": "javascript_check",
+          "target": "window.renderProjectHierarchy",
+          "expectedType": "function",
+          "severity": "critical"
+        },
+        {
+          "id": "DATA-004",
+          "name": "saveMilestone function exists",
+          "type": "javascript_check",
+          "target": "window.saveMilestone",
+          "expectedType": "function",
+          "severity": "critical"
+        },
+        {
+          "id": "DATA-005",
+          "name": "saveDeliverable function exists",
+          "type": "javascript_check",
+          "target": "window.saveDeliverable",
+          "expectedType": "function",
+          "severity": "critical"
+        },
+        {
+          "id": "DATA-006",
+          "name": "saveTask function exists",
+          "type": "javascript_check",
+          "target": "window.saveTask",
+          "expectedType": "function",
           "severity": "critical"
         }
       ]

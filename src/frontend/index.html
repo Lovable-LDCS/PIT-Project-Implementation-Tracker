@@ -54,22 +54,21 @@
         </div>
         <nav class="nav">
           <a href="#/" data-testid="TID-NAV-DASHBOARD" aria-current="page" onclick="return appNavTo(this)">Dashboard</a>
-          <a href="#/projects" data-testid="TID-NAV-PROJECTS" onclick="return appNavTo(this)">Projects</a>
+          <a href="#/projects" data-testid="TID-NAV-PROJECTS" onclick="return appNavTo(this)">Implementation</a>
           <a href="#/reports" data-testid="TID-NAV-REPORTS" onclick="return appNavTo(this)">Reports</a>
           <a href="#/permissions" data-testid="TID-NAV-PERMISSIONS" onclick="return appNavTo(this)">Permissions</a>
-          <a href="#/workitem" data-testid="TID-NAV-WORKITEM" onclick="return appNavTo(this)">Work Item</a>
           <a href="#/evidence" data-testid="TID-NAV-EVIDENCE" onclick="return appNavTo(this)">Evidence</a>
           <a href="#/gantt" data-testid="TID-NAV-GANTT" onclick="return appNavTo(this)">Gantt</a>
           <a href="#/timelines" data-testid="TID-NAV-TIMELINES" onclick="return appNavTo(this)">Timelines</a>
-          <a href="#/tl-test" data-testid="TID-NAV-TL-TEST" onclick="return appNavTo(this)">Timelines (Test)</a>
           <a href="#/audit" data-testid="TID-NAV-AUDIT" onclick="return appNavTo(this)">Audit Log</a>
           <a href="#/notify" data-testid="TID-NAV-NOTIFY" onclick="return appNavTo(this)">Notifications</a>
           <a href="#/import" data-testid="TID-NAV-IMPORT" onclick="return appNavTo(this)">Import</a>
-          <a href="#/exports" data-testid="TID-NAV-EXPORTS" onclick="return appNavTo(this)">Exports</a>
           <a href="#/templates" data-testid="TID-NAV-TEMPLATES" onclick="return appNavTo(this)">Templates</a>
-          <a href="#/settings" data-testid="TID-NAV-SETTINGS" onclick="return appNavTo(this)">Settings</a>
-          <a href="#/search" data-testid="TID-NAV-SEARCH" onclick="return appNavTo(this)">Search</a>
           <a href="#/qa" data-testid="TID-NAV-QA" onclick="return appNavTo(this)">Quality Assurance</a>
+          <!-- Legacy nav items (hidden, kept for QA test compatibility) -->
+          <a href="#/workitem" data-testid="TID-NAV-WORKITEM" onclick="return appNavTo(this)" class="hidden">Work Item</a>
+          <a href="#/exports" data-testid="TID-NAV-EXPORTS" onclick="return appNavTo(this)" class="hidden">Exports</a>
+          <a href="#/search" data-testid="TID-NAV-SEARCH" onclick="return appNavTo(this)" class="hidden">Search</a>
           <!-- Admin-only navigation items -->
           <div data-admin-only hidden>
             <hr class="admin-divider">
@@ -128,16 +127,56 @@
               <h2 class="modal-title">Start a new project</h2>
               <button class="btn" type="button" data-testid="TID-PSETUP-CLOSE" aria-label="Close" onclick="closeProjectSetup()">✕</button>
             </div>
-            <div class="grid-2">              <label>Project name <input data-testid="TID-PSETUP-NAME" /></label>
-              <label>Assignee <select data-testid="TID-PSETUP-ASSIGNEE"><option>Current User</option></select></label>
+            <div class="grid-2">
+              <label>Project name <input data-testid="TID-PSETUP-NAME" /></label>
+              <label>Project Leader 
+                <select data-testid="TID-PSETUP-LEADER">
+                  <option value="current">Current User (Default)</option>
+                  <option value="other">Select Team Member...</option>
+                </select>
+              </label>
               <label class="grid-span-full">Project outcome <textarea class="textarea-full" data-testid="TID-PSETUP-OUTCOME" placeholder="SMART outcome"></textarea></label>
               <label class="grid-span-full">Project description <textarea class="textarea-full" data-testid="TID-PSETUP-DESCRIPTION"></textarea></label>
-              <div class="actions-right grid-span-full"><button class="btn" type="button" data-testid="TID-PSETUP-OPEN-TIMELINE" onclick="openTimelines('project')">Set timeline…</button></div>
-              
+              <div class="grid-span-full">
+                <button class="btn" type="button" data-testid="TID-PSETUP-OPEN-TIMELINE" onclick="openTimelines('project')">Set timeline…</button>
+              </div>
+              <div class="grid-span-full" data-testid="TID-PSETUP-INVITE-SECTION">
+                <h3 class="section-title">Invite Member (Optional)</h3>
+                <div class="grid-2">
+                  <label>Select existing member
+                    <select data-testid="TID-PSETUP-MEMBER-SELECT">
+                      <option value="">-- Select member --</option>
+                    </select>
+                  </label>
+                  <div class="flex-end">
+                    <button class="btn" type="button" data-testid="TID-PSETUP-INVITE-NEW-BTN" onclick="openInviteModal('project')">Invite New Member</button>
+                  </div>
+                </div>
+                <p class="muted-note">If no member is assigned, the project leader (you) will be responsible for assigning milestones, deliverables, and tasks.</p>
+              </div>
             </div>
             <div class="actions-right">
               <button class="btn" type="button" data-testid="TID-PSETUP-CANCEL" onclick="closeProjectSetup()">Cancel</button>
               <button class="btn primary" type="button" data-testid="TID-PSETUP-SAVE" onclick="saveProject()">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Invite Member Sub-Modal -->
+        <div data-testid="TID-INVITE-MODAL" hidden class="modal-overlay modal-top">
+          <div data-testid="TID-INVITE-DIALOG" role="dialog" aria-modal="true" class="modal-dialog modal-dialog-medium">
+            <div class="modal-header">
+              <h2 class="modal-title">Invite New Member</h2>
+              <button class="btn" type="button" aria-label="Close" onclick="closeInviteModal()">✕</button>
+            </div>
+            <div>
+              <label>Name <input data-testid="TID-INVITE-NAME" placeholder="Full name" /></label>
+              <label>Email <input type="email" data-testid="TID-INVITE-EMAIL" placeholder="email@example.com" /></label>
+              <p class="muted-note">An email will be sent with a signup link. The new member will have access to this <span id="invite-context">project</span> only.</p>
+            </div>
+            <div class="actions-right">
+              <button class="btn" type="button" onclick="closeInviteModal()">Cancel</button>
+              <button class="btn primary" type="button" data-testid="TID-INVITE-SEND" onclick="sendInvite()">Send Invitation</button>
             </div>
           </div>
         </div>
@@ -151,12 +190,35 @@
             </div>
             <div class="grid-2">
               <label>Project <select data-testid="TID-MS-PROJECT-SELECT"></select></label>
-              <button class="btn" type="button" data-testid="TID-MS-OPEN-TIMELINE" onclick="openTimelines('milestones')">Edit in Timelines…</button>
-              <label>Milestones <select data-testid="TID-MS-DROPDOWN" aria-label="Milestone selector"><option>Choose existing…</option><option data-testid="TID-MS-ADD-NEW" value="__add_new__">Add milestone…</option></select></label>
-              <label class="grid-span-full" hidden data-testid="TID-MS-NEW-LABEL">New milestone <input data-testid="TID-MS-NEW-TEXT" spellcheck="true" /></label>
-
-              <div data-testid="TID-MS-DUPLICATE-ALERT" hidden>Milestone already exists. Replace?</div>
-              
+              <div>
+                <button class="btn" type="button" data-testid="TID-MS-OPEN-TIMELINE" onclick="openTimelines('milestones')">Edit in Timelines…</button>
+              </div>
+              <label class="grid-span-full">Milestone
+                <select data-testid="TID-MS-DROPDOWN" aria-label="Milestone selector">
+                  <option>Choose existing…</option>
+                  <option data-testid="TID-MS-ADD-NEW" value="__add_new__">Add milestone…</option>
+                </select>
+              </label>
+              <label class="grid-span-full" hidden data-testid="TID-MS-NEW-LABEL">New milestone name
+                <input data-testid="TID-MS-NEW-TEXT" spellcheck="true" />
+              </label>
+              <div data-testid="TID-MS-DUPLICATE-ALERT" class="grid-span-full error-text" hidden>
+                Milestone already exists. Replace?
+              </div>
+              <div class="grid-span-full" data-testid="TID-MS-INVITE-SECTION">
+                <h3 class="section-title">Invite Member (Optional)</h3>
+                <div class="grid-2">
+                  <label>Select existing member
+                    <select data-testid="TID-MS-MEMBER-SELECT">
+                      <option value="">-- Select member --</option>
+                    </select>
+                  </label>
+                  <div class="flex-end">
+                    <button class="btn" type="button" data-testid="TID-MS-INVITE-NEW-BTN" onclick="openInviteModal('milestone')">Invite New Member</button>
+                  </div>
+                </div>
+                <p class="muted-note">If no member is assigned, responsibility defaults to the project leader.</p>
+              </div>
             </div>
             <div class="actions-right">
               <button class="btn" type="button" data-testid="TID-MS-CANCEL" onclick="closeMilestoneSetup()">Cancel</button>
@@ -173,11 +235,37 @@
               <button class="btn" type="button" data-testid="TID-DL-CLOSE" aria-label="Close" onclick="closeDeliverableSetup()">✕</button>
             </div>
             <div class="grid-2">
-              <label>Milestone <select data-testid="TID-DL-MILESTONE"></select></label>
-              <label>Deliverables <select data-testid="TID-DL-DROPDOWN" aria-label="Deliverable selector"><option>Choose existing…</option><option data-testid="TID-DL-ADD-NEW" value="__add_new__">Add deliverable…</option></select></label>
-              <label class="grid-span-full" hidden data-testid="TID-DL-NEW-LABEL">New deliverable <input data-testid="TID-DL-NEW-TEXT" spellcheck="true" /></label>
-              <label>Person responsible <select data-testid="TID-DL-ASSIGNEE"><option>Unassigned</option></select></label>
-              
+              <label class="grid-span-full">Milestone (Required)
+                <select data-testid="TID-DL-MILESTONE">
+                  <option value="">-- Select milestone --</option>
+                </select>
+              </label>
+              <label class="grid-span-full">Deliverable
+                <select data-testid="TID-DL-DROPDOWN" aria-label="Deliverable selector">
+                  <option>Choose existing…</option>
+                  <option data-testid="TID-DL-ADD-NEW" value="__add_new__">Add deliverable…</option>
+                </select>
+              </label>
+              <label class="grid-span-full" hidden data-testid="TID-DL-NEW-LABEL">New deliverable description
+                <input data-testid="TID-DL-NEW-TEXT" spellcheck="true" />
+              </label>
+              <div class="grid-span-full" data-testid="TID-DL-INVITE-SECTION">
+                <h3 class="section-title">Assign / Invite Member (Optional)</h3>
+                <div class="grid-2">
+                  <label>Select existing member
+                    <select data-testid="TID-DL-ASSIGNEE">
+                      <option value="">Unassigned</option>
+                    </select>
+                  </label>
+                  <div class="flex-end">
+                    <button class="btn" type="button" data-testid="TID-DL-INVITE-NEW-BTN" onclick="openInviteModal('deliverable')">Invite New Member</button>
+                  </div>
+                </div>
+                <p class="muted-note">If no member is assigned, responsibility defaults to the milestone leader.</p>
+              </div>
+              <p class="grid-span-full">
+                <strong>Note:</strong> Deliverable start and end dates are automatically calculated from assigned tasks.
+              </p>
             </div>
             <div class="actions-right">
               <button class="btn" type="button" data-testid="TID-DL-CANCEL" onclick="closeDeliverableSetup()">Cancel</button>
@@ -194,16 +282,109 @@
               <button class="btn" type="button" data-testid="TID-TASK-CLOSE" aria-label="Close" onclick="closeTaskSetup()">✕</button>
             </div>
             <div class="grid-2">
-              <label>Title <input data-testid="TID-TASK-TITLE" /></label>
-              <label>Responsible <select data-testid="TID-TASK-ASSIGNEE"><option>Current User</option></select></label>
-              <label>Start date <input type="date" data-testid="TID-TASK-START" /></label>
-              <label>End date <input type="date" data-testid="TID-TASK-END" /></label>
-              <label>Milestone <select data-testid="TID-TASK-MILESTONE"></select></label>
-              <label>Deliverable <select data-testid="TID-TASK-DELIVERABLE"></select></label>
-              <label>Task cluster? <select data-testid="TID-TASK-CLUSTER-TOGGLE" aria-label="Use task cluster"><option value="no">No</option><option value="yes">Yes</option></select></label>
-              <label class="grid-span-full">Cluster name <select data-testid="TID-CLUSTER-NAME-SELECT"><option>Choose cluster…</option><option data-testid="TID-CLUSTER-ADD-NEW" value="__add_new__">Add cluster…</option></select></label>
-              <div class="grid-span-full" data-testid="TID-CLUSTER-PRELOAD" hidden><!-- Preloaded tasks will list here --></div>
+              <label class="grid-span-full">Deliverable (Required)
+                <select data-testid="TID-TASK-DELIVERABLE">
+                  <option value="">-- Select deliverable --</option>
+                </select>
+              </label>
               
+              <label class="grid-span-full">Do you want to create a task cluster?
+                <select data-testid="TID-TASK-CLUSTER-TOGGLE" aria-label="Use task cluster" onchange="toggleTaskCluster(this.value)">
+                  <option value="no">No (Single Task)</option>
+                  <option value="yes">Yes (Task Cluster)</option>
+                </select>
+              </label>
+              
+              <!-- Single Task Fields -->
+              <div id="single-task-fields" class="grid-span-full">
+                <div class="grid-2">
+                  <label>Task Title
+                    <input data-testid="TID-TASK-TITLE" placeholder="Task description" />
+                  </label>
+                </div>
+              </div>
+              
+              <!-- Task Cluster Fields -->
+              <div id="cluster-task-fields" class="grid-span-full" hidden>
+                <label>Task Cluster Name
+                  <select data-testid="TID-CLUSTER-NAME-SELECT">
+                    <option>Choose existing cluster…</option>
+                    <option data-testid="TID-CLUSTER-ADD-NEW" value="__add_new__">Create new cluster…</option>
+                  </select>
+                </label>
+                <div data-testid="TID-CLUSTER-PRELOAD" class="cluster-preload">
+                  <!-- Preloaded tasks from cluster template will appear here -->
+                  <p>Select a cluster to see pre-defined tasks, or create a new one.</p>
+                </div>
+              </div>
+              
+              <!-- Date Calculation Section -->
+              <div class="grid-span-full section-divider">
+                <h3 class="timing-header">Task Timing</h3>
+                
+                <label>Link to another task (for timing)
+                  <select data-testid="TID-TASK-LINK-DROPDOWN">
+                    <option value="">First task (uses milestone start date)</option>
+                    <option value="task1">Task 1 - Example</option>
+                  </select>
+                </label>
+                
+                <div class="task-timing-block">
+                  <p class="task-initial-label"><strong>Initial Date:</strong> <span id="task-initial-date">--</span></p>
+                  
+                  <label class="label-block">Offset from initial date (when should this task start?)
+                    <div class="input-row">
+                      <div>
+                        <input type="number" min="0" value="0" data-testid="TID-TASK-OFFSET-DAYS" / class="w-60"> days
+                      </div>
+                      <div>
+                        <input type="number" min="0" max="23" value="0" data-testid="TID-TASK-OFFSET-HOURS" / class="w-60"> hours
+                      </div>
+                      <div>
+                        <input type="number" min="0" max="59" value="0" data-testid="TID-TASK-OFFSET-MINUTES" / class="w-60"> minutes
+                      </div>
+                    </div>
+                    <p class="small-muted">Leave at 00:00:00 to start on the same date</p>
+                  </label>
+                  
+                  <label class="label-block-simple">Task duration (how long will it take?)
+                    <div class="input-row">
+                      <div>
+                        <input type="number" min="0" value="0" data-testid="TID-TASK-DUR-DAYS" / class="w-60"> days
+                      </div>
+                      <div>
+                        <input type="number" min="0" max="23" value="0" data-testid="TID-TASK-DUR-HOURS" / class="w-60"> hours
+                      </div>
+                      <div>
+                        <input type="number" min="0" max="59" value="10" data-testid="TID-TASK-DUR-MINUTES" / class="w-60"> minutes
+                      </div>
+                    </div>
+                    <p>Can be as short as 10 minutes (e.g., "Arrange a meeting")</p>
+                  </label>
+                  
+                  <p>
+                    <strong>Calculated Start:</strong> <span id="task-calc-start">--</span><br>
+                    <strong>Calculated End:</strong> <span id="task-calc-end">--</span>
+                  </p>
+                </div>
+              </div>
+              
+              <!-- Invite Member Section -->
+              <div class="grid-span-full" data-testid="TID-TASK-INVITE-SECTION">
+                <h3 class="section-title">Assign / Invite Member (Optional)</h3>
+                <div class="grid-2">
+                  <label>Select existing member
+                    <select data-testid="TID-TASK-ASSIGNEE">
+                      <option value="">Unassigned</option>
+                      <option value="current">Current User</option>
+                    </select>
+                  </label>
+                  <div class="flex-end">
+                    <button class="btn" type="button" data-testid="TID-TASK-INVITE-NEW-BTN" onclick="openInviteModal('task')">Invite New Member</button>
+                  </div>
+                </div>
+                <p>Assigned members can update task progress and add evidence. Defaults to deliverable leader if unassigned.</p>
+              </div>
             </div>
             <div class="actions-right">
               <button class="btn" type="button" data-testid="TID-TASK-CANCEL" onclick="closeTaskSetup()">Cancel</button>
@@ -216,25 +397,51 @@
         <div data-testid="TID-DUR-MODAL" hidden class="modal-overlay">
           <div data-testid="TID-DUR-DIALOG" role="dialog" aria-modal="true" class="modal-dialog">
             <div class="modal-header">
-              <h2 class="modal-title">Duration filter</h2>
+              <h2 class="modal-title">Duration Filter</h2>
               <button class="btn" type="button" aria-label="Close" onclick="closeDurationModal()">✕</button>
             </div>
             <div>
-              <div>
-                <label><input type="radio" name="dur-op" data-testid="TID-DUR-OP-LT" /> Less than</label>
-                <label><input type="radio" name="dur-op" data-testid="TID-DUR-OP-GT" /> More than</label>
-                <label><input type="radio" name="dur-op" data-testid="TID-DUR-OP-EQ" /> Equal to</label>
-                <label><input type="radio" name="dur-op" data-testid="TID-DUR-OP-BETWEEN" /> Between</label>
+              <div class="my-8">
+                <label><input type="radio" name="dur-op" value="lt" data-testid="TID-DUR-OP-LT" /> &lt; Less than</label>
+                <label><input type="radio" name="dur-op" value="gt" data-testid="TID-DUR-OP-GT" /> &gt; Greater than</label>
+                <label><input type="radio" name="dur-op" value="eq" data-testid="TID-DUR-OP-EQ" /> = Equal to</label>
+                <label><input type="radio" name="dur-op" value="lte" data-testid="TID-DUR-OP-LTE" /> ≤ Less than or equal</label>
+                <label><input type="radio" name="dur-op" value="gte" data-testid="TID-DUR-OP-GTE" /> ≥ Greater than or equal</label>
               </div>
               <div class="inline-flex-center">
-                <input type="number" min="0" class="w-64" data-testid="TID-DUR-DAYS-1" />
-                <span id="dur-and-sep" hidden>&nbsp;and&nbsp;</span>
-                <input type="number" min="0" class="w-64" data-testid="TID-DUR-DAYS-2" hidden /> days
+                <input type="number" min="0" class="w-64" placeholder="Days" data-testid="TID-DUR-DAYS-1" />
+                <span>days</span>
               </div>
             </div>
             <div class="actions-right">
               <button class="btn" type="button" data-testid="TID-DUR-CANCEL" onclick="closeDurationModal()">Cancel</button>
               <button class="btn primary" type="button" data-testid="TID-DUR-APPLY" onclick="applyDurationFilter()">Apply</button>
+            </div>
+          </div>
+        </div>
+        <!-- Progress Filter Modal -->
+        <div data-testid="TID-PROGRESS-MODAL" hidden class="modal-overlay">
+          <div data-testid="TID-PROGRESS-DIALOG" role="dialog" aria-modal="true" class="modal-dialog">
+            <div class="modal-header">
+              <h2 class="modal-title">Progress Filter</h2>
+              <button class="btn" type="button" aria-label="Close" onclick="closeProgressModal()">✕</button>
+            </div>
+            <div>
+              <div class="my-8">
+                <label><input type="radio" name="progress-op" value="lt" data-testid="TID-PROGRESS-OP-LT" /> &lt; Less than</label>
+                <label><input type="radio" name="progress-op" value="gt" data-testid="TID-PROGRESS-OP-GT" /> &gt; Greater than</label>
+                <label><input type="radio" name="progress-op" value="eq" data-testid="TID-PROGRESS-OP-EQ" /> = Equal to</label>
+                <label><input type="radio" name="progress-op" value="lte" data-testid="TID-PROGRESS-OP-LTE" /> ≤ Less than or equal</label>
+                <label><input type="radio" name="progress-op" value="gte" data-testid="TID-PROGRESS-OP-GTE" /> ≥ Greater than or equal</label>
+              </div>
+              <div class="inline-flex-center">
+                <input type="number" min="0" max="100" class="w-64" placeholder="0-100" data-testid="TID-PROGRESS-PCT-1" />
+                <span>%</span>
+              </div>
+            </div>
+            <div class="actions-right">
+              <button class="btn" type="button" data-testid="TID-PROGRESS-CANCEL" onclick="closeProgressModal()">Cancel</button>
+              <button class="btn primary" type="button" data-testid="TID-PROGRESS-APPLY" onclick="applyProgressFilter()">Apply</button>
             </div>
           </div>
         </div>
@@ -269,24 +476,34 @@
           </div>
           <div data-testid="TID-PROJ-HEADER" hidden></div>
           <div data-testid="TID-PROJ-DETAIL" class="proj-detail" hidden>
-            <div data-testid="TID-FILTER-CARD" class="filter-card">
-              <label>Projects
-                <select multiple data-testid="TID-FILTER-PROJECTS" aria-label="Filter projects"></select>
+            <div data-testid="TID-FILTER-BAR" class="filter-card">
+              <label>Project Status
+                <select data-testid="TID-FILTER-STATUS" aria-label="Project status filter">
+                  <option value="">All</option>
+                  <option value="not-active">Not Yet Active</option>
+                  <option value="countdown">Starting Soon</option>
+                  <option value="active">Active</option>
+                  <option value="due">Due Today</option>
+                  <option value="overdue">Past Due</option>
+                  <option value="critical">Critical (10+ days)</option>
+                </select>
               </label>
-              <label>Milestones
-                <select multiple data-testid="TID-FILTER-MILESTONES" aria-label="Filter milestones"></select>
+              <label>Start Date
+                <input type="date" data-testid="TID-FILTER-START" aria-label="Start date filter" />
               </label>
-              <label>Deliverables
-                <select multiple data-testid="TID-FILTER-DELIVERABLES" aria-label="Filter deliverables"></select>
+              <label>End Date
+                <input type="date" data-testid="TID-FILTER-END" aria-label="End date filter" />
               </label>
-              <label>Tasks
-                <select multiple data-testid="TID-FILTER-TASKS" aria-label="Filter tasks"></select>
+              <label>Duration
+                <button class="btn" type="button" data-testid="TID-FILTER-DURATION-BTN" onclick="openDurationModal()">Set Duration…</button>
               </label>
-              <label>Start date <input type="date" data-testid="TID-FILTER-START" /></label>
-              <label>End date <input type="date" data-testid="TID-FILTER-END" /></label>
-              <label>Duration <button class="btn" type="button" data-testid="TID-FILTER-DURATION" onclick="openDurationModal()">Set…</button></label>
-              <label>Responsible
-                <select multiple data-testid="TID-FILTER-RESP" aria-label="Filter responsible"></select>
+              <label>Responsible Person
+                <select data-testid="TID-FILTER-RESP" aria-label="Filter by responsible person">
+                  <option value="">All</option>
+                </select>
+              </label>
+              <label>Progress
+                <button class="btn" type="button" data-testid="TID-FILTER-PROGRESS-BTN" onclick="openProgressModal()">Set Progress…</button>
               </label>
             </div>
             <label>Project <select data-testid="TID-PROJ-SELECT"><option value="current">Current Project</option></select></label>
@@ -294,6 +511,47 @@
             <div data-testid="TID-PROJ-META" class="proj-meta">
               <span>Start: <span data-testid="TID-PROJ-START"></span></span>
               <span> • End: <span data-testid="TID-PROJ-END"></span></span>
+            </div>
+            <!-- Project Indicators Row -->
+            <div data-testid="TID-PROJ-INDICATORS" class="proj-indicators" hidden>
+              <div class="proj-indicator">
+                <span class="proj-indicator-label">Duration</span>
+                <div class="proj-indicator-progress">
+                  <span data-testid="TID-IND-DURATION" class="proj-indicator-value">--</span>
+                  <div class="progress-bar">
+                    <div class="progress-fill" data-testid="TID-IND-DURATION-PROGRESS"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="proj-indicator">
+                <span class="proj-indicator-label"># Milestones</span>
+                <span data-testid="TID-IND-MS-COUNT" class="proj-indicator-value">0</span>
+              </div>
+              <div class="proj-indicator">
+                <span class="proj-indicator-label"># Deliverables</span>
+                <span data-testid="TID-IND-DL-COUNT" class="proj-indicator-value">0</span>
+              </div>
+              <div class="proj-indicator">
+                <span class="proj-indicator-label"># Tasks</span>
+                <span data-testid="TID-IND-TASK-COUNT" class="proj-indicator-value">0</span>
+              </div>
+              <div class="proj-indicator">
+                <span class="proj-indicator-label">Team Size</span>
+                <span data-testid="TID-IND-TEAM-SIZE" class="proj-indicator-value">0</span>
+              </div>
+              <div class="proj-indicator">
+                <span class="proj-indicator-label">Progress vs Plan</span>
+                <span data-testid="TID-IND-PROGRESS-VS-PLAN" class="proj-indicator-value">--</span>
+              </div>
+              <div class="proj-indicator">
+                <span class="proj-indicator-label">Overall Progress</span>
+                <div class="proj-indicator-progress">
+                  <span data-testid="TID-IND-OVERALL-PROGRESS" class="proj-indicator-value">0%</span>
+                  <div class="progress-bar">
+                    <div class="progress-fill" data-testid="TID-IND-OVERALL-PROGRESS-BAR"></div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div data-testid="TID-PROJ-SUMMARY" class="proj-summary" hidden>
               <span data-testid="TID-PROJ-SUM-STATUS"></span>
@@ -721,19 +979,16 @@
         const routes = {
           '#/': 'TID-DASHBOARD',
           '#/projects': 'TID-PAGE-PROJECTS',
-          '#/timelines': 'TID-TL-PAGE',
+          '#/timelines': 'TID-TL-TEST-PAGE',
           '#/reports': 'TID-PAGE-REPORTS',
           '#/permissions': 'TID-ROLE-MATRIX',
-          '#/workitem': 'TID-WORKITEM-DETAIL',
           '#/evidence': 'TID-EVIDENCE-UPLOAD',
           '#/gantt': 'TID-GANTT-VIEW',
           '#/audit': 'TID-AUDIT-LOG',
           '#/notify': 'TID-NOTIFY-PREFERENCES',
           '#/import': 'TID-IMPORT-WIZARD',
-          '#/exports': 'TID-EXPORT-REPORTS',
           '#/templates': 'TID-TEMPLATES-LIBRARY',
-          '#/settings': 'TID-SETTINGS-PAGE',
-          '#/search': 'TID-SEARCH-RESULTS',
+          '#/qa': 'TID-QA-PAGE',
           '#/invite-members': 'TID-INVITE-MEMBERS-PAGE',
           '#/security-dashboard': 'TID-SECURITY-DASHBOARD-PAGE',
           '#/health-checker': 'TID-HEALTH-CHECKER-ROOT'
@@ -773,13 +1028,9 @@
         if(route === '#/audit'){ try{ auditInit(); }catch(e){} }
         if(route === '#/notify'){ try{ notifyInit(); }catch(e){} }
         if(route === '#/import'){ try{ importInit(); }catch(e){} }
-        if(route === '#/exports'){ try{ exportsInit(); }catch(e){} }
         if(route === '#/templates'){ try{ templatesInit(); }catch(e){} }
-        if(route === '#/search'){ try{ searchInit(); }catch(e){} }
-        if(route === '#/timelines'){ try{ tlInitFromStore(); tlRender(); }catch(e){} }
-        if(route === '#/settings'){ try{ settingsInit(); }catch(e){} }
-        try{ runWiringChecks(); }catch(e){}
-      }
+        if(route === '#/timelines'){ try{ if(window.initTestTimeline){ window.initTestTimeline(); } }catch(e){} }
+        try{ runWiringChecks(); }catch(e){} }
       window.addEventListener('hashchange', ()=> { closeProjectSetup(); navigateTo(location.hash || '#/'); });
       // Ensure sidebar nav always navigates even if default is blocked
       document.addEventListener('DOMContentLoaded', ()=>{
@@ -799,12 +1050,66 @@
       function openDurationModal(){ const m = document.querySelector('[data-testid="TID-DUR-MODAL"]'); if(m){ m.removeAttribute('hidden'); } }
       function closeDurationModal(){ const m = document.querySelector('[data-testid="TID-DUR-MODAL"]'); if(m){ m.setAttribute('hidden',''); } }
       function applyDurationFilter(){
-        const op = document.querySelector('[data-testid="TID-DUR-OP-LT"]')?.checked ? 'lt'
-          : document.querySelector('[data-testid="TID-DUR-OP-GT"]')?.checked ? 'gt'
-          : document.querySelector('[data-testid="TID-DUR-OP-EQ"]')?.checked ? 'eq' : null;
+        const radios = document.querySelectorAll('[name="dur-op"]');
+        let op = null;
+        radios.forEach(r => { if(r.checked) op = r.value; });
         const days = parseInt(document.querySelector('[data-testid="TID-DUR-DAYS-1"]')?.value||'0', 10) || 0;
         window.durationFilter = op ? { op, days } : null;
         closeDurationModal();
+      }
+
+      // Progress filter modal wiring
+      function openProgressModal(){ const m = document.querySelector('[data-testid="TID-PROGRESS-MODAL"]'); if(m){ m.removeAttribute('hidden'); } }
+      function closeProgressModal(){ const m = document.querySelector('[data-testid="TID-PROGRESS-MODAL"]'); if(m){ m.setAttribute('hidden',''); } }
+      function applyProgressFilter(){
+        const radios = document.querySelectorAll('[name="progress-op"]');
+        let op = null;
+        radios.forEach(r => { if(r.checked) op = r.value; });
+        const pct = parseInt(document.querySelector('[data-testid="TID-PROGRESS-PCT-1"]')?.value||'0', 10) || 0;
+        window.progressFilter = op ? { op, pct } : null;
+        closeProgressModal();
+      }
+
+      // Status computation function per architecture
+      function computeStatusDescriptor(startDate, endDate, today = new Date()) {
+        if (!startDate || !endDate) return "No dates";
+        
+        const todayMs = today.getTime();
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const startMs = start.getTime();
+        const endMs = end.getTime();
+        
+        // Future project
+        if (todayMs < startMs) {
+          const daysUntil = Math.ceil((startMs - todayMs) / (1000*60*60*24));
+          if (daysUntil <= 5) {
+            return `Starting in ${daysUntil} days`;
+          }
+          return "Not yet active";
+        }
+        
+        // Past due
+        if (todayMs > endMs) {
+          const daysOver = Math.ceil((todayMs - endMs) / (1000*60*60*24));
+          if (daysOver >= 10) {
+            return `Critical: ${daysOver} days overdue`;
+          }
+          return `${daysOver} days past due`;
+        }
+        
+        // Active
+        const daysRemaining = Math.ceil((endMs - todayMs) / (1000*60*60*24));
+        if (daysRemaining === 0) {
+          return "Due today";
+        }
+        if (daysRemaining <= 5) {
+          const totalDays = Math.ceil((endMs - startMs) / (1000*60*60*24));
+          const elapsed = totalDays - daysRemaining;
+          return `Started ${elapsed}/${totalDays} days`;
+        }
+        
+        return "On track";
       }
 
       // Projects page behavior hooks for QA
@@ -830,6 +1135,50 @@
           const val = e.target.value.trim();
           projectSetRowsCount(val.length ? 0 : 1);
         });
+      }
+
+      // Invite Modal Functions
+      let inviteContext = 'project'; // project, milestone, deliverable, task
+      function openInviteModal(context) {
+        inviteContext = context || 'project';
+        const contextSpan = document.getElementById('invite-context');
+        if (contextSpan) contextSpan.textContent = context;
+        const modal = document.querySelector('[data-testid="TID-INVITE-MODAL"]');
+        if (modal) modal.removeAttribute('hidden');
+      }
+      function closeInviteModal() {
+        const modal = document.querySelector('[data-testid="TID-INVITE-MODAL"]');
+        if (modal) modal.setAttribute('hidden', '');
+        // Clear fields
+        const nameInput = document.querySelector('[data-testid="TID-INVITE-NAME"]');
+        const emailInput = document.querySelector('[data-testid="TID-INVITE-EMAIL"]');
+        if (nameInput) nameInput.value = '';
+        if (emailInput) emailInput.value = '';
+      }
+      function sendInvite() {
+        const name = document.querySelector('[data-testid="TID-INVITE-NAME"]')?.value || '';
+        const email = document.querySelector('[data-testid="TID-INVITE-EMAIL"]')?.value || '';
+        if (!name || !email) {
+          alert('Please enter both name and email');
+          return;
+        }
+        // TODO: Send actual email invitation
+        console.log('Sending invitation to:', { name, email, context: inviteContext });
+        alert(`Invitation sent to ${name} (${email}) for ${inviteContext}`);
+        closeInviteModal();
+      }
+
+      // Task Cluster Toggle
+      function toggleTaskCluster(value) {
+        const singleFields = document.getElementById('single-task-fields');
+        const clusterFields = document.getElementById('cluster-task-fields');
+        if (value === 'yes') {
+          if (singleFields) singleFields.setAttribute('hidden', '');
+          if (clusterFields) clusterFields.removeAttribute('hidden');
+        } else {
+          if (singleFields) singleFields.removeAttribute('hidden');
+          if (clusterFields) clusterFields.setAttribute('hidden', '');
+        }
       }
 
       // Wiring self-checks to populate Problems panel if anything is off
@@ -1495,6 +1844,143 @@
           clone.addEventListener('click', saveProject);
         }
       }
+
+      // Render hierarchical project table with color-coded rows
+      function renderProjectHierarchy() {
+        const project = window.projectState;
+        if (!project) return;
+
+        // Show indicators
+        const indicators = document.querySelector('[data-testid="TID-PROJ-INDICATORS"]');
+        if (indicators) {
+          indicators.removeAttribute('hidden');
+          
+          // Calculate metrics
+          const milestones = project.milestones || [];
+          const deliverables = milestones.flatMap(m => m.deliverables || []);
+          const tasks = deliverables.flatMap(d => d.tasks || []);
+          
+          // Update counts
+          document.querySelector('[data-testid="TID-IND-MS-COUNT"]').textContent = milestones.length;
+          document.querySelector('[data-testid="TID-IND-DL-COUNT"]').textContent = deliverables.length;
+          document.querySelector('[data-testid="TID-IND-TASK-COUNT"]').textContent = tasks.length;
+          document.querySelector('[data-testid="TID-IND-TEAM-SIZE"]').textContent = '1'; // TODO: Calculate unique team members
+          
+          // Calculate duration progress
+          if (project.start && project.end) {
+            const now = new Date();
+            const start = new Date(project.start);
+            const end = new Date(project.end);
+            const total = end - start;
+            const elapsed = now - start;
+            const progress = Math.max(0, Math.min(100, (elapsed / total) * 100));
+            const durationEl = document.querySelector('[data-testid="TID-IND-DURATION"]');
+            const durationProgress = document.querySelector('[data-testid="TID-IND-DURATION-PROGRESS"]');
+            if (durationEl && durationProgress) {
+              const days = Math.ceil(total / (1000*60*60*24));
+              durationEl.textContent = `${days}d`;
+              durationProgress.style.width = progress + '%';
+            }
+          }
+          
+          // Calculate overall progress
+          const avgProgress = tasks.length > 0 
+            ? tasks.reduce((sum, t) => sum + (t.progress || 0), 0) / tasks.length 
+            : 0;
+          const overallEl = document.querySelector('[data-testid="TID-IND-OVERALL-PROGRESS"]');
+          const overallBar = document.querySelector('[data-testid="TID-IND-OVERALL-PROGRESS-BAR"]');
+          if (overallEl && overallBar) {
+            overallEl.textContent = Math.round(avgProgress) + '%';
+            overallBar.style.width = avgProgress + '%';
+          }
+          
+          document.querySelector('[data-testid="TID-IND-PROGRESS-VS-PLAN"]').textContent = '--';
+        }
+
+        // Show table headers and build area
+        const colsHeader = document.querySelector('[data-testid="TID-PROJ-COLS-HEADER"]');
+        const buildArea = document.querySelector('[data-testid="TID-PROJ-BUILD"]');
+        const tree = document.querySelector('[data-testid="TID-PROJ-TREE"]');
+        
+        if (colsHeader) colsHeader.removeAttribute('hidden');
+        if (buildArea) buildArea.removeAttribute('hidden');
+        if (!tree) return;
+        
+        tree.removeAttribute('hidden');
+        tree.innerHTML = ''; // Clear previous content
+        
+        // Render project row (level 0)
+        const projRow = document.createElement('div');
+        projRow.className = 'proj-row';
+        projRow.innerHTML = `
+          <div class="row-project" data-testid="TID-PROJ-ROW-0">
+            <strong>${project.name}</strong>
+            ${project.start && project.end ? `<br><small>Planned: ${project.start} to ${project.end}</small>` : ''}
+          </div>
+          <div>${project.start || 'Not set'}</div>
+          <div>${project.end || 'Not set'}</div>
+          <div>${project.start && project.end ? Math.ceil((new Date(project.end) - new Date(project.start))/(1000*60*60*24)) + 'd' : '--'}</div>
+          <div>Project Leader</div>
+          <div>0%</div>
+        `;
+        tree.appendChild(projRow);
+        
+        // Render milestones (level 1)
+        (project.milestones || []).forEach((milestone, msIdx) => {
+          const msRow = document.createElement('div');
+          msRow.className = 'proj-row';
+          msRow.style.marginLeft = '20px';
+          msRow.innerHTML = `
+            <div class="row-milestone" data-testid="TID-MS-ROW-${msIdx}">
+              <strong>${milestone.title || milestone.name || 'Milestone ' + (msIdx + 1)}</strong>
+              ${milestone.start && milestone.end ? `<br><small>Planned: ${milestone.start} to ${milestone.end}</small>` : ''}
+            </div>
+            <div>${milestone.start || 'TBD'}</div>
+            <div>${milestone.end || 'TBD'}</div>
+            <div>${milestone.start && milestone.end ? Math.ceil((new Date(milestone.end) - new Date(milestone.start))/(1000*60*60*24)) + 'd' : '--'}</div>
+            <div>${milestone.lead || 'Unassigned'}</div>
+            <div>0%</div>
+          `;
+          tree.appendChild(msRow);
+          
+          // Render deliverables (level 2)
+          (milestone.deliverables || []).forEach((deliverable, dlIdx) => {
+            const dlRow = document.createElement('div');
+            dlRow.className = 'proj-row';
+            dlRow.style.marginLeft = '40px';
+            dlRow.innerHTML = `
+              <div class="row-deliverable" data-testid="TID-DL-ROW-${msIdx}-${dlIdx}">
+                ${deliverable.title || deliverable.name || 'Deliverable ' + (dlIdx + 1)}
+              </div>
+              <div>${deliverable.start || 'From tasks'}</div>
+              <div>${deliverable.end || 'From tasks'}</div>
+              <div>${deliverable.start && deliverable.end ? Math.ceil((new Date(deliverable.end) - new Date(deliverable.start))/(1000*60*60*24)) + 'd' : '--'}</div>
+              <div>${deliverable.lead || 'Unassigned'}</div>
+              <div>0%</div>
+            `;
+            tree.appendChild(dlRow);
+            
+            // Render tasks (level 3)
+            (deliverable.tasks || []).forEach((task, taskIdx) => {
+              const taskRow = document.createElement('div');
+              taskRow.className = 'proj-row';
+              taskRow.style.marginLeft = '60px';
+              taskRow.innerHTML = `
+                <div class="row-task" data-testid="TID-TASK-ROW-${msIdx}-${dlIdx}-${taskIdx}">
+                  ${task.title || task.name || 'Task ' + (taskIdx + 1)}
+                </div>
+                <div>${task.start || 'TBD'}</div>
+                <div>${task.end || 'TBD'}</div>
+                <div>${task.start && task.end ? Math.ceil((new Date(task.end) - new Date(task.start))/(1000*60*60*24)) + 'd' : '--'}</div>
+                <div>${task.assignee || 'Unassigned'}</div>
+                <div>${task.progress || 0}%</div>
+              `;
+              tree.appendChild(taskRow);
+            });
+          });
+        });
+      }
+
       function saveProject(){
         const name = /** @type {HTMLInputElement} */(document.querySelector('[data-testid="TID-PSETUP-NAME"]'))?.value?.trim();
         const outcome = /** @type {HTMLTextAreaElement} */(document.querySelector('[data-testid="TID-PSETUP-OUTCOME"]'))?.value?.trim();
@@ -1544,6 +2030,8 @@
             if(el){ el.setAttribute('hidden',''); }
           });
         }
+        // Render hierarchical table
+        renderProjectHierarchy();
         closeProjectSetup();
         navigateTo('#/projects');
       }
@@ -1570,23 +2058,167 @@
         });
       })();
 
+      // Milestone modal helpers
+      function openMilestoneSetup() {
+        const modal = document.querySelector('[data-testid="TID-MS-MODAL"]');
+        if (modal) modal.removeAttribute('hidden');
+      }
+      function closeMilestoneSetup() {
+        const modal = document.querySelector('[data-testid="TID-MS-MODAL"]');
+        if (modal) modal.setAttribute('hidden', '');
+      }
+      function saveMilestone() {
+        const dropdown = document.querySelector('[data-testid="TID-MS-DROPDOWN"]');
+        const newText = document.querySelector('[data-testid="TID-MS-NEW-TEXT"]');
+        
+        let title = '';
+        if (dropdown?.value === '__add_new__' && newText) {
+          title = newText.value.trim();
+        } else if (dropdown) {
+          title = dropdown.options[dropdown.selectedIndex]?.text || '';
+        }
+        
+        if (!title) {
+          alert('Please enter a milestone name');
+          return;
+        }
+        
+        if (!window.projectState) {
+          alert('No project selected');
+          return;
+        }
+        
+        // Initialize milestones array if needed
+        window.projectState.milestones = window.projectState.milestones || [];
+        
+        // Add milestone
+        window.projectState.milestones.push({
+          title: title,
+          name: title,
+          start: null,
+          end: null,
+          lead: 'Unassigned',
+          deliverables: []
+        });
+        
+        // Persist and re-render
+        projectsUpsert(window.projectState);
+        renderProjectHierarchy();
+        closeMilestoneSetup();
+      }
+
+      // Deliverable modal helpers
+      function openDeliverableSetup() {
+        const modal = document.querySelector('[data-testid="TID-DL-MODAL"]');
+        if (modal) modal.removeAttribute('hidden');
+        
+        // Populate milestone dropdown
+        const msSelect = document.querySelector('[data-testid="TID-DL-MILESTONE"]');
+        if (msSelect && window.projectState?.milestones) {
+          msSelect.innerHTML = '<option value="">-- Select milestone --</option>' +
+            window.projectState.milestones.map((ms, idx) => 
+              `<option value="${idx}">${ms.title || ms.name || 'Milestone ' + (idx + 1)}</option>`
+            ).join('');
+        }
+      }
+      function closeDeliverableSetup() {
+        const modal = document.querySelector('[data-testid="TID-DL-MODAL"]');
+        if (modal) modal.setAttribute('hidden', '');
+      }
+      function saveDeliverable() {
+        const msSelect = document.querySelector('[data-testid="TID-DL-MILESTONE"]');
+        const msIndex = parseInt(msSelect?.value || '', 10);
+        
+        if (isNaN(msIndex) || !window.projectState?.milestones?.[msIndex]) {
+          alert('Please select a milestone');
+          return;
+        }
+        
+        const dropdown = document.querySelector('[data-testid="TID-DL-DROPDOWN"]');
+        const newText = document.querySelector('[data-testid="TID-DL-NEW-TEXT"]');
+        
+        let title = '';
+        if (dropdown?.value === '__add_new__' && newText) {
+          title = newText.value.trim();
+        } else if (dropdown) {
+          title = dropdown.options[dropdown.selectedIndex]?.text || '';
+        }
+        
+        if (!title) {
+          alert('Please enter a deliverable description');
+          return;
+        }
+        
+        const milestone = window.projectState.milestones[msIndex];
+        milestone.deliverables = milestone.deliverables || [];
+        
+        // Add deliverable
+        milestone.deliverables.push({
+          title: title,
+          name: title,
+          start: null,
+          end: null,
+          lead: 'Unassigned',
+          tasks: []
+        });
+        
+        // Persist and re-render
+        projectsUpsert(window.projectState);
+        renderProjectHierarchy();
+        closeDeliverableSetup();
+      }
+
       // Task modal helpers and simple persistence for Projects
+      function openTaskSetup() {
+        const modal = document.querySelector('[data-testid="TID-TASK-MODAL"]');
+        if (modal) modal.removeAttribute('hidden');
+        
+        // Populate deliverable dropdown
+        const dlSelect = document.querySelector('[data-testid="TID-TASK-DELIVERABLE"]');
+        if (dlSelect && window.projectState?.milestones) {
+          let options = '<option value="">-- Select deliverable --</option>';
+          window.projectState.milestones.forEach((ms, msIdx) => {
+            (ms.deliverables || []).forEach((dl, dlIdx) => {
+              options += `<option value="${msIdx}-${dlIdx}">${dl.title || dl.name || 'Deliverable'}</option>`;
+            });
+          });
+          dlSelect.innerHTML = options;
+        }
+      }
       function closeTaskSetup(){ const m = document.querySelector('[data-testid="TID-TASK-MODAL"]'); if(m){ m.setAttribute('hidden',''); } }
       function saveTask(){
-        const msIndex = parseInt(document.querySelector('[data-testid="TID-TASK-MILESTONE"]')?.value||'0',10) || 0;
-        const dlIndex = parseInt(document.querySelector('[data-testid="TID-TASK-DELIVERABLE"]')?.value||'0',10) || 0;
-        const title = /** @type {HTMLInputElement} */(document.querySelector('[data-testid="TID-TASK-TITLE"]'))?.value?.trim() || 'Task';
-        const start = /** @type {HTMLInputElement} */(document.querySelector('[data-testid="TID-TASK-START"]'))?.value || '';
-        const end = /** @type {HTMLInputElement} */(document.querySelector('[data-testid="TID-TASK-END"]'))?.value || '';
-        const respSel = /** @type {HTMLSelectElement} */(document.querySelector('[data-testid="TID-TASK-ASSIGNEE"]'));
-        if(!window.projectState || !window.projectState.milestones?.[msIndex]){ alert('Invalid milestone'); return; }
-        const ms = window.projectState.milestones[msIndex];
-        if(!ms.deliverables?.[dlIndex]){ alert('Invalid deliverable'); return; }
-        const dl = ms.deliverables[dlIndex];
-        dl.tasks = dl.tasks || [];
-        dl.tasks.push({ title, start, end, resp: respSel?.value || '' });
-        renderProjectTree();
-        ensureBuildVisible();
+        const dlSelect = document.querySelector('[data-testid="TID-TASK-DELIVERABLE"]');
+        const dlValue = dlSelect?.value || '';
+        
+        if (!dlValue) {
+          alert('Please select a deliverable');
+          return;
+        }
+        
+        const [msIdx, dlIdx] = dlValue.split('-').map(n => parseInt(n, 10));
+        const title = document.querySelector('[data-testid="TID-TASK-TITLE"]')?.value?.trim() || 'Task';
+        
+        if (!window.projectState?.milestones?.[msIdx]?.deliverables?.[dlIdx]) {
+          alert('Invalid deliverable selection');
+          return;
+        }
+        
+        const deliverable = window.projectState.milestones[msIdx].deliverables[dlIdx];
+        deliverable.tasks = deliverable.tasks || [];
+        
+        // Add task
+        deliverable.tasks.push({
+          title: title,
+          name: title,
+          start: null,
+          end: null,
+          assignee: 'Unassigned',
+          progress: 0
+        });
+        
+        // Persist and re-render
+        projectsUpsert(window.projectState);
+        renderProjectHierarchy();
         closeTaskSetup();
       }
       function projectsLoad(){ try { return JSON.parse(localStorage.getItem('pm_projects')||'[]'); } catch(e){ return []; } }
