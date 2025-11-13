@@ -11,7 +11,7 @@
   }
   function navigateTo(route){
     try{
-      var map={'#/':'TID-DASHBOARD','#/projects':'TID-PAGE-PROJECTS','#/timelines':'TID-TL-PAGE','#/tl-test':'TID-TL-TEST-PAGE','#/reports':'TID-PAGE-REPORTS','#/permissions':'TID-ROLE-MATRIX','#/workitem':'TID-WORKITEM-DETAIL','#/evidence':'TID-EVIDENCE-UPLOAD','#/gantt':'TID-GANTT-VIEW','#/audit':'TID-AUDIT-LOG','#/notify':'TID-NOTIFY-PREFERENCES','#/import':'TID-IMPORT-WIZARD','#/exports':'TID-EXPORT-REPORTS','#/templates':'TID-TEMPLATES-LIBRARY','#/settings':'TID-SETTINGS-PAGE','#/search':'TID-SEARCH-RESULTS','#/invite-members':'TID-INVITE-MEMBERS-PAGE','#/security-dashboard':'TID-SECURITY-DASHBOARD-PAGE','#/health-checker':'TID-HEALTH-CHECKER-ROOT'};
+      var map={'#/':'TID-DASHBOARD','#/projects':'TID-PAGE-PROJECTS','#/timelines':'TID-TL-TEST-PAGE','#/reports':'TID-PAGE-REPORTS','#/permissions':'TID-ROLE-MATRIX','#/workitem':'TID-WORKITEM-DETAIL','#/evidence':'TID-EVIDENCE-UPLOAD','#/gantt':'TID-GANTT-VIEW','#/audit':'TID-AUDIT-LOG','#/notify':'TID-NOTIFY-PREFERENCES','#/import':'TID-IMPORT-WIZARD','#/exports':'TID-EXPORT-REPORTS','#/templates':'TID-TEMPLATES-LIBRARY','#/settings':'TID-SETTINGS-PAGE','#/search':'TID-SEARCH-RESULTS','#/invite-members':'TID-INVITE-MEMBERS-PAGE','#/security-dashboard':'TID-SECURITY-DASHBOARD-PAGE','#/health-checker':'TID-HEALTH-CHECKER-ROOT'};
       var show = map[route] || 'TID-DASHBOARD';
       var content = document.querySelector('[data-testid="TID-CONTENT-AREA"]');
       if(content){
@@ -23,7 +23,7 @@
         }
       }
       // If navigating to timelines, try to render it immediately if functions exist
-      if(show === 'TID-TL-PAGE'){ ensureTimelinesRendered(); }
+      if(show === 'TID-TL-TEST-PAGE'){ ensureTimelinesRendered(); }
     }catch(err){ /* swallow */ }
   }
   function hideModalByTid(tid){ try{ var m=document.querySelector('[data-testid="'+tid+'"]'); if(m) m.setAttribute('hidden',''); }catch(e){} }
@@ -45,14 +45,6 @@
   }
   // Attach click handlers without relying on inline onclick
   function bindNav(){
-    try{
-      // Ensure a Timelines (Test) link exists regardless of toggle delivery path
-      var nav = document.querySelector('.nav');
-      if(nav && !document.querySelector('[data-testid="TID-NAV-TL-TEST"]')){
-        var a=document.createElement('a'); a.href="#/tl-test"; a.setAttribute('data-testid','TID-NAV-TL-TEST'); a.textContent='Timelines (Test)'; a.addEventListener('click', function(e){ e.preventDefault(); var href=a.getAttribute('href')||'#/'; location.hash=href; (window.navigateTo||navigateTo)(href); }); nav.appendChild(a);
-      }
-    }catch(e){}
-
     try{
       document.querySelectorAll('.nav a[data-testid^="TID-NAV-"]').forEach(function(a){
         if(a._bootBound) return;
