@@ -1010,7 +1010,7 @@
       ]
     },
     "timelinesCompliance": {
-      "description": "Timelines page architecture compliance (ARC-TIMELINES-002)",
+      "description": "Timelines page architecture compliance (ARC-TIMELINES-002) - Consolidated Test Version",
       "architectureRef": "docs/architecture/ARC-TIMELINES-002-MATRIX-REDESIGN.md",
       "checks": [
         {
@@ -1025,11 +1025,11 @@
           "name": "Timeline toolbar with zoom controls present",
           "type": "element_exists",
           "testIds": [
-            "TID-TL-Z-YEAR",
-            "TID-TL-Z-QUARTER",
-            "TID-TL-Z-MONTH",
-            "TID-TL-Z-WEEK",
-            "TID-TL-Z-DAY"
+            "TID-TLT-Z-YEAR",
+            "TID-TLT-Z-QUARTER",
+            "TID-TLT-Z-MONTH",
+            "TID-TLT-Z-WEEK",
+            "TID-TLT-Z-DAY"
           ],
           "severity": "critical"
         },
@@ -1038,20 +1038,21 @@
           "name": "Timeline controls present",
           "type": "element_exists",
           "testIds": [
-            "TID-TL-VIEW-START",
-            "TID-TL-PROJECT-SELECT",
-            "TID-TL-CREATE-PROJECT",
-            "TID-TL-APPLY",
-            "TID-TL-BACK"
+            "TID-TLT-VIEW-START",
+            "TID-TLT-PROJECT-SELECT",
+            "TID-TLT-CREATE-PROJECT"
           ],
           "severity": "critical"
         },
         {
           "id": "TL-004",
-          "name": "Timeline canvas and lanes render",
+          "name": "Timeline canvas and grid render",
           "type": "element_exists",
           "testIds": [
-            "TID-TL-CANVAS"
+            "TID-TLT-CANVAS",
+            "TID-TLT-GRID",
+            "TID-TLT-LABELS",
+            "TID-TLT-PROGRESS"
           ],
           "severity": "critical"
         },
@@ -1060,26 +1061,40 @@
           "name": "Timeline filter controls present",
           "type": "element_exists",
           "testIds": [
-            "TID-TL-FSHOW-PROJ",
-            "TID-TL-FSHOW-MS",
-            "TID-TL-FSHOW-DL",
-            "TID-TL-FSHOW-TASK",
-            "TID-TL-FRESP"
+            "TID-TLT-FSHOW-PROJ",
+            "TID-TLT-FSHOW-MS",
+            "TID-TLT-FSHOW-DL",
+            "TID-TLT-FSHOW-TASK",
+            "TID-TLT-FRESP"
           ],
           "severity": "critical"
         },
         {
           "id": "TL-006",
-          "name": "Timeline renders project bars",
-          "type": "visual_check",
-          "description": "Project timeline bar must be visible when project exists",
+          "name": "Timeline axes render correctly",
+          "type": "element_exists",
           "testIds": [
-            "TID-TL-BAR-PROJ-0"
+            "TID-TLT-AXIS-YEARS",
+            "TID-TLT-AXIS-QUARTERS",
+            "TID-TLT-AXIS-MONTHS",
+            "TID-TLT-AXIS-WEEKS",
+            "TID-TLT-AXIS-DAYS"
           ],
           "severity": "critical"
         },
         {
           "id": "TL-007",
+          "name": "Timeline resizers exist for column adjustment",
+          "type": "element_exists",
+          "testIds": [
+            "TID-TLT-RESIZER",
+            "TID-TLT-RESIZER-2"
+          ],
+          "severity": "high",
+          "description": "Users must be able to resize label and progress columns"
+        },
+        {
+          "id": "TL-008",
           "name": "Timeline navigation from modals works",
           "type": "integration_check",
           "description": "Set timeline button in project modal must navigate to timelines page",
@@ -1089,14 +1104,12 @@
           "severity": "critical"
         },
         {
-          "id": "TL-008",
-          "name": "Timeline Apply button works",
-          "type": "integration_check",
-          "description": "Apply button must save project and return to projects page",
-          "testIds": [
-            "TID-TL-APPLY"
-          ],
-          "severity": "critical"
+          "id": "TL-009",
+          "name": "Timeline project progress overlay visible",
+          "type": "visual_check",
+          "description": "Timeline bars must show progress overlay (lighter cover proportionate to progress)",
+          "severity": "high",
+          "note": "Progress percentage displayed in separate column with visual overlay on timeline bar"
         }
       ]
     }
