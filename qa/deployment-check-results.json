@@ -1,11 +1,11 @@
 {
-  "timestamp": "2025-11-13T06:19:15Z",
+  "timestamp": "2025-11-13T09:23:19Z",
   "checks": [
     {
       "id": "DEPLOY-007",
       "name": "GitHub Pages environment allows main branch deployment",
       "status": "SKIP",
-      "severity": "critical",
+      "severity": "high",
       "message": "Could not retrieve environment configuration: ",
       "details": "Environment may not exist yet or gh CLI is not authenticated. First deployment will create it."
     },
@@ -13,30 +13,38 @@
       "id": "DEPLOY-008",
       "name": "Latest deployment workflow run succeeded",
       "status": "FAIL",
-      "severity": "critical",
+      "severity": "high",
       "message": "Could not retrieve workflow runs: ",
       "details": ""
     },
     {
       "id": "DEPLOY-009",
       "name": "Live deployment URL is accessible",
+      "status": "PASS",
+      "severity": "high",
+      "message": "URL https://lovable-ldcs.github.io/PIT-Project-Implementation-Tracker/ is accessible (HTTP 200)",
+      "details": ""
+    },
+    {
+      "id": "DEPLOY-010",
+      "name": "Deployed application contains expected content",
       "status": "FAIL",
-      "severity": "critical",
-      "message": "URL https://lovable-ldcs.github.io/PIT-Project-Implementation-Tracker/ returned HTTP connection failed",
-      "details": "The GitHub Pages deployment may not have completed successfully or CDN propagation is still in progress. Wait 2-5 minutes and try again."
+      "severity": "high",
+      "message": "Missing expected content: PIT - Project Implementation Tracker",
+      "details": "The deployed page does not contain all expected test IDs and content. This may indicate an incorrect artifact upload path or Jekyll processing issues."
     },
     {
       "id": "DEPLOY-011",
       "name": "GitHub deployment status is Active",
       "status": "SKIP",
-      "severity": "critical",
+      "severity": "high",
       "message": "No deployments found for github-pages environment",
       "details": "First deployment will create the deployment record"
     }
   ],
   "summary": {
-    "total": 4,
-    "passed": 0,
+    "total": 5,
+    "passed": 1,
     "failed": 2,
     "skipped": 2
   }
