@@ -1,26 +1,25 @@
 # QA Run Report
 
-**Generated:** 2025-11-13 13:42:04  
-**Duration:** 1.3 seconds  
-**Overall Status:** RED
+**Generated:** 2025-11-13 13:42:52  
+**Duration:** 0.96 seconds  
+**Overall Status:** AMBER
 
 ## Summary
 
 | Metric | Count |
 |--------|-------|
 | Total Checks | 23 |
-| Passed | 15 |
-| Failed | 4 |
+| Passed | 16 |
+| Failed | 3 |
 | Skipped | 4 |
 
 ## Status Breakdown
 
 ### Overall Result
-✗ **RED** - One or more critical checks failed
+⚠ **AMBER** - All critical checks passed, but some high severity checks failed
 
 ### Critical Issues
-- **[WIRE-001]** Frontend wiring checks pass: Frontend wiring validation failed - components not properly wired
-
+✓ No critical issues
 
 ### High Severity Issues
 - **[DEPLOY-006]** Current branch deployment status: On branch 'copilot/fix-qa-workflow-errors'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
@@ -93,7 +92,7 @@
 
 | ID | Name | Status | Severity |
 |----|------|--------|----------|
-| WIRE-001 | Frontend wiring checks pass | ✗ FAIL | critical |
+| WIRE-001 | Frontend wiring checks pass | ✓ PASS | critical |
 
 
 
@@ -102,11 +101,6 @@
 ### Failed Checks Require Action
 
 The following checks failed and must be addressed:
-
-
-#### [WIRE-001] Frontend wiring checks pass
-- **Severity:** critical
-- **Message:** Frontend wiring validation failed - components not properly wired
 
 
 #### [DEPLOY-006] Current branch deployment status
@@ -139,7 +133,7 @@ According to the **True North** methodology:
 - **Strict Mode:** False
 - **Skip Tests:** True
 - **Runner:** run-qa.ps1 v1.0.0
-- **Report Generated:** 2025-11-13T13:42:04.2776244+00:00
+- **Report Generated:** 2025-11-13T13:42:52.9926419+00:00
 
 ---
 *This report follows the True North Build Methodology - Architecture → QA → Implementation → GREEN*
