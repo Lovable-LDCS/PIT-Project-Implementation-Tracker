@@ -1010,7 +1010,7 @@
       ]
     },
     "timelinesCompliance": {
-      "description": "Timelines page architecture compliance (ARC-TIMELINES-002)",
+      "description": "Timelines page architecture compliance (ARC-TIMELINES-002) - Consolidated Test Version",
       "architectureRef": "docs/architecture/ARC-TIMELINES-002-MATRIX-REDESIGN.md",
       "checks": [
         {
@@ -1025,11 +1025,11 @@
           "name": "Timeline toolbar with zoom controls present",
           "type": "element_exists",
           "testIds": [
-            "TID-TL-Z-YEAR",
-            "TID-TL-Z-QUARTER",
-            "TID-TL-Z-MONTH",
-            "TID-TL-Z-WEEK",
-            "TID-TL-Z-DAY"
+            "TID-TLT-Z-YEAR",
+            "TID-TLT-Z-QUARTER",
+            "TID-TLT-Z-MONTH",
+            "TID-TLT-Z-WEEK",
+            "TID-TLT-Z-DAY"
           ],
           "severity": "critical"
         },
@@ -1038,20 +1038,21 @@
           "name": "Timeline controls present",
           "type": "element_exists",
           "testIds": [
-            "TID-TL-VIEW-START",
-            "TID-TL-PROJECT-SELECT",
-            "TID-TL-CREATE-PROJECT",
-            "TID-TL-APPLY",
-            "TID-TL-BACK"
+            "TID-TLT-VIEW-START",
+            "TID-TLT-PROJECT-SELECT",
+            "TID-TLT-CREATE-PROJECT"
           ],
           "severity": "critical"
         },
         {
           "id": "TL-004",
-          "name": "Timeline canvas and lanes render",
+          "name": "Timeline canvas and grid render",
           "type": "element_exists",
           "testIds": [
-            "TID-TL-CANVAS"
+            "TID-TLT-CANVAS",
+            "TID-TLT-GRID",
+            "TID-TLT-LABELS",
+            "TID-TLT-PROGRESS"
           ],
           "severity": "critical"
         },
@@ -1060,26 +1061,40 @@
           "name": "Timeline filter controls present",
           "type": "element_exists",
           "testIds": [
-            "TID-TL-FSHOW-PROJ",
-            "TID-TL-FSHOW-MS",
-            "TID-TL-FSHOW-DL",
-            "TID-TL-FSHOW-TASK",
-            "TID-TL-FRESP"
+            "TID-TLT-FSHOW-PROJ",
+            "TID-TLT-FSHOW-MS",
+            "TID-TLT-FSHOW-DL",
+            "TID-TLT-FSHOW-TASK",
+            "TID-TLT-FRESP"
           ],
           "severity": "critical"
         },
         {
           "id": "TL-006",
-          "name": "Timeline renders project bars",
-          "type": "visual_check",
-          "description": "Project timeline bar must be visible when project exists",
+          "name": "Timeline axes render correctly",
+          "type": "element_exists",
           "testIds": [
-            "TID-TL-BAR-PROJ-0"
+            "TID-TLT-AXIS-YEARS",
+            "TID-TLT-AXIS-QUARTERS",
+            "TID-TLT-AXIS-MONTHS",
+            "TID-TLT-AXIS-WEEKS",
+            "TID-TLT-AXIS-DAYS"
           ],
           "severity": "critical"
         },
         {
           "id": "TL-007",
+          "name": "Timeline resizers exist for column adjustment",
+          "type": "element_exists",
+          "testIds": [
+            "TID-TLT-RESIZER",
+            "TID-TLT-RESIZER-2"
+          ],
+          "severity": "high",
+          "description": "Users must be able to resize label and progress columns"
+        },
+        {
+          "id": "TL-008",
           "name": "Timeline navigation from modals works",
           "type": "integration_check",
           "description": "Set timeline button in project modal must navigate to timelines page",
@@ -1089,14 +1104,120 @@
           "severity": "critical"
         },
         {
-          "id": "TL-008",
-          "name": "Timeline Apply button works",
-          "type": "integration_check",
-          "description": "Apply button must save project and return to projects page",
+          "id": "TL-009",
+          "name": "Timeline project progress overlay visible",
+          "type": "visual_check",
+          "description": "Timeline bars must show progress overlay (lighter cover proportionate to progress)",
+          "severity": "critical",
+          "note": "Progress percentage displayed in separate column with visual overlay on timeline bar. CRITICAL feature that must be preserved."
+        },
+        {
+          "id": "TL-010",
+          "name": "Date axis buttons toggle independently",
+          "type": "element_exists",
+          "description": "Each zoom button (Year/Quarter/Month/Week/Day) should independently toggle its axis visibility",
           "testIds": [
-            "TID-TL-APPLY"
+            "TID-TLT-Z-YEAR",
+            "TID-TLT-Z-QUARTER",
+            "TID-TLT-Z-MONTH",
+            "TID-TLT-Z-WEEK",
+            "TID-TLT-Z-DAY"
+          ],
+          "severity": "critical",
+          "note": "Per ARC-TIMELINES-004: Axes should appear/disappear as buttons are clicked, not cumulatively"
+        },
+        {
+          "id": "TL-011",
+          "name": "Timeline extends at least 10 years",
+          "type": "visual_check",
+          "description": "Timeline canvas must extend at least 10 years to allow dragging beyond viewport",
+          "severity": "critical",
+          "note": "Timeline bars should be draggable off-page without hitting blocks. Auto-scroll should activate near edges."
+        },
+        {
+          "id": "TL-012",
+          "name": "Timeline start date picker functional",
+          "type": "element_exists",
+          "description": "Date picker at top controls timeline view start position",
+          "testIds": [
+            "TID-TLT-VIEW-START"
           ],
           "severity": "critical"
+        },
+        {
+          "id": "TL-013",
+          "name": "Advanced filter dropdowns (future enhancement)",
+          "type": "element_exists",
+          "description": "Searchable/selectable dropdowns for Projects, Milestones, Deliverables, Tasks",
+          "testIds": [
+            "TID-TLT-FILTER-PROJECTS",
+            "TID-TLT-FILTER-MILESTONES",
+            "TID-TLT-FILTER-DELIVERABLES",
+            "TID-TLT-FILTER-TASKS"
+          ],
+          "severity": "high",
+          "note": "Enhancement per ARC-TIMELINES-004. Current implementation uses simple checkboxes which is acceptable for Phase 1."
+        },
+        {
+          "id": "TL-014",
+          "name": "Proportional date column sizing (future enhancement)",
+          "type": "visual_check",
+          "description": "Resizing any date axis should proportionally resize all other date axes",
+          "severity": "high",
+          "note": "Enhancement per ARC-TIMELINES-004. Allows Excel-like column manipulation. Not blocking current release."
+        },
+        {
+          "id": "TL-015",
+          "name": "Zoom-to-fit controls (future enhancement)",
+          "type": "element_exists",
+          "description": "Zoom controls to fit entire timeline on-page for export/snapshot",
+          "testIds": [
+            "TID-TLT-ZOOM-FIT",
+            "TID-TLT-ZOOM-IN",
+            "TID-TLT-ZOOM-OUT",
+            "TID-TLT-ZOOM-RESET"
+          ],
+          "severity": "medium",
+          "note": "Enhancement per ARC-TIMELINES-004. Enables export-ready views. Planned for Phase 2."
+        },
+        {
+          "id": "TL-016",
+          "name": "Row collapse/expand (future enhancement)",
+          "type": "visual_check",
+          "description": "Excel-like collapse/expand for timeline rows without affecting underlying structure",
+          "severity": "medium",
+          "note": "Enhancement per ARC-TIMELINES-004. Collapse project hides milestones, etc. Planned for Phase 2."
+        }
+      ]
+    },
+    "timelineEnhancements": {
+      "description": "Enhanced timeline requirements per ARC-TIMELINES-004",
+      "architectureRef": "docs/architecture/ARC-TIMELINES-004-ENHANCED-REQUIREMENTS.md",
+      "implementationPhase": "Phase 1 complete, Phase 2 planned",
+      "checks": [
+        {
+          "id": "TL-ENH-001",
+          "name": "Even date distribution across viewport",
+          "type": "visual_check",
+          "description": "Dates should be evenly distributed and visible across page width",
+          "severity": "high",
+          "note": "Ensures readable timeline at all zoom levels"
+        },
+        {
+          "id": "TL-ENH-002",
+          "name": "Timeline visual overview purpose",
+          "type": "functional_check",
+          "description": "Page provides clear at-a-glance project status visualization",
+          "severity": "high",
+          "note": "Primary purpose: visual project overview with progress indication"
+        },
+        {
+          "id": "TL-ENH-003",
+          "name": "Smooth dragging beyond viewport",
+          "type": "interaction_check",
+          "description": "Timeline bars draggable beyond viewport without blocking",
+          "severity": "critical",
+          "note": "User should never hit a block when dragging to extend timeline dates"
         }
       ]
     }

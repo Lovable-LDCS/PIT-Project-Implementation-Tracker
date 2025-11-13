@@ -53,7 +53,7 @@
           <span data-testid="TID-SIDEBAR-TL-SELECTOR" hidden></span>
         </div>
         <nav class="nav">
-          <a href="#/" data-testid="TID-NAV-DASHBOARD" aria-current="page" onclick="return appNavTo(this)">Dashboard</a>
+          <a href="#/" data-testid="TID-NAV-DASHBOARD" onclick="return appNavTo(this)">Dashboard</a>
           <a href="#/projects" data-testid="TID-NAV-PROJECTS" onclick="return appNavTo(this)">Implementation</a>
           <a href="#/reports" data-testid="TID-NAV-REPORTS" onclick="return appNavTo(this)">Reports</a>
           <a href="#/permissions" data-testid="TID-NAV-PERMISSIONS" onclick="return appNavTo(this)">Permissions</a>
@@ -684,8 +684,8 @@
           <button class="btn" type="button" data-testid="TID-GANTT-ADD-LINK">Add dependency link</button>
         </section>
 
-        <!-- Timelines TEST page (isolated) -->
-        <section data-testid="TID-TL-TEST-PAGE" hidden aria-label="Timelines Test">
+        <!-- Timelines page (consolidated from Test version) -->
+        <section data-testid="TID-TL-TEST-PAGE" hidden aria-label="Timelines">
           <div class="tltest-toolbar">
             <button class="btn" type="button" data-testid="TID-TLT-Z-YEAR">Year</button>
             <button class="btn" type="button" data-testid="TID-TLT-Z-QUARTER">Quarter</button>
@@ -694,7 +694,18 @@
             <button class="btn" type="button" data-testid="TID-TLT-Z-DAY">Day</button>
             <span class="flex-spacer"></span>
             <label>Timeline start date <input type="date" data-testid="TID-TLT-VIEW-START" /></label>
+            <label>Project <select data-testid="TID-TLT-PROJECT-SELECT"><option>All Projects</option></select></label>
+            <button class="btn" type="button" data-testid="TID-TLT-CREATE-PROJECT" onclick="openProjectSetup()">Create project</button>
             <span data-testid="TID-TLT-VIEWPORT"></span>
+          </div>
+          <div class="timeline-filters" data-testid="TID-TLT-FILTERS">
+            <div class="filter-card">
+              <label><input type="checkbox" data-testid="TID-TLT-FSHOW-PROJ" checked /> Show project</label>
+              <label><input type="checkbox" data-testid="TID-TLT-FSHOW-MS" checked /> Show milestones</label>
+              <label><input type="checkbox" data-testid="TID-TLT-FSHOW-DL" checked /> Show deliverables</label>
+              <label><input type="checkbox" data-testid="TID-TLT-FSHOW-TASK" checked /> Show tasks</label>
+              <label>Responsible <select data-testid="TID-TLT-FRESP"><option>Any</option><option>Current User</option><option>Unassigned</option></select></label>
+            </div>
           </div>
           <div class="tltest-axes" data-testid="TID-TLT-AXES">
             <div class="tltest-axes-scroll" data-testid="TID-TLT-AXES-SCROLL">
@@ -719,51 +730,6 @@
             </div>
           </div>
           <div class="tltest-problems" data-testid="TID-TLT-PROBLEMS" hidden></div>
-        </section>
-
-        <!-- Timelines page -->
-        <section data-testid="TID-TL-PAGE" hidden aria-label="Timelines">
-          <div class="timeline-toolbar">
-            <button class="btn" type="button" data-testid="TID-TL-Z-YEAR" onclick="tlSetZoom('year')">Year</button>
-            <button class="btn" type="button" data-testid="TID-TL-Z-QUARTER" onclick="tlSetZoom('quarter')">Quarter</button>
-            <button class="btn" type="button" data-testid="TID-TL-Z-MONTH" onclick="tlSetZoom('month')">Month</button>
-            <button class="btn" type="button" data-testid="TID-TL-Z-WEEK" onclick="tlSetZoom('week')">Week</button>
-            <button class="btn" type="button" data-testid="TID-TL-Z-DAY" onclick="tlSetZoom('day')">Day</button>
-            <span class="flex-spacer"></span>
-            <label>View start <input type="date" data-testid="TID-TL-VIEW-START" /></label>
-            <label>Project <select data-testid="TID-TL-PROJECT-SELECT"></select></label>
-            <button class="btn" type="button" data-testid="TID-TL-CREATE-PROJECT" onclick="openProjectSetup()">Create project</button>
-            <button class="btn primary" type="button" data-testid="TID-TL-APPLY" onclick="tlApplyAndBack()">Apply</button>
-            <button class="btn" type="button" data-testid="TID-TL-BACK" onclick="backToProjects()">Back to projects</button>
-          </div>
-          <div class="timeline-filters" data-testid="TID-TL-FILTERS">
-            <div class="filter-card">
-              <label><input type="checkbox" data-testid="TID-TL-FSHOW-PROJ" checked /> Show project</label>
-              <label><input type="checkbox" data-testid="TID-TL-FSHOW-MS" checked /> Show milestones</label>
-              <label><input type="checkbox" data-testid="TID-TL-FSHOW-DL" checked /> Show deliverables</label>
-              <label><input type="checkbox" data-testid="TID-TL-FSHOW-TASK" checked /> Show tasks</label>
-              <label>Responsible <select data-testid="TID-TL-FRESP"><option>Any</option><option>Current User</option><option>Unassigned</option></select></label>
-            </div>
-          </div>
-          <div class="tl-grid">
-            <div class="tl-labels">
-              <!-- Left column header is injected by JS render -->
-            </div>
-            <div class="tl-scroll">
-              <div class="tl-header-spacer" data-testid="TID-TL-HEADER-SPACER"></div>
-              <div class="tl-axis" data-testid="TID-TL-AXIS-YEARS" hidden></div>
-              <div class="tl-axis" data-testid="TID-TL-AXIS-QUARTERS" hidden></div>
-              <div class="tl-axis" data-testid="TID-TL-AXIS-MONTHS" hidden></div>
-              <div class="tl-axis" data-testid="TID-TL-AXIS-WEEKS" hidden></div>
-              <div class="tl-axis" data-testid="TID-TL-AXIS-DAYS" hidden></div>
-              <div class="timeline-canvas" data-testid="TID-TL-CANVAS">
-                <!-- QA placeholders for base project lane/bar test IDs (runtime will render actual elements) -->
-                <div data-testid="TID-TL-LANE-PROJ" hidden></div>
-                <div data-testid="TID-TL-BAR-PROJ" hidden></div>
-                <div class="tl-lanes" id="tl-lanes"></div>
-              </div>
-            </div>
-          </div>
         </section>
         <section data-testid="TID-EVIDENCE-UPLOAD" hidden aria-label="Evidence Upload">
           <div data-testid="TID-EV-HINT">Only one evidence item per task. Accepted: PDF, Office docs, images, MP4 video.</div>
@@ -994,6 +960,25 @@
           '#/security-dashboard': 'TID-SECURITY-DASHBOARD-PAGE',
           '#/health-checker': 'TID-HEALTH-CHECKER-ROOT'
         };
+        
+        const routeTitles = {
+          '#/': 'Dashboard',
+          '#/projects': 'Implementation',
+          '#/timelines': 'Timelines',
+          '#/reports': 'Reports',
+          '#/permissions': 'Permissions',
+          '#/evidence': 'Evidence',
+          '#/gantt': 'Gantt',
+          '#/audit': 'Audit Log',
+          '#/notify': 'Notifications',
+          '#/import': 'Import',
+          '#/templates': 'Templates',
+          '#/qa': 'Quality Assurance',
+          '#/invite-members': 'Invite Members',
+          '#/security-dashboard': 'Security Dashboard',
+          '#/health-checker': 'Health Checker'
+        };
+        
         const showTestId = routes[route] || 'TID-DASHBOARD';
         const content = document.querySelector('[data-testid="TID-CONTENT-AREA"]');
         if(content){
@@ -1005,22 +990,19 @@
             else { el.setAttribute('hidden',''); }
           });
         }
-        // Update aria-current
+        // Update aria-current for sidebar highlighting
         document.querySelectorAll('.nav a[data-testid^="TID-NAV-"]').forEach(a=>{
           if(a.getAttribute('href') === route){ a.setAttribute('aria-current','page'); }
           else { a.removeAttribute('aria-current'); }
         });
-        // Update breadcrumbs (hide redundant label on Projects page)
+        // Update breadcrumbs with proper page titles
         const bc = document.querySelector('[data-testid="TID-BREADCRUMBS"] ol');
         if(bc){
           bc.innerHTML = '';
-          if(route === '#/'){
-            const li = document.createElement('li'); li.textContent = 'Dashboard'; bc.appendChild(li);
-          } else if(route !== '#/projects'){
-            const li = document.createElement('li');
-            li.textContent = route.replace('#/','').replace(/^[a-z]/, c=>c.toUpperCase());
-            bc.appendChild(li);
-          }
+          const pageTitle = routeTitles[route] || 'Dashboard';
+          const li = document.createElement('li'); 
+          li.textContent = pageTitle; 
+          bc.appendChild(li);
         }
         // Route-specific init wiring
         if(route === '#/workitem'){ try{ workItemInit(); }catch(e){} }
