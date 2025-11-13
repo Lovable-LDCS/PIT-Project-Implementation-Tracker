@@ -24,6 +24,88 @@ Capture enhanced timeline requirements for a production-ready, Excel-like timeli
 
 ## 2. Detailed Requirements
 
+### 2.0 CRITICAL: Layout and Alignment
+
+#### 2.0.1 Date Axes Alignment with Progress Column
+**Requirement**: The left border of the date axes area must align exactly with the right border of the Progress column.
+
+**Current State**: BROKEN - Date axes extend all the way to the left side of the page, misaligned with grid
+
+**Required Behavior**:
+- Date axes container positioned to align with timeline canvas
+- Left edge of axes content = Right edge of Progress column (+ gap)
+- No overlap with Labels or Progress columns
+- Alignment maintained during:
+  - Column resizing
+  - Window resizing
+  - Scroll operations
+  - Axis visibility toggles
+
+**Visual Layout**:
+```
+┌──────────────┬───┬──────────┬───┬────────────────────────────┐
+│   Labels     │ │ │ Progress │ │ │ Date Axes & Timeline      │
+│   Column     │R│ │  Column  │R│ │ (aligned here →)          │
+└──────────────┴───┴──────────┴───┴────────────────────────────┘
+                                  ↑
+                          Axes left border MUST 
+                          align with this point
+```
+
+**Implementation**:
+```javascript
+function alignAxesWithProgress() {
+  const prog = document.querySelector('[data-testid="TID-TLT-PROGRESS"]');
+  const axesWrap = document.querySelector('[data-testid="TID-TLT-AXES-CONTENT"]');
+  const axesScroll = document.querySelector('[data-testid="TID-TLT-AXES-SCROLL"]');
+  
+  if(!prog || !axesWrap || !axesScroll) return;
+  
+  const pr = prog.getBoundingClientRect();
+  const sr = axesScroll.getBoundingClientRect();
+  
+  // Calculate required margin to align axes with progress right edge
+  const targetLeft = pr.right;
+  const scrollLeft = sr.left;
+  const marginNeeded = Math.max(0, Math.round(targetLeft - scrollLeft) + 6); // +6 for gap
+  
+  axesWrap.style.marginLeft = marginNeeded + 'px';
+}
+
+// Call after every render and resize
+window.addEventListener('resize', alignAxesWithProgress);
+```
+
+**QA Validation**:
+```javascript
+// miniQA check
+const prog = document.querySelector('[data-testid="TID-TLT-PROGRESS"]');
+const axesWrap = document.querySelector('[data-testid="TID-TLT-AXES-CONTENT"]');
+if(prog && axesWrap){
+  const pr = prog.getBoundingClientRect();
+  const ar = axesWrap.getBoundingClientRect();
+  const delta = Math.abs(pr.right - ar.left);
+  if(delta > 2){ 
+    // FAIL: Alignment error > 2px
+    errors.push('Left border of date rows not aligned with right border of progress table');
+  }
+}
+```
+
+**Test ID**: Check validated via existing elements
+- `TID-TLT-PROGRESS`: Progress column
+- `TID-TLT-AXES-CONTENT`: Date axes container
+- `TID-TLT-AXES-SCROLL`: Scrollable axes wrapper
+
+**Acceptance Criteria**:
+- ✅ Date axes left edge aligned with Progress right edge (±2px tolerance)
+- ✅ Alignment maintained during column resize
+- ✅ Alignment maintained during window resize
+- ✅ miniQA check passes (no alignment errors)
+- ✅ Visual confirmation: no gap or overlap
+
+---
+
 ### 2.1 Date Axis Behavior
 
 #### 2.1.1 Incremental Reveal
@@ -214,14 +296,77 @@ function populateFilters() {
 
 ---
 
-### 2.4 Proportional Date Column Sizing
+### 2.4 Date Column Resizing and Adjustment
 
-#### 2.4.1 Linked Resize Behavior
+#### 2.4.0 CRITICAL: Date Column Resize Handles (Phase 1 - Required)
+**Requirement**: Users must be able to adjust the width of date columns dynamically to control timeline density.
+
+**Current State**: NO resize functionality for date columns - this is a critical missing feature
+
+**Required Behavior**:
+- A resize handle must be present on the right edge of the date area (timeline canvas)
+- Dragging the handle left/right adjusts the `pixelsPerDay` value
+- Minimum width: 20px per day (dense view)
+- Maximum width: 100px per day (expanded view)
+- Default: 6px per day
+- Visual cursor change to `col-resize` on hover
+- Live preview as user drags
+
+**Implementation**:
+```javascript
+// Add resize handle in grid layout
+state.pxPerDay = 6; // default
+
+function bindDateColumnResizer() {
+  const handle = document.querySelector('[data-testid="TID-TLT-DATE-RESIZER"]');
+  if(!handle) return;
+  
+  let dragging = false;
+  let startX = 0;
+  let startPxPerDay = state.pxPerDay;
+  
+  handle.addEventListener('mousedown', (e) => {
+    dragging = true;
+    startX = e.clientX;
+    startPxPerDay = state.pxPerDay;
+    document.body.style.cursor = 'col-resize';
+    e.preventDefault();
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if(!dragging) return;
+    const dx = e.clientX - startX;
+    // Scale based on movement (positive = wider, negative = narrower)
+    const scaleFactor = 1 + (dx / 500); // 500px movement = 2x scale
+    state.pxPerDay = Math.max(0.5, Math.min(100, startPxPerDay * scaleFactor));
+    render();
+  });
+  
+  document.addEventListener('mouseup', () => {
+    if(dragging) {
+      dragging = false;
+      document.body.style.cursor = '';
+    }
+  });
+}
+```
+
+**Test IDs**:
+- `TID-TLT-DATE-RESIZER`: Resize handle for date column area
+
+**Acceptance Criteria**:
+- ✅ Date resize handle visible and functional
+- ✅ Dragging adjusts timeline density (pxPerDay)
+- ✅ Timeline bars and axes re-render on resize
+- ✅ Min/max constraints enforced (0.5 to 100 px/day)
+- ✅ Cursor changes appropriately
+
+#### 2.4.1 Proportional Date Column Sizing (Phase 2 - Future Enhancement)
 **Requirement**: When resizing any date column (Year/Quarter/Month/Week/Day), all others should resize proportionally.
 
-**Current State**: Resize handles exist but resize columns independently
+**Current State**: Basic resize functionality required first (see 2.4.0)
 
-**Enhanced Behavior**:
+**Enhanced Behavior** (Future):
 - Dragging Year column wider → All date columns scale proportionally
 - Dragging Day column narrower → All date columns scale proportionally
 - Maintain aspect ratio across all date axes
@@ -348,6 +493,83 @@ function isRowVisible(row) {
 ---
 
 ### 2.6 Extended Timeline and Dragging
+
+#### 2.6.0 CRITICAL: Auto-Scroll During Bar Dragging (Phase 1 - Required)
+**Requirement**: When dragging timeline bars near viewport edges, the view must automatically scroll to allow smooth continuous dragging beyond screen boundaries.
+
+**Current State**: BROKEN - Dragging stops at viewport edge, forcing users to manually use scrollbar
+
+**Required Behavior**:
+- **Edge Detection**: Detect when drag is within 50px of left or right viewport edge
+- **Auto-Scroll**: Automatically scroll the container in the drag direction
+- **Scroll Speed**: Proportional to proximity to edge (closer = faster scroll)
+  - At edge: 10px per frame (fast)
+  - 50px from edge: 2px per frame (slow)
+  - Beyond 50px: No auto-scroll
+- **Continuous**: User should never hit a "wall" while dragging
+- **Both Directions**: Works for left edge (dragging left) and right edge (dragging right)
+
+**Implementation**:
+```javascript
+let autoScrollInterval = null;
+
+function startAutoScroll(direction, speed) {
+  if(autoScrollInterval) return; // Already scrolling
+  
+  const scroll = document.querySelector('[data-testid="TID-TLT-SCROLL"]');
+  if(!scroll) return;
+  
+  autoScrollInterval = setInterval(() => {
+    scroll.scrollLeft += direction * speed;
+  }, 16); // ~60fps
+}
+
+function stopAutoScroll() {
+  if(autoScrollInterval) {
+    clearInterval(autoScrollInterval);
+    autoScrollInterval = null;
+  }
+}
+
+// In mousemove handler during drag:
+function checkAutoScroll(e) {
+  const scroll = document.querySelector('[data-testid="TID-TLT-SCROLL"]');
+  if(!scroll) return;
+  
+  const rect = scroll.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const threshold = 50;
+  
+  if(x < threshold) {
+    // Near left edge - scroll left
+    const proximity = (threshold - x) / threshold; // 0 to 1
+    const speed = 2 + (proximity * 8); // 2 to 10
+    startAutoScroll(-1, speed);
+  } else if(x > rect.width - threshold) {
+    // Near right edge - scroll right
+    const proximity = (x - (rect.width - threshold)) / threshold;
+    const speed = 2 + (proximity * 8);
+    startAutoScroll(1, speed);
+  } else {
+    stopAutoScroll();
+  }
+}
+
+// In mouseup handler:
+document.addEventListener('mouseup', () => {
+  stopAutoScroll();
+  // ... rest of mouseup logic
+});
+```
+
+**Acceptance Criteria**:
+- ✅ Dragging within 50px of left edge auto-scrolls left
+- ✅ Dragging within 50px of right edge auto-scrolls right
+- ✅ Scroll speed proportional to edge proximity
+- ✅ Auto-scroll stops when drag moves away from edge
+- ✅ Auto-scroll stops on mouseup
+- ✅ User can drag bars continuously across entire timeline without manual scrolling
+- ✅ No "blocking" or "wall" effect at viewport edges
 
 #### 2.6.1 10+ Year Extension
 **Requirement**: Timeline must extend at least 10 years off-page with smooth dragging beyond viewport boundaries.
@@ -480,7 +702,17 @@ Timeline bar: [████████████░░░░░░░░]
 
 ## 3. Implementation Priority
 
-### Phase 1: Critical (Current Sprint) ✅
+### Phase 1A: CRITICAL FIXES (This PR - BLOCKING)
+**Status**: 🔴 RED → Must reach GREEN before handover
+
+These are critical bugs blocking user workflow:
+- [ ] **Date axes alignment**: Fix misalignment with Progress column (Section 2.0.1)
+- [ ] **Date column resize handles**: Add functional resize handle for timeline density control (Section 2.4.0)
+- [ ] **Auto-scroll during drag**: Enable smooth dragging beyond viewport edges (Section 2.6.0)
+
+**Acceptance**: All three features must show GREEN in QA before handover.
+
+### Phase 1B: Critical (Previously Completed) ✅
 - [x] Basic date axis toggle
 - [x] Simple filters (checkboxes)
 - [x] Progress overlay preservation
@@ -488,7 +720,7 @@ Timeline bar: [████████████░░░░░░░░]
 - [x] Timeline start date control
 
 ### Phase 2: High Priority (Next Sprint)
-- [ ] Proportional date column sizing
+- [ ] Proportional date column sizing (all axes scale together)
 - [ ] Advanced filter dropdowns (searchable/multi-select)
 - [ ] Row collapse/expand functionality
 - [ ] Zoom-to-fit controls

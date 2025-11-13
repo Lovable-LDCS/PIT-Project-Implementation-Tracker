@@ -1218,9 +1218,9 @@
       ]
     },
     "timelineEnhancements": {
-      "description": "Enhanced timeline requirements per ARC-TIMELINES-004",
+      "description": "Enhanced timeline requirements per ARC-TIMELINES-004 - Phase 1A Critical Fixes",
       "architectureRef": "docs/architecture/ARC-TIMELINES-004-ENHANCED-REQUIREMENTS.md",
-      "implementationPhase": "Phase 1 complete, Phase 2 planned",
+      "implementationPhase": "Phase 1A - Critical bug fixes required",
       "checks": [
         {
           "id": "TL-ENH-001",
@@ -1240,11 +1240,28 @@
         },
         {
           "id": "TL-ENH-003",
-          "name": "Smooth dragging beyond viewport",
+          "name": "Auto-scroll during timeline bar dragging",
           "type": "interaction_check",
-          "description": "Timeline bars draggable beyond viewport without blocking",
+          "description": "Timeline bars draggable beyond viewport without blocking - auto-scroll activates within 50px of edges",
           "severity": "critical",
-          "note": "User should never hit a block when dragging to extend timeline dates"
+          "note": "CRITICAL: User should never hit a block when dragging to extend timeline dates. Auto-scroll must engage near viewport edges."
+        },
+        {
+          "id": "TL-ENH-004",
+          "name": "Date column resize handle exists and is functional",
+          "type": "element_exists",
+          "description": "Resize handle must be present to adjust timeline density (pixelsPerDay)",
+          "testIds": ["TID-TLT-DATE-RESIZER"],
+          "severity": "critical",
+          "note": "CRITICAL: Users must be able to adjust date column width to control timeline density. Handle should allow dragging to scale timeline."
+        },
+        {
+          "id": "TL-ENH-005",
+          "name": "Date axes aligned with Progress column",
+          "type": "visual_check",
+          "description": "Left border of date axes must align with right border of Progress column (within 2px)",
+          "severity": "critical",
+          "note": "CRITICAL: Date axes currently misaligned - extend to left side of page. Must align with Progress right edge."
         }
       ]
     }
