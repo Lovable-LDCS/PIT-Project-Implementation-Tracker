@@ -1012,7 +1012,7 @@
         if(route === '#/notify'){ try{ notifyInit(); }catch(e){} }
         if(route === '#/import'){ try{ importInit(); }catch(e){} }
         if(route === '#/templates'){ try{ templatesInit(); }catch(e){} }
-        if(route === '#/timelines'){ try{ if(window.initTestTimeline){ window.initTestTimeline(); } }catch(e){} }
+        if(route === '#/timelines'){ try{ tlInitFromStore(); tlRender(); }catch(e){} }
         try{ runWiringChecks(); }catch(e){} }
       window.addEventListener('hashchange', ()=> { closeProjectSetup(); navigateTo(location.hash || '#/'); });
       // Ensure sidebar nav always navigates even if default is blocked
