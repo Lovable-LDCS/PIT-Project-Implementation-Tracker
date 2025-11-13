@@ -901,7 +901,6 @@
       </main>
     </div>
     <script src="app-main.js"></script>
-    <script src="timelines.js"></script>
     <script src="timelines-test.js"></script>
     <script>
       // Early global fallbacks to prevent ReferenceError if bundling/binding is delayed
@@ -1269,8 +1268,8 @@
         localStorage.setItem('pm_tl_settings', JSON.stringify(val));
         window.tlSettings = val;
         alert('Settings saved');
-        // If timelines is open, re-render fully
-        if(location.hash === '#/timelines'){ tlRender(); }
+        // Timelines test version handles its own re-rendering
+        // if(location.hash === '#/timelines'){ tlRender(); }
       }
       function settingsInit(){
         const s = settingsGet();
@@ -1283,7 +1282,15 @@
       }
 
       // Timelines navigation
-      function openTimelines(mode){ window.timelineMode = mode || 'project'; window.returnToModal = (mode==='project' ? 'project' : (mode==='milestones' ? 'milestone' : null)); navigateTo('#/timelines'); tlInitFromStore(); tlRender(); const sel=document.querySelector('[data-testid="TID-TL-PROJECT-SELECT"]'); if(sel){ sel.onchange = ()=>{ const i=parseInt(sel.value,10); const list=projectsLoad(); if(!isNaN(i) && list[i]){ window.projectState = JSON.parse(JSON.stringify(list[i])); tlRender(); } }; } }
+      function openTimelines(mode){ 
+        window.timelineMode = mode || 'project'; 
+        window.returnToModal = (mode==='project' ? 'project' : (mode==='milestones' ? 'milestone' : null)); 
+        // Close the modal first
+        if(mode === 'project'){ closeProjectSetup(); }
+        else if(mode === 'milestones'){ closeMilestoneSetup(); }
+        // Navigate to timelines page
+        navigateTo('#/timelines');
+      }
       function backToProjects(){ navigateTo('#/projects'); if(window.returnToModal==='project'){ openProjectSetup(); } else if(window.returnToModal==='milestone'){ openMilestoneSetup(); } window.returnToModal=null; }
 
       // Timelines engine (very light MVP)
