@@ -185,10 +185,20 @@
       if(canvas){ canvas.style.width = timelineAreaW + 'px'; canvas.style.position='relative'; }
       axesWrap.style.width = timelineAreaW + 'px';
       if(axesScroll){
-        const pr = document.querySelector('[data-testid="TID-TLT-PROGRESS"]').getBoundingClientRect();
-        const sr = axesScroll.getBoundingClientRect();
-        const delta = Math.max(0, Math.round(pr.right - sr.left));
-        axesWrap.style.marginLeft = delta + 'px';
+        // Calculate alignment: axes wrap left edge should match progress right edge
+        const prog = document.querySelector('[data-testid="TID-TLT-PROGRESS"]');
+        if(prog){
+          const pr = prog.getBoundingClientRect();
+          const sr = axesScroll.getBoundingClientRect();
+          // The target is to have axesWrap.left = progress.right
+          // Since axesWrap is inside axesScroll, we need: scrollLeft + marginLeft = targetLeft
+          // marginLeft = targetLeft - scrollLeft
+          // Add small adjustment for grid gaps/borders
+          const targetLeft = pr.right;
+          const scrollLeft = sr.left;
+          const marginNeeded = Math.max(0, Math.round(targetLeft - scrollLeft) + 6);
+          axesWrap.style.marginLeft = marginNeeded + 'px';
+        }
       }
       Object.values(axes).forEach(ax => { if(ax && ax.parentElement !== axesWrap){ axesWrap.appendChild(ax); } });
     }
