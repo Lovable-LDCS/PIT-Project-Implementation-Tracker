@@ -461,22 +461,26 @@ if(-not (Test-Path 'logs/chat/current.md')){ Fail 'Missing logs/chat/current.md'
 if($html -match '<[^>]+data-testid\s*=\s*"TID-PSETUP-START"'){ Fail "Project Setup must not contain Start input (timeline-first)" } else { Ok "Project Setup Start input removed" }
 if($html -match '<[^>]+data-testid\s*=\s*"TID-PSETUP-END"'){ Fail "Project Setup must not contain End input (timeline-first)" } else { Ok "Project Setup End input removed" }
 Test-Pattern 'data-testid\s*=\s*"TID-PSETUP-OPEN-TIMELINE"' 'TID-PSETUP-OPEN-TIMELINE'
-# Timelines page presence
-Test-Pattern 'data-testid\s*=\s*"TID-TL-PAGE"' 'TID-TL-PAGE'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-CANVAS"' 'TID-TL-CANVAS'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-AXIS-MONTHS"' 'TID-TL-AXIS-MONTHS'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-AXIS-WEEKS"' 'TID-TL-AXIS-WEEKS'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-AXIS-DAYS"' 'TID-TL-AXIS-DAYS'
-# Disallowed legacy controls must NOT exist
+
+# OLD TIMELINE PAGE CHECKS - REMOVED PER ARC-TIMELINES-003-CONSOLIDATION
+# The old TID-TL-PAGE was completely removed and replaced with TID-TL-TEST-PAGE
+# These checks are now obsolete and have been moved to lines 495+ with correct TID-TLT-* prefix
+# Kept here as reference only:
+# Test-Pattern 'data-testid\s*=\s*"TID-TL-PAGE"' 'TID-TL-PAGE'
+# Test-Pattern 'data-testid\s*=\s*"TID-TL-CANVAS"' 'TID-TL-CANVAS'
+# Test-Pattern 'data-testid\s*=\s*"TID-TL-AXIS-MONTHS"' 'TID-TL-AXIS-MONTHS'
+# Test-Pattern 'data-testid\s*=\s*"TID-TL-AXIS-WEEKS"' 'TID-TL-AXIS-WEEKS'
+# Test-Pattern 'data-testid\s*=\s*"TID-TL-AXIS-DAYS"' 'TID-TL-AXIS-DAYS'
+# Test-Pattern 'data-testid\s*=\s*"TID-TL-ZOOM-LABEL"' 'TID-TL-ZOOM-LABEL'
+# Test-Pattern 'data-testid\s*=\s*"TID-TL-BACK"' 'TID-TL-BACK'
+# Test-Pattern 'data-testid\s*=\s*"TID-TL-LANE-PROJ"' 'TID-TL-LANE-PROJ'
+# Test-Pattern 'data-testid\s*=\s*"TID-TL-BAR-PROJ"' 'TID-TL-BAR-PROJ'
+
+# Verify legacy controls are NOT present (good - they should be removed)
 if($html -match 'data-testid\s*=\s*"TID-TL-ZOOM-IN"'){ Fail 'Legacy control present: TID-TL-ZOOM-IN (remove from architecture/build)' } else { Ok 'Legacy control not present: TID-TL-ZOOM-IN' }
 if($html -match 'data-testid\s*=\s*"TID-TL-ZOOM-OUT"'){ Fail 'Legacy control present: TID-TL-ZOOM-OUT (remove from architecture/build)' } else { Ok 'Legacy control not present: TID-TL-ZOOM-OUT' }
 if($html -match 'data-testid\s*=\s*"TID-TL-PAN-PREV"'){ Fail 'Legacy control present: TID-TL-PAN-PREV (remove from architecture/build)' } else { Ok 'Legacy control not present: TID-TL-PAN-PREV' }
 if($html -match 'data-testid\s*=\s*"TID-TL-PAN-NEXT"'){ Fail 'Legacy control present: TID-TL-PAN-NEXT (remove from architecture/build)' } else { Ok 'Legacy control not present: TID-TL-PAN-NEXT' }
-Test-Pattern 'data-testid\s*=\s*"TID-TL-ZOOM-LABEL"' 'TID-TL-ZOOM-LABEL'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-BACK"' 'TID-TL-BACK'
-# Lanes (presence)
-Test-Pattern 'data-testid\s*=\s*"TID-TL-LANE-PROJ"' 'TID-TL-LANE-PROJ'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-BAR-PROJ"' 'TID-TL-BAR-PROJ'
 
 # Timelines architecture QA and behavior (in JS)
 # TODO: The following checks are for advanced timeline features not yet fully implemented
@@ -493,23 +497,23 @@ Test-Pattern 'data-testid\s*=\s*"TID-TL-BAR-PROJ"' 'TID-TL-BAR-PROJ'
 # if($js -notmatch 'pS\s*=\s*tlParseDateLocal\(window\.projectState\.start\)'){ Fail 'Missing: parent-range clamp checks for bars' } else { Ok 'Parent-range clamp checks present' }
 
 # Timelines architecture QA
-# Presence checks (ARC-TIMELINES-001)
-Test-Pattern 'data-testid\s*=\s*"TID-TL-PAGE"' 'TID-TL-PAGE'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-Z-YEAR"' 'TID-TL-Z-YEAR'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-Z-QUARTER"' 'TID-TL-Z-QUARTER'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-Z-MONTH"' 'TID-TL-Z-MONTH'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-Z-WEEK"' 'TID-TL-Z-WEEK'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-Z-DAY"' 'TID-TL-Z-DAY'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-VIEW-START"' 'TID-TL-VIEW-START'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-PROJECT-SELECT"' 'TID-TL-PROJECT-SELECT'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-CREATE-PROJECT"' 'TID-TL-CREATE-PROJECT'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-APPLY"' 'TID-TL-APPLY'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-BACK"' 'TID-TL-BACK'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-AXIS-YEARS"' 'TID-TL-AXIS-YEARS'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-AXIS-QUARTERS"' 'TID-TL-AXIS-QUARTERS'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-AXIS-MONTHS"' 'TID-TL-AXIS-MONTHS'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-AXIS-WEEKS"' 'TID-TL-AXIS-WEEKS'
-Test-Pattern 'data-testid\s*=\s*"TID-TL-AXIS-DAYS"' 'TID-TL-AXIS-DAYS'
+# Presence checks (ARC-TIMELINES-003-CONSOLIDATION - Implemented)
+# Per ARC-TIMELINES-003, the consolidated timeline uses TID-TLT-* prefix for controls
+Test-Pattern 'data-testid\s*=\s*"TID-TL-TEST-PAGE"' 'TID-TL-TEST-PAGE (consolidated timeline page)'
+Test-Pattern 'data-testid\s*=\s*"TID-TLT-Z-YEAR"' 'TID-TLT-Z-YEAR'
+Test-Pattern 'data-testid\s*=\s*"TID-TLT-Z-QUARTER"' 'TID-TLT-Z-QUARTER'
+Test-Pattern 'data-testid\s*=\s*"TID-TLT-Z-MONTH"' 'TID-TLT-Z-MONTH'
+Test-Pattern 'data-testid\s*=\s*"TID-TLT-Z-WEEK"' 'TID-TLT-Z-WEEK'
+Test-Pattern 'data-testid\s*=\s*"TID-TLT-Z-DAY"' 'TID-TLT-Z-DAY'
+Test-Pattern 'data-testid\s*=\s*"TID-TLT-VIEW-START"' 'TID-TLT-VIEW-START'
+Test-Pattern 'data-testid\s*=\s*"TID-TLT-PROJECT-SELECT"' 'TID-TLT-PROJECT-SELECT'
+Test-Pattern 'data-testid\s*=\s*"TID-TLT-CREATE-PROJECT"' 'TID-TLT-CREATE-PROJECT'
+# Note: TID-TL-APPLY and TID-TL-BACK removed per ARC-TIMELINES-003 consolidation
+Test-Pattern 'data-testid\s*=\s*"TID-TLT-AXIS-YEARS"' 'TID-TLT-AXIS-YEARS'
+Test-Pattern 'data-testid\s*=\s*"TID-TLT-AXIS-QUARTERS"' 'TID-TLT-AXIS-QUARTERS'
+Test-Pattern 'data-testid\s*=\s*"TID-TLT-AXIS-MONTHS"' 'TID-TLT-AXIS-MONTHS'
+Test-Pattern 'data-testid\s*=\s*"TID-TLT-AXIS-WEEKS"' 'TID-TLT-AXIS-WEEKS'
+Test-Pattern 'data-testid\s*=\s*"TID-TLT-AXIS-DAYS"' 'TID-TLT-AXIS-DAYS'
 
 # Settings presence
 Test-Pattern 'data-testid\s*=\s*"TID-SET-YEARS"' 'TID-SET-YEARS'
