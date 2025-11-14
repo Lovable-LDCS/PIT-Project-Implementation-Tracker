@@ -786,30 +786,288 @@
           <button class="btn" type="button" data-testid="TID-TPL-APPLY" onclick="templatesApply()">Apply Template</button>
         </section>
         <section data-testid="TID-QA-PAGE" hidden aria-label="Quality Assurance">
-          <div class="filter-card">
-            <label>Component
-              <select data-testid="TID-QA-COMPONENT">
-                <option value="tltest">Timelines (Test)</option>
-                <option value="dashboard">Dashboard</option>
-                <option value="projects">Projects</option>
-              </select>
-            </label>
-            <button class="btn primary" type="button" data-testid="TID-QA-RUN">Run QA tests</button>
-            <span data-testid="TID-QA-RUN-COUNT">Tests run: 0</span>
-            <span data-testid="TID-QA-PASS-COUNT">Passed: 0</span>
-            <span data-testid="TID-QA-PERF">App performance: 0%</span>
+          <h2>Quality Assurance Dashboard</h2>
+          <p class="text-muted">Comprehensive system health monitoring and continuous improvement tracking</p>
+          
+          <!-- Primary Action -->
+          <div class="qa-primary-action">
+            <button class="btn primary large" type="button" data-testid="TID-QA-RUN-ALL" onclick="runAllQATests()">
+              <span class="icon">▶</span> Run All QA Tests
+            </button>
+            <span data-testid="TID-QA-LAST-RUN" class="text-muted"></span>
           </div>
-          <div class="filter-card">
-            <button class="btn" type="button" data-testid="TID-QA-SHOW-CLIP">Show latest clipboard image</button>
-            <span data-testid="TID-QA-CLIP-URL"></span>
+
+          <!-- Summary Cards -->
+          <div class="qa-summary-grid">
+            <!-- Overall Health Score -->
+            <div class="qa-card qa-card-health" data-testid="TID-QA-HEALTH-CARD">
+              <div class="qa-card-header">
+                <h3>System Health</h3>
+                <span class="qa-icon">❤️</span>
+              </div>
+              <div class="qa-metric-large">
+                <span class="qa-percentage" data-testid="TID-QA-HEALTH-PCT">--</span>
+                <span class="qa-label">Health Score</span>
+              </div>
+              <button class="qa-drill-down" onclick="showHealthDrilldown()">View Details →</button>
+            </div>
+
+            <!-- Total Tests -->
+            <div class="qa-card" data-testid="TID-QA-TOTAL-CARD">
+              <div class="qa-card-header">
+                <h3>Total Tests</h3>
+                <span class="qa-icon">📊</span>
+              </div>
+              <div class="qa-metric-large">
+                <span class="qa-number" data-testid="TID-QA-TOTAL-COUNT">0</span>
+                <span class="qa-label">Tests Performed</span>
+              </div>
+              <button class="qa-drill-down" onclick="showAllTests()">View All Tests →</button>
+            </div>
+
+            <!-- Passed Tests -->
+            <div class="qa-card qa-card-success" data-testid="TID-QA-PASSED-CARD">
+              <div class="qa-card-header">
+                <h3>Passed</h3>
+                <span class="qa-icon">✅</span>
+              </div>
+              <div class="qa-metric-large">
+                <span class="qa-number" data-testid="TID-QA-PASSED-COUNT">0</span>
+                <span class="qa-label">Tests Passed</span>
+              </div>
+              <button class="qa-drill-down" onclick="showPassedTests()">View Passed →</button>
+            </div>
+
+            <!-- Failed Tests -->
+            <div class="qa-card qa-card-danger" data-testid="TID-QA-FAILED-CARD">
+              <div class="qa-card-header">
+                <h3>Failed</h3>
+                <span class="qa-icon">❌</span>
+              </div>
+              <div class="qa-metric-large">
+                <span class="qa-number" data-testid="TID-QA-FAILED-COUNT">0</span>
+                <span class="qa-label">Tests Failed</span>
+              </div>
+              <button class="qa-drill-down" onclick="showFailedTests()">View Failed →</button>
+            </div>
           </div>
-          <div><img data-testid="TID-QA-CLIP-IMG" alt="Clipboard latest" class="qa-clip-img" /></div>
-          <div class="filter-card">
-            <button class="btn" type="button" data-testid="TID-QA-DESCRIBE-CLIP">Describe latest screenshot</button>
-            <span data-testid="TID-QA-CLIP-DESC-STATUS"></span>
+
+          <!-- Category Breakdown -->
+          <div class="qa-section">
+            <h3>Test Categories Breakdown</h3>
+            <div class="qa-categories-grid">
+              <!-- Code Correctness -->
+              <div class="qa-category-card" data-testid="TID-QA-CAT-CODE">
+                <div class="qa-category-header">
+                  <span class="qa-category-icon">💻</span>
+                  <h4>Code Correctness</h4>
+                </div>
+                <div class="qa-category-stats">
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-CODE-PASS">0</span>
+                    <span class="qa-stat-label">Passed</span>
+                  </div>
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-CODE-FAIL">0</span>
+                    <span class="qa-stat-label">Failed</span>
+                  </div>
+                </div>
+                <button class="qa-category-detail" onclick="showCategoryDetails('code')">Details →</button>
+              </div>
+
+              <!-- Wiring -->
+              <div class="qa-category-card" data-testid="TID-QA-CAT-WIRING">
+                <div class="qa-category-header">
+                  <span class="qa-category-icon">🔌</span>
+                  <h4>Wiring & Integration</h4>
+                </div>
+                <div class="qa-category-stats">
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-WIRING-PASS">0</span>
+                    <span class="qa-stat-label">Passed</span>
+                  </div>
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-WIRING-FAIL">0</span>
+                    <span class="qa-stat-label">Failed</span>
+                  </div>
+                </div>
+                <button class="qa-category-detail" onclick="showCategoryDetails('wiring')">Details →</button>
+              </div>
+
+              <!-- Security -->
+              <div class="qa-category-card" data-testid="TID-QA-CAT-SECURITY">
+                <div class="qa-category-header">
+                  <span class="qa-category-icon">🔒</span>
+                  <h4>Security</h4>
+                </div>
+                <div class="qa-category-stats">
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-SECURITY-PASS">0</span>
+                    <span class="qa-stat-label">Passed</span>
+                  </div>
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-SECURITY-FAIL">0</span>
+                    <span class="qa-stat-label">Failed</span>
+                  </div>
+                </div>
+                <button class="qa-category-detail" onclick="showCategoryDetails('security')">Details →</button>
+              </div>
+
+              <!-- Deployment -->
+              <div class="qa-category-card" data-testid="TID-QA-CAT-DEPLOYMENT">
+                <div class="qa-category-header">
+                  <span class="qa-category-icon">🚀</span>
+                  <h4>Deployment</h4>
+                </div>
+                <div class="qa-category-stats">
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-DEPLOY-PASS">0</span>
+                    <span class="qa-stat-label">Passed</span>
+                  </div>
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-DEPLOY-FAIL">0</span>
+                    <span class="qa-stat-label">Failed</span>
+                  </div>
+                </div>
+                <button class="qa-category-detail" onclick="showCategoryDetails('deployment')">Details →</button>
+              </div>
+
+              <!-- UI/UX -->
+              <div class="qa-category-card" data-testid="TID-QA-CAT-UI">
+                <div class="qa-category-header">
+                  <span class="qa-category-icon">🎨</span>
+                  <h4>UI/UX</h4>
+                </div>
+                <div class="qa-category-stats">
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-UI-PASS">0</span>
+                    <span class="qa-stat-label">Passed</span>
+                  </div>
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-UI-FAIL">0</span>
+                    <span class="qa-stat-label">Failed</span>
+                  </div>
+                </div>
+                <button class="qa-category-detail" onclick="showCategoryDetails('ui')">Details →</button>
+              </div>
+
+              <!-- Performance & Timing -->
+              <div class="qa-category-card" data-testid="TID-QA-CAT-PERF">
+                <div class="qa-category-header">
+                  <span class="qa-category-icon">⚡</span>
+                  <h4>Performance & Timing</h4>
+                </div>
+                <div class="qa-category-stats">
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-PERF-PASS">0</span>
+                    <span class="qa-stat-label">Passed</span>
+                  </div>
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-PERF-FAIL">0</span>
+                    <span class="qa-stat-label">Failed</span>
+                  </div>
+                </div>
+                <button class="qa-category-detail" onclick="showCategoryDetails('performance')">Details →</button>
+              </div>
+
+              <!-- Runtime Rendering -->
+              <div class="qa-category-card" data-testid="TID-QA-CAT-RUNTIME">
+                <div class="qa-category-header">
+                  <span class="qa-category-icon">🎬</span>
+                  <h4>Runtime Rendering</h4>
+                </div>
+                <div class="qa-category-stats">
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-RUNTIME-PASS">0</span>
+                    <span class="qa-stat-label">Passed</span>
+                  </div>
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-RUNTIME-FAIL">0</span>
+                    <span class="qa-stat-label">Failed</span>
+                  </div>
+                </div>
+                <button class="qa-category-detail" onclick="showCategoryDetails('runtime')">Details →</button>
+              </div>
+
+              <!-- Accessibility -->
+              <div class="qa-category-card" data-testid="TID-QA-CAT-A11Y">
+                <div class="qa-category-header">
+                  <span class="qa-category-icon">♿</span>
+                  <h4>Accessibility</h4>
+                </div>
+                <div class="qa-category-stats">
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-A11Y-PASS">0</span>
+                    <span class="qa-stat-label">Passed</span>
+                  </div>
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-A11Y-FAIL">0</span>
+                    <span class="qa-stat-label">Failed</span>
+                  </div>
+                </div>
+                <button class="qa-category-detail" onclick="showCategoryDetails('accessibility')">Details →</button>
+              </div>
+
+              <!-- Data Integrity -->
+              <div class="qa-category-card" data-testid="TID-QA-CAT-DATA">
+                <div class="qa-category-header">
+                  <span class="qa-category-icon">💾</span>
+                  <h4>Data Integrity</h4>
+                </div>
+                <div class="qa-category-stats">
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-DATA-PASS">0</span>
+                    <span class="qa-stat-label">Passed</span>
+                  </div>
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-DATA-FAIL">0</span>
+                    <span class="qa-stat-label">Failed</span>
+                  </div>
+                </div>
+                <button class="qa-category-detail" onclick="showCategoryDetails('data')">Details →</button>
+              </div>
+
+              <!-- Duplicates & Legacy Code -->
+              <div class="qa-category-card" data-testid="TID-QA-CAT-LEGACY">
+                <div class="qa-category-header">
+                  <span class="qa-category-icon">🔍</span>
+                  <h4>Duplicates & Legacy</h4>
+                </div>
+                <div class="qa-category-stats">
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-LEGACY-PASS">0</span>
+                    <span class="qa-stat-label">Passed</span>
+                  </div>
+                  <div class="qa-stat">
+                    <span class="qa-stat-value" data-testid="TID-QA-LEGACY-FAIL">0</span>
+                    <span class="qa-stat-label">Failed</span>
+                  </div>
+                </div>
+                <button class="qa-category-detail" onclick="showCategoryDetails('legacy')">Details →</button>
+              </div>
+            </div>
           </div>
-          <pre data-testid="TID-QA-CLIP-DESC"></pre>
-          <div data-testid="TID-QA-FAIL-LIST"></div>
+
+          <!-- Detailed Test Results -->
+          <div class="qa-section" data-testid="TID-QA-DETAILS-SECTION">
+            <div class="qa-section-header">
+              <h3>Detailed Test Results</h3>
+              <div class="qa-filter-controls">
+                <button class="btn" onclick="filterTests('all')" data-active="true">All Tests</button>
+                <button class="btn" onclick="filterTests('failed')">Failed Only</button>
+                <button class="btn" onclick="filterTests('passed')">Passed Only</button>
+              </div>
+            </div>
+            <div class="qa-test-list" data-testid="TID-QA-TEST-LIST">
+              <p class="text-muted">Click "Run All QA Tests" to see detailed results</p>
+            </div>
+          </div>
+
+          <!-- Corrective Actions -->
+          <div class="qa-section" data-testid="TID-QA-ACTIONS-SECTION" hidden>
+            <h3>Recommended Corrective Actions</h3>
+            <div class="qa-actions-list" data-testid="TID-QA-ACTIONS-LIST"></div>
+          </div>
         </section>
         <section data-testid="TID-SETTINGS-PAGE" hidden aria-label="Settings">
           <h2>Display settings</h2>
@@ -904,6 +1162,7 @@
     </div>
     <script src="app-main.js"></script>
     <script src="timelines-test.js"></script>
+    <script src="qa-dashboard.js"></script>
     <script>
       // Early global fallbacks to prevent ReferenceError if bundling/binding is delayed
       (function(){
