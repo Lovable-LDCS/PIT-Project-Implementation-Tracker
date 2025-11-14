@@ -1286,8 +1286,7 @@
           });
         });
       });
-      // Initial nav is handled by app-main.js DOMContentLoaded listener
-      // to ensure DOM elements are ready before navigation functions are called
+      // Initial navigation is handled at the end of this script block
 
       // Duration filter modal wiring
       function openDurationModal(){ const m = document.querySelector('[data-testid="TID-DUR-MODAL"]'); if(m){ m.removeAttribute('hidden'); } }
@@ -2588,7 +2587,7 @@
         const selectedTypes = new Set(Array.from(typeSel?.selectedOptions||[]).map(o=>o.value));
         const from = fromEl?.value ? new Date(fromEl.value) : null;
         const to = toEl?.value ? new Date(toEl.value) : null;
-        const within = (s, e)=>{
+        const within = (startDate, endDate)=>{
           if(!from && !to) return true;
    
           const s = new Date(startDate);
@@ -2597,6 +2596,21 @@
         };
         // Filter and render tree
         // ... rest of filter logic would go here
+      }
+      
+      // Initial navigation - call after all functions are defined and exported
+      // Wait for DOM to be ready before navigating
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          const initialRoute = location.hash || '#/';
+          console.log('[INIT] Navigating to:', initialRoute);
+          navigateTo(initialRoute);
+        });
+      } else {
+        // DOM already loaded
+        const initialRoute = location.hash || '#/';
+        console.log('[INIT] Navigating to:', initialRoute);
+        navigateTo(initialRoute);
       }
     </script>
   </body>

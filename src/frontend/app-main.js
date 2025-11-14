@@ -280,11 +280,7 @@
       }
     });
     
-    // Trigger initial navigation
-    const initialRoute = location.hash || '#/';
-    if (typeof window.navigateTo === 'function') {
-      window.navigateTo(initialRoute);
-    }
+    // Initial navigation is handled by inline script after navigateTo is defined
   });
 
   console.log('app-main.js loaded');
