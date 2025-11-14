@@ -81,8 +81,8 @@
     testList.innerHTML = '<div class="qa-loading"><div class="qa-loading-spinner"></div><p>Running comprehensive QA tests...</p></div>';
 
     try {
-      // Load requirements
-      const response = await fetch('/qa/requirements.json');
+      // Load requirements - use path relative to the served directory
+      const response = await fetch('qa/requirements.json');
       const qaRequirements = await response.json();
       
       // Process all tests
