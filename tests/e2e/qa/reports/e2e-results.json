@@ -12,26 +12,26 @@
     "maxFailures": 0,
     "metadata": {
       "ci": {
-        "commitHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/commit/7268176c3f529cf8b424c3a73aa0ed408fed8052",
-        "commitHash": "7268176c3f529cf8b424c3a73aa0ed408fed8052",
-        "buildHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/actions/runs/19337907747"
+        "commitHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/commit/91c9b35e800c2172dd63e737d5e53c1cc64e6d51",
+        "commitHash": "91c9b35e800c2172dd63e737d5e53c1cc64e6d51",
+        "buildHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/actions/runs/19339589820"
       },
       "gitCommit": {
-        "shortHash": "6bc1d44",
-        "hash": "6bc1d44f634ee8aaaab30bba9e67a66fef15033c",
-        "subject": "Add runtime PID files to gitignore",
-        "body": "Add runtime PID files to gitignore\n",
+        "shortHash": "7060617",
+        "hash": "70606179d18e97d44c4829accc40c94318cf97c7",
+        "subject": "Fix JavaScript timing issue: remove premature navigateTo call",
+        "body": "Fix JavaScript timing issue: remove premature navigateTo call\n\nCo-authored-by: Lovable-LDCS <220024911+Lovable-LDCS@users.noreply.github.com>\n",
         "author": {
           "name": "copilot-swe-agent[bot]",
           "email": "198982749+Copilot@users.noreply.github.com",
-          "time": 1763050677000
+          "time": 1763054111000
         },
         "committer": {
           "name": "copilot-swe-agent[bot]",
           "email": "198982749+Copilot@users.noreply.github.com",
-          "time": 1763050677000
+          "time": 1763054111000
         },
-        "branch": "copilot/investigate-visible-changes"
+        "branch": "copilot/fix-javascript-rendering-issues"
       }
     },
     "preserveOutput": "always",
@@ -59,26 +59,26 @@
         "retries": 2,
         "metadata": {
           "ci": {
-            "commitHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/commit/7268176c3f529cf8b424c3a73aa0ed408fed8052",
-            "commitHash": "7268176c3f529cf8b424c3a73aa0ed408fed8052",
-            "buildHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/actions/runs/19337907747"
+            "commitHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/commit/91c9b35e800c2172dd63e737d5e53c1cc64e6d51",
+            "commitHash": "91c9b35e800c2172dd63e737d5e53c1cc64e6d51",
+            "buildHref": "https://github.com/Lovable-LDCS/PIT-Project-Implementation-Tracker/actions/runs/19339589820"
           },
           "gitCommit": {
-            "shortHash": "6bc1d44",
-            "hash": "6bc1d44f634ee8aaaab30bba9e67a66fef15033c",
-            "subject": "Add runtime PID files to gitignore",
-            "body": "Add runtime PID files to gitignore\n",
+            "shortHash": "7060617",
+            "hash": "70606179d18e97d44c4829accc40c94318cf97c7",
+            "subject": "Fix JavaScript timing issue: remove premature navigateTo call",
+            "body": "Fix JavaScript timing issue: remove premature navigateTo call\n\nCo-authored-by: Lovable-LDCS <220024911+Lovable-LDCS@users.noreply.github.com>\n",
             "author": {
               "name": "copilot-swe-agent[bot]",
               "email": "198982749+Copilot@users.noreply.github.com",
-              "time": 1763050677000
+              "time": 1763054111000
             },
             "committer": {
               "name": "copilot-swe-agent[bot]",
               "email": "198982749+Copilot@users.noreply.github.com",
-              "time": 1763050677000
+              "time": 1763054111000
             },
-            "branch": "copilot/investigate-visible-changes"
+            "branch": "copilot/fix-javascript-rendering-issues"
           }
         },
         "id": "chromium",
@@ -106,13 +106,13 @@
   "suites": [],
   "errors": [
     {
-      "message": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments.",
-      "stack": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments."
+      "message": "Error: No tests found",
+      "stack": "Error: No tests found"
     }
   ],
   "stats": {
-    "startTime": "2025-11-13T16:20:58.866Z",
-    "duration": 131.78199999999993,
+    "startTime": "2025-11-13T17:17:44.663Z",
+    "duration": 128.572,
     "expected": 0,
     "skipped": 0,
     "unexpected": 0,

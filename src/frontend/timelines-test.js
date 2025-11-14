@@ -62,7 +62,7 @@
   function ensureBaseline(){
     const hasDates = !!(window.projectState && window.projectState.start && window.projectState.end);
     if(hasDates){ state.projectStart = parseLocal(window.projectState.start); state.projectEnd = parseLocal(window.projectState.end); }
-    else { const s=todayLocal(); const e=new Date(s); e.setFullYear(e.getFullYear()+10); state.projectStart=s; state.projectEnd=e; }
+    else { const startDate=todayLocal(); const endDate=new Date(startDate); endDate.setFullYear(endDate.getFullYear()+10); state.projectStart=startDate; state.projectEnd=endDate; }
     if(!state.viewStart){ state.viewStart = new Date(state.projectStart); }
   }
 
@@ -188,8 +188,8 @@
     if(z==='year'){ ve = new Date(vs.getFullYear()+counts.years, 0, 1); }
     else if(z==='quarter'){ const qStartMonth = Math.floor(vs.getMonth()/3)*3; const qStart = new Date(vs.getFullYear(), qStartMonth, 1); ve = new Date(qStart); ve.setMonth(qStart.getMonth() + 3*counts.quarters); }
     else if(z==='month'){ ve = new Date(vs); ve.setMonth(vs.getMonth()+counts.months); }
-    else if(z==='week'){ const s=new Date(vs); const dow=s.getDay(); const delta=(dow+6)%7; s.setDate(s.getDate()-delta); ve=new Date(s); ve.setDate(s.getDate()+7*counts.weeks); }
-    else { const s=new Date(vs.getFullYear(), vs.getMonth(), vs.getDate()); ve=new Date(s); ve.setDate(s.getDate()+counts.days); }
+    else if(z==='week'){ const weekStart=new Date(vs); const dow=weekStart.getDay(); const delta=(dow+6)%7; weekStart.setDate(weekStart.getDate()-delta); ve=new Date(weekStart); ve.setDate(weekStart.getDate()+7*counts.weeks); }
+    else { const dayStart=new Date(vs.getFullYear(), vs.getMonth(), vs.getDate()); ve=new Date(dayStart); ve.setDate(dayStart.getDate()+counts.days); }
 
     const visibleDays = Math.max(1, Math.round((ve - vs)/(1000*60*60*24)));
     const containerW = Math.max(480, scroll?.clientWidth || 1000);
@@ -270,7 +270,7 @@
       while(d <= state.projectEnd){ const x=xForDate(d); const t=document.createElement('div'); t.className='tl-tick'; t.style.left=(mOff+x)+'px'; const l=document.createElement('div'); l.className='tl-tick-label'; l.style.left=(mOff+x)+'px'; l.textContent=monthNames[d.getMonth()]; axes.months.appendChild(t); axes.months.appendChild(l); d.setMonth(d.getMonth()+1,1); }
     }
     if(axes.weeks && !axes.weeks.hasAttribute('hidden')){
-      const s=new Date(state.projectStart); const dow=s.getDay(); const delta=(dow+6)%7; s.setDate(s.getDate()-delta); let d=new Date(s); let idx=1;
+      const weekCalcStart=new Date(state.projectStart); const dow=weekCalcStart.getDay(); const delta=(dow+6)%7; weekCalcStart.setDate(weekCalcStart.getDate()-delta); let d=new Date(weekCalcStart); let idx=1;
       while(d <= state.projectEnd){ const x=xForDate(d); const t=document.createElement('div'); t.className='tl-tick'; t.style.left=(wOff+x)+'px'; const l=document.createElement('div'); l.className='tl-tick-label'; l.style.left=(wOff+x)+'px'; l.textContent='W'+(idx++); axes.weeks.appendChild(t); axes.weeks.appendChild(l); d.setDate(d.getDate()+7); }
     }
     if(axes.days && !axes.days.hasAttribute('hidden')){

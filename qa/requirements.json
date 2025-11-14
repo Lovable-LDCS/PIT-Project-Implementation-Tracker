@@ -1251,7 +1251,9 @@
           "name": "Date column resize handle exists and is functional",
           "type": "element_exists",
           "description": "Resize handle must be present to adjust timeline density (pixelsPerDay)",
-          "testIds": ["TID-TLT-DATE-RESIZER"],
+          "testIds": [
+            "TID-TLT-DATE-RESIZER"
+          ],
           "severity": "critical",
           "note": "CRITICAL: Users must be able to adjust date column width to control timeline density. Handle should allow dragging to scale timeline."
         },
@@ -1262,6 +1264,186 @@
           "description": "Left border of date axes must align with right border of Progress column (within 2px)",
           "severity": "critical",
           "note": "CRITICAL: Date axes currently misaligned - extend to left side of page. Must align with Progress right edge."
+        }
+      ]
+    },
+    "runtimeRenderingValidation": {
+      "description": "Runtime rendering validation - verifies JavaScript actually renders content (per True North principle 8)",
+      "architectureRef": "rules.md - Script Integrity (A.10)",
+      "checks": [
+        {
+          "id": "RUNTIME-001",
+          "name": "Timeline canvas renders actual content",
+          "type": "runtime_dom_check",
+          "target": "#/timelines",
+          "verify": [
+            "Timeline bars are visible in DOM",
+            "Progress percentages are displayed",
+            "Grid lines are rendered",
+            "At least one project row exists"
+          ],
+          "testIds": [
+            "TID-TLT-CANVAS",
+            "TID-TLT-GRID",
+            "TID-TLT-PROGRESS"
+          ],
+          "severity": "critical",
+          "note": "CRITICAL: Verifies that JavaScript rendering functions actually produce visible DOM changes, not just that functions exist"
+        },
+        {
+          "id": "RUNTIME-002",
+          "name": "Timeline functions execute successfully without errors",
+          "type": "function_execution_check",
+          "functions": [
+            "tlRender",
+            "tlInitFromStore"
+          ],
+          "verify": "DOM mutations occur after function calls",
+          "severity": "critical",
+          "note": "CRITICAL: Ensures timeline render functions complete successfully and produce expected DOM changes"
+        },
+        {
+          "id": "RUNTIME-003",
+          "name": "Navigation triggers proper page rendering",
+          "type": "navigation_rendering_check",
+          "routes": [
+            {
+              "route": "#/timelines",
+              "expectedContent": "Timeline grid",
+              "testId": "TID-TL-TEST-PAGE"
+            },
+            {
+              "route": "#/projects",
+              "expectedContent": "Projects page",
+              "testId": "TID-PAGE-PROJECTS"
+            },
+            {
+              "route": "#/reports",
+              "expectedContent": "Reports page",
+              "testId": "TID-PAGE-REPORTS"
+            }
+          ],
+          "severity": "critical",
+          "note": "CRITICAL: Verifies navigation actually renders page content, not just shows container"
+        },
+        {
+          "id": "RUNTIME-004",
+          "name": "No JavaScript runtime errors in console",
+          "type": "console_error_check",
+          "target": "src/frontend",
+          "excludeWarnings": false,
+          "severity": "critical",
+          "note": "CRITICAL: JavaScript must execute without errors. Identifier redeclaration and other syntax errors must be fixed."
+        }
+      ]
+    },
+    "timingAndSequencing": {
+      "description": "Timing and sequencing validation - ensures proper execution order (per True North workflow requirements)",
+      "architectureRef": "rules.md - Build Methodology",
+      "checks": [
+        {
+          "id": "TIMING-001",
+          "name": "Navigation waits for DOM ready",
+          "type": "timing_check",
+          "verify": "navigateTo() is not called before DOMContentLoaded event",
+          "severity": "critical",
+          "note": "CRITICAL: DOM manipulation functions must wait for DOM to be ready. Premature execution causes silent failures."
+        },
+        {
+          "id": "TIMING-002",
+          "name": "Script execution order is correct",
+          "type": "sequence_check",
+          "expectedOrder": [
+            "app-boot.js loads",
+            "app-main.js loads",
+            "timelines-test.js loads",
+            "inline scripts execute",
+            "DOMContentLoaded fires",
+            "navigation initialization runs"
+          ],
+          "severity": "critical",
+          "note": "CRITICAL: Script loading and execution must follow proper sequence to avoid race conditions"
+        },
+        {
+          "id": "TIMING-003",
+          "name": "Timeline functions available before navigation",
+          "type": "dependency_check",
+          "verify": "window.tlRender and window.tlInitFromStore defined before navigateTo() calls them",
+          "severity": "critical",
+          "note": "CRITICAL: Functions must be exported before being called to avoid undefined reference errors"
+        },
+        {
+          "id": "TIMING-004",
+          "name": "querySelector calls only after DOM ready",
+          "type": "static_analysis",
+          "verify": "No querySelector/getElementById calls in immediate script execution (must be in DOMContentLoaded or later)",
+          "severity": "critical",
+          "note": "CRITICAL: DOM queries before DOM ready return null, causing silent rendering failures"
+        }
+      ]
+    },
+    "completeWiringValidation": {
+      "description": "Complete wiring validation - ensures ALL Architecture-defined functionality is wired and functional (per True North principle 8)",
+      "architectureRef": "rules.md - QA validates FULL functionality",
+      "checks": [
+        {
+          "id": "WIRE-001",
+          "name": "All routes map to functional pages",
+          "type": "route_functional_check",
+          "routes": [
+            "#/",
+            "#/projects",
+            "#/timelines",
+            "#/reports",
+            "#/permissions",
+            "#/evidence",
+            "#/gantt",
+            "#/audit",
+            "#/notify",
+            "#/import",
+            "#/templates",
+            "#/qa"
+          ],
+          "verify": "Each route renders its target page with actual content",
+          "severity": "critical",
+          "note": "CRITICAL: Routes must render functional pages, not just show empty containers"
+        },
+        {
+          "id": "WIRE-002",
+          "name": "Timeline toolbar controls are wired",
+          "type": "interaction_check",
+          "testIds": [
+            "TID-TLT-Z-YEAR",
+            "TID-TLT-Z-QUARTER",
+            "TID-TLT-Z-MONTH",
+            "TID-TLT-Z-WEEK",
+            "TID-TLT-Z-DAY"
+          ],
+          "verify": "Clicking zoom buttons triggers timeline re-render",
+          "severity": "critical",
+          "note": "CRITICAL: Controls must be wired to their handler functions and produce visible changes"
+        },
+        {
+          "id": "WIRE-003",
+          "name": "Timeline filter checkboxes are functional",
+          "type": "interaction_check",
+          "testIds": [
+            "TID-TLT-FSHOW-PROJ",
+            "TID-TLT-FSHOW-MS",
+            "TID-TLT-FSHOW-DL",
+            "TID-TLT-FSHOW-TASK"
+          ],
+          "verify": "Toggling checkboxes filters timeline content",
+          "severity": "critical",
+          "note": "CRITICAL: Filter controls must be wired and produce expected filtering behavior"
+        },
+        {
+          "id": "WIRE-004",
+          "name": "Sidebar navigation links are wired",
+          "type": "interaction_check",
+          "verify": "All sidebar links navigate to their target pages and render content",
+          "severity": "critical",
+          "note": "CRITICAL: Navigation must complete full flow: click \u2192 route change \u2192 page render \u2192 content visible"
         }
       ]
     }
