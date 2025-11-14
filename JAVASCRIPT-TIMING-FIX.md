@@ -1,7 +1,7 @@
-# JavaScript Timing Issue - Root Cause and Fix
+# JavaScript Timing Issue and Variable Redeclarations - Complete Fix
 
 ## Problem Statement
-After merging PR #32, users reported that the timeline page was not rendering properly despite a hard refresh. The QA system had marked checks as passing, but the JavaScript rendering functions weren't working correctly.
+After merging PR #32, users reported that the timeline page was not rendering properly despite a hard refresh. Additionally, JavaScript console showed variable redeclaration errors. The QA system had marked checks as passing, but it didn't verify runtime rendering or JavaScript execution success.
 
 ## Root Cause Analysis
 
@@ -135,3 +135,51 @@ To prevent similar issues in the future, the QA system should be enhanced to inc
 **Status:** FIXED  
 **Fix Verified:** ✓ Local testing confirms timeline renders correctly  
 **Deployment:** Ready for merge and deployment to GitHub Pages
+
+### JavaScript Variable Redeclarations
+
+Multiple instances of variable redeclarations were found that caused console errors:
+
+**In `timelines-test.js`:**
+- Line 65: `const s` redeclared → renamed to `startDate` and `endDate`
+- Lines 191-192: `const s` redeclared → renamed to `weekStart` and `dayStart`
+- Line 273: `const s` redeclared → renamed to `weekCalcStart`
+
+**In `index.html` inline scripts:**
+- Lines 1395-1398: `const start` redeclared → renamed to `weekStart` and `dayStart`
+- Lines 1575-1578: `const start` redeclared → renamed to `weekStart` and `dayStart`
+
+These redeclarations violated JavaScript const scoping rules and caused the error:
+```
+Identifier 's' has already been declared
+```
+
+## Complete Fix Summary
+
+### 1. Timing Issue Fix
+Removed premature `navigateTo()` call on line 1031 since `app-main.js` already handles initial navigation correctly after DOMContentLoaded.
+
+### 2. Variable Redeclaration Fixes
+Renamed all duplicate variable declarations to unique names, eliminating console errors.
+
+### 3. QA Enhancement
+Added 12 new CRITICAL checks across 3 sections to `qa/requirements.json`:
+
+**A. Runtime Rendering Validation (4 checks)**
+- RUNTIME-001: Timeline canvas renders actual content
+- RUNTIME-002: Timeline functions execute successfully
+- RUNTIME-003: Navigation triggers proper page rendering
+- RUNTIME-004: No JavaScript runtime errors in console
+
+**B. Timing and Sequencing Validation (4 checks)**
+- TIMING-001: Navigation waits for DOM ready
+- TIMING-002: Script execution order is correct
+- TIMING-003: Timeline functions available before navigation
+- TIMING-004: querySelector calls only after DOM ready
+
+**C. Complete Wiring Validation (4 checks)**
+- WIRE-001: All routes map to functional pages
+- WIRE-002: Timeline toolbar controls are wired
+- WIRE-003: Timeline filter checkboxes are functional
+- WIRE-004: Sidebar navigation links are wired
+
