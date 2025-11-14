@@ -1392,10 +1392,10 @@
         } else if(z==='month'){
           viewEnd = new Date(viewStart); viewEnd.setMonth(viewStart.getMonth() + (counts.monthsVisible||12));
         } else if(z==='week'){
-          const start = new Date(viewStart); const dow=start.getDay(); const delta=(dow+6)%7; start.setDate(start.getDate()-delta);
-          viewEnd = new Date(start); viewEnd.setDate(start.getDate() + 7*(counts.weeksVisible||24));
+          const weekStart = new Date(viewStart); const dow=weekStart.getDay(); const delta=(dow+6)%7; weekStart.setDate(weekStart.getDate()-delta);
+          viewEnd = new Date(weekStart); viewEnd.setDate(weekStart.getDate() + 7*(counts.weeksVisible||24));
         } else {
-          const start = new Date(viewStart.getFullYear(), viewStart.getMonth(), viewStart.getDate()); viewEnd = new Date(start); viewEnd.setDate(start.getDate() + (counts.daysVisible||31));
+          const dayStart = new Date(viewStart.getFullYear(), viewStart.getMonth(), viewStart.getDate()); viewEnd = new Date(dayStart); viewEnd.setDate(dayStart.getDate() + (counts.daysVisible||31));
         }
         // Align origin with the left edge of the view window so x(viewStart)=0
         window.tlState.origin = new Date(viewStart.getFullYear(), viewStart.getMonth(), 1);
@@ -1572,11 +1572,11 @@
           } else if(z==='month'){
             const end = new Date(origin); end.setMonth(origin.getMonth() + (counts.monthsVisible||12)); return end;
           } else if(z==='week'){
-            const start = new Date(origin); const dow=start.getDay(); const delta=(dow+6)%7; start.setDate(start.getDate()-delta);
-            const end = new Date(start); end.setDate(start.getDate() + 7*(counts.weeksVisible||24)); return end;
+            const weekStart = new Date(origin); const dow=weekStart.getDay(); const delta=(dow+6)%7; weekStart.setDate(weekStart.getDate()-delta);
+            const end = new Date(weekStart); end.setDate(weekStart.getDate() + 7*(counts.weeksVisible||24)); return end;
           } else { // day
-            const start = new Date(origin.getFullYear(), origin.getMonth(), origin.getDate());
-            const end = new Date(start); end.setDate(start.getDate() + (counts.daysVisible||31)); return end;
+            const dayStart = new Date(origin.getFullYear(), origin.getMonth(), origin.getDate());
+            const end = new Date(dayStart); end.setDate(dayStart.getDate() + (counts.daysVisible||31)); return end;
           }
         }
         function updateWidths(){
