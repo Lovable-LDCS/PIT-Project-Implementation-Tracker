@@ -1,28 +1,29 @@
 # QA Run Report
 
-**Generated:** 2025-11-13 13:45:45  
-**Duration:** 0.84 seconds  
-**Overall Status:** AMBER
+**Generated:** 2025-11-19 13:15:06  
+**Duration:** 2.87 seconds  
+**Overall Status:** RED
 
 ## Summary
 
 | Metric | Count |
 |--------|-------|
 | Total Checks | 23 |
-| Passed | 16 |
-| Failed | 3 |
+| Passed | 15 |
+| Failed | 4 |
 | Skipped | 4 |
 
 ## Status Breakdown
 
 ### Overall Result
-⚠ **AMBER** - All critical checks passed, but some high severity checks failed
+✗ **RED** - One or more critical checks failed
 
 ### Critical Issues
-✓ No critical issues
+- **[WIRE-001]** Frontend wiring checks pass: Frontend wiring validation failed - components not properly wired
+
 
 ### High Severity Issues
-- **[DEPLOY-006]** Current branch deployment status: On branch 'copilot/fix-qa-workflow-errors'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
+- **[DEPLOY-006]** Current branch deployment status: On branch 'copilot/fix-workflow-error'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
 - **[DEPLOY-008]** Latest deployment workflow run succeeded: Could not retrieve workflow runs: 
 - **[DEPLOY-010]** Deployed application contains expected content: Missing expected content: PIT - Project Implementation Tracker
 
@@ -92,7 +93,7 @@
 
 | ID | Name | Status | Severity |
 |----|------|--------|----------|
-| WIRE-001 | Frontend wiring checks pass | ✓ PASS | critical |
+| WIRE-001 | Frontend wiring checks pass | ✗ FAIL | critical |
 
 
 
@@ -103,9 +104,14 @@
 The following checks failed and must be addressed:
 
 
+#### [WIRE-001] Frontend wiring checks pass
+- **Severity:** critical
+- **Message:** Frontend wiring validation failed - components not properly wired
+
+
 #### [DEPLOY-006] Current branch deployment status
 - **Severity:** high
-- **Message:** On branch 'copilot/fix-qa-workflow-errors'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
+- **Message:** On branch 'copilot/fix-workflow-error'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
 
 
 #### [DEPLOY-008] Latest deployment workflow run succeeded
@@ -133,7 +139,7 @@ According to the **True North** methodology:
 - **Strict Mode:** False
 - **Skip Tests:** True
 - **Runner:** run-qa.ps1 v1.0.0
-- **Report Generated:** 2025-11-13T13:45:45.6441639+00:00
+- **Report Generated:** 2025-11-19T13:15:06.4710360+00:00
 
 ---
 *This report follows the True North Build Methodology - Architecture → QA → Implementation → GREEN*
