@@ -248,7 +248,9 @@
     table.innerHTML = '';
     
     // The base unit is DAYS - all other time periods merge day columns
-    const dayColumns = state.timelineDates.days;
+    // Store in state so resize handlers can access it
+    state.dayColumns = state.timelineDates.days;
+    const dayColumns = state.dayColumns;
     const totalDayCols = dayColumns.length;
     
     if(totalDayCols === 0){
@@ -544,7 +546,7 @@
         // Store starting widths for all affected day columns
         startWidths = {};
         affectedDayColumns.forEach(colIdx => {
-          const dayKey = dayColumns[colIdx].key;
+          const dayKey = state.dayColumns[colIdx].key;
           const currentWidth = state.columnWidths[dayKey] || state.defaultColumnWidth;
           startWidths[colIdx] = currentWidth;
         });
@@ -564,7 +566,7 @@
       
       // Update each affected day column
       affectedDayColumns.forEach(colIdx => {
-        const dayKey = dayColumns[colIdx].key;
+        const dayKey = state.dayColumns[colIdx].key;
         const oldWidth = startWidths[colIdx] || state.defaultColumnWidth;
         const newWidth = Math.max(20, oldWidth + dxPerCol);
         
