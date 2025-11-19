@@ -187,6 +187,193 @@ section[data-testid="TID-TL-PAGE"] .tl-grid { margin-left: 8px; margin-right: 8p
 /* Optional: visibly show the gutter during debugging */
 /* .timeline-canvas::before { content:''; position:absolute; left:calc(-1 * var(--tl-gutter)); top:0; bottom:0; width:var(--tl-gutter); background:transparent; } */
 
+/* Unified Timeline Table */
+.timeline-table-wrapper {
+  margin-top: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.timeline-table-scroll {
+  overflow: auto;
+  max-height: calc(100vh - 300px);
+}
+
+.timeline-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  min-width: 100%;
+}
+
+/* Header cell for merged area (rows 1-5, cols 1-2) */
+.timeline-table th.merged-header {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  padding: 12px;
+  text-align: center;
+  vertical-align: middle;
+  font-weight: 600;
+  color: #0D2850;
+}
+
+/* First column - Project Descriptors */
+.timeline-table th.col-descriptor,
+.timeline-table td.col-descriptor {
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  resize: horizontal;
+  overflow: hidden;
+}
+
+/* Second column - Project Progress */
+.timeline-table th.col-progress,
+.timeline-table td.col-progress {
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  text-align: center;
+  position: sticky;
+  left: 220px;
+  z-index: 10;
+  resize: horizontal;
+  overflow: hidden;
+}
+
+/* Timeline date header cells (rows 1-5, col 3+) */
+.timeline-table th.timeline-date-cell {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  padding: 6px 8px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 500;
+  color: #334155;
+  min-width: 40px;
+  white-space: nowrap;
+  resize: horizontal;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Timeline bar cells (row 6+, col 3+) */
+.timeline-table td.timeline-bar-cell {
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  padding: 0;
+  min-width: 40px;
+  position: relative;
+  height: 32px;
+  resize: horizontal;
+  overflow: visible;
+}
+
+/* Project item rows with hierarchy indentation */
+.timeline-table td.col-descriptor.lvl-0 {
+  font-weight: 600;
+  padding-left: 12px;
+  background: #0D2850;
+  color: #ffffff;
+}
+
+.timeline-table td.col-descriptor.lvl-1 {
+  padding-left: 24px;
+  background: #006B92;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.timeline-table td.col-descriptor.lvl-2 {
+  padding-left: 36px;
+  background: #4C95B0;
+  color: #ffffff;
+}
+
+.timeline-table td.col-descriptor.lvl-3 {
+  padding-left: 48px;
+  background: #ffffff;
+  color: #0D2850;
+  border-left: 3px solid #4C95B0;
+}
+
+/* Timeline slider bars inside cells */
+.timeline-slider-bar {
+  position: absolute;
+  height: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 4px;
+  cursor: ew-resize;
+  z-index: 5;
+  min-width: 8px;
+}
+
+.timeline-slider-bar.proj { background: #0D2850; }
+.timeline-slider-bar.ms { background: #006B92; }
+.timeline-slider-bar.dl { background: #4C95B0; }
+.timeline-slider-bar.task { background: #CCE1E9; border: 1px solid #0D2850; }
+
+/* Progress overlay on slider bars */
+.timeline-slider-bar .progress-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px 0 0 4px;
+  pointer-events: none;
+}
+
+/* Resize handles for slider bars */
+.timeline-slider-bar .resize-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  cursor: col-resize;
+  z-index: 6;
+}
+
+.timeline-slider-bar .resize-handle.left {
+  left: -4px;
+}
+
+.timeline-slider-bar .resize-handle.right {
+  right: -4px;
+}
+
+/* Column resize handles */
+.timeline-table th.timeline-date-cell::after,
+.timeline-table td.timeline-bar-cell::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: transparent;
+  cursor: col-resize;
+  z-index: 20;
+}
+
+.timeline-table th.timeline-date-cell:hover::after,
+.timeline-table td.timeline-bar-cell:hover::after {
+  background: rgba(0, 107, 146, 0.2);
+}
+
 /* Preview Toggle */
 .preview-toggle {
   display: flex;
