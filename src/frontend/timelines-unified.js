@@ -273,7 +273,15 @@
     state.timelineDates.years.forEach((yearInfo, yearIdx) => {
       const yearStart = yearInfo.date;
       const yearEnd = new Date(yearStart.getFullYear() + 1, 0, 1);
-      const colspan = calculateColspan(yearStart, yearEnd, dayColumns);
+      
+      // Find which day columns this year spans
+      const dayColIndices = [];
+      dayColumns.forEach((dayInfo, dIdx) => {
+        if(dayInfo.date >= yearStart && dayInfo.date < yearEnd){
+          dayColIndices.push(dIdx);
+        }
+      });
+      const colspan = dayColIndices.length;
       
       if(colspan > 0){
         const thYear = document.createElement('th');
@@ -282,6 +290,7 @@
         thYear.colSpan = colspan;
         thYear.dataset.key = yearInfo.key;
         thYear.dataset.zoomType = 'years';
+        thYear.dataset.dayColumns = JSON.stringify(dayColIndices);
         row1.appendChild(thYear);
       }
     });
@@ -293,7 +302,15 @@
       const qStart = quarterInfo.date;
       const qEnd = new Date(qStart);
       qEnd.setMonth(qStart.getMonth() + 3);
-      const colspan = calculateColspan(qStart, qEnd, dayColumns);
+      
+      // Find which day columns this quarter spans
+      const dayColIndices = [];
+      dayColumns.forEach((dayInfo, dIdx) => {
+        if(dayInfo.date >= qStart && dayInfo.date < qEnd){
+          dayColIndices.push(dIdx);
+        }
+      });
+      const colspan = dayColIndices.length;
       
       if(colspan > 0){
         const thQuarter = document.createElement('th');
@@ -302,6 +319,7 @@
         thQuarter.colSpan = colspan;
         thQuarter.dataset.key = quarterInfo.key;
         thQuarter.dataset.zoomType = 'quarters';
+        thQuarter.dataset.dayColumns = JSON.stringify(dayColIndices);
         row2.appendChild(thQuarter);
       }
     });
@@ -313,7 +331,15 @@
       const mStart = monthInfo.date;
       const mEnd = new Date(mStart);
       mEnd.setMonth(mStart.getMonth() + 1);
-      const colspan = calculateColspan(mStart, mEnd, dayColumns);
+      
+      // Find which day columns this month spans
+      const dayColIndices = [];
+      dayColumns.forEach((dayInfo, dIdx) => {
+        if(dayInfo.date >= mStart && dayInfo.date < mEnd){
+          dayColIndices.push(dIdx);
+        }
+      });
+      const colspan = dayColIndices.length;
       
       if(colspan > 0){
         const thMonth = document.createElement('th');
@@ -322,6 +348,7 @@
         thMonth.colSpan = colspan;
         thMonth.dataset.key = monthInfo.key;
         thMonth.dataset.zoomType = 'months';
+        thMonth.dataset.dayColumns = JSON.stringify(dayColIndices);
         row3.appendChild(thMonth);
       }
     });
@@ -333,7 +360,15 @@
       const wStart = weekInfo.date;
       const wEnd = new Date(wStart);
       wEnd.setDate(wStart.getDate() + 7);
-      const colspan = calculateColspan(wStart, wEnd, dayColumns);
+      
+      // Find which day columns this week spans
+      const dayColIndices = [];
+      dayColumns.forEach((dayInfo, dIdx) => {
+        if(dayInfo.date >= wStart && dayInfo.date < wEnd){
+          dayColIndices.push(dIdx);
+        }
+      });
+      const colspan = dayColIndices.length;
       
       if(colspan > 0){
         const thWeek = document.createElement('th');
@@ -342,6 +377,7 @@
         thWeek.colSpan = colspan;
         thWeek.dataset.key = weekInfo.key;
         thWeek.dataset.zoomType = 'weeks';
+        thWeek.dataset.dayColumns = JSON.stringify(dayColIndices);
         row4.appendChild(thWeek);
       }
     });
@@ -479,39 +515,66 @@
     
     let resizing = false;
     let startX = 0;
-    let startWidth = 0;
+    let startWidths = {};
     let currentHeader = null;
+    let affectedDayColumns = [];
     
-    table.querySelectorAll('th.timeline-date-cell, td.timeline-bar-cell').forEach(cell => {
-      cell.addEventListener('mousedown', (e) => {
-        const rect = cell.getBoundingClientRect();
-        const offsetX = e.clientX - rect.left;
+    // Add resize handles to all timeline header cells
+    table.querySelectorAll('th.timeline-date-cell').forEach(cell => {
+      // Add a visual resize handle
+      const handle = document.createElement('div');
+      handle.className = 'column-resize-handle';
+      handle.title = 'Drag to resize column';
+      cell.appendChild(handle);
+      
+      handle.addEventListener('mousedown', (e) => {
+        resizing = true;
+        startX = e.clientX;
+        currentHeader = cell;
         
-        // Check if click is near right edge (within 6px)
-        if(offsetX > rect.width - 6){
-          resizing = true;
-          startX = e.clientX;
-          startWidth = rect.width;
-          currentHeader = cell;
-          document.body.style.cursor = 'col-resize';
-          e.preventDefault();
+        // Determine which day columns are affected
+        if(cell.dataset.dayColumns){
+          // This is a merged header (year/quarter/month/week)
+          affectedDayColumns = JSON.parse(cell.dataset.dayColumns);
+        } else if(cell.dataset.colIdx !== undefined){
+          // This is a day header
+          affectedDayColumns = [parseInt(cell.dataset.colIdx, 10)];
         }
+        
+        // Store starting widths for all affected day columns
+        startWidths = {};
+        affectedDayColumns.forEach(colIdx => {
+          const dayKey = dayColumns[colIdx].key;
+          const currentWidth = state.columnWidths[dayKey] || state.defaultColumnWidth;
+          startWidths[colIdx] = currentWidth;
+        });
+        
+        document.body.style.cursor = 'col-resize';
+        e.preventDefault();
+        e.stopPropagation();
       });
     });
     
     document.addEventListener('mousemove', (e) => {
-      if(!resizing || !currentHeader) return;
+      if(!resizing || !currentHeader || affectedDayColumns.length === 0) return;
       
       const dx = e.clientX - startX;
-      const newWidth = Math.max(20, startWidth + dx);
+      const numCols = affectedDayColumns.length;
+      const dxPerCol = dx / numCols; // Distribute the resize across all affected columns
       
-      const key = currentHeader.dataset.key;
-      state.columnWidths[key] = newWidth;
-      
-      // Update all cells with the same key
-      table.querySelectorAll(`[data-key="${key}"]`).forEach(cell => {
-        cell.style.width = newWidth + 'px';
-        cell.style.minWidth = newWidth + 'px';
+      // Update each affected day column
+      affectedDayColumns.forEach(colIdx => {
+        const dayKey = dayColumns[colIdx].key;
+        const oldWidth = startWidths[colIdx] || state.defaultColumnWidth;
+        const newWidth = Math.max(20, oldWidth + dxPerCol);
+        
+        state.columnWidths[dayKey] = newWidth;
+        
+        // Update all cells with this day key (header and body cells)
+        table.querySelectorAll(`[data-key="${dayKey}"]`).forEach(cell => {
+          cell.style.width = newWidth + 'px';
+          cell.style.minWidth = newWidth + 'px';
+        });
       });
     });
     
@@ -519,6 +582,8 @@
       if(resizing){
         resizing = false;
         currentHeader = null;
+        affectedDayColumns = [];
+        startWidths = {};
         document.body.style.cursor = '';
       }
     });
