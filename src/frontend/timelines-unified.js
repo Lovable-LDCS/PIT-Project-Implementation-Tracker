@@ -226,6 +226,20 @@
     return -1;
   }
 
+  // Helper function to calculate colspan for a time period
+  function calculateColspan(startDate, endDate, dayColumns){
+    let count = 0;
+    for(let i = 0; i < dayColumns.length; i++){
+      const dayDate = dayColumns[i].date;
+      const nextDayDate = i < dayColumns.length - 1 ? dayColumns[i + 1].date : new Date(dayDate.getFullYear(), dayDate.getMonth(), dayDate.getDate() + 1);
+      
+      if(dayDate >= startDate && dayDate < endDate){
+        count++;
+      }
+    }
+    return Math.max(1, count);
+  }
+
   // Render the unified table
   function renderTable(){
     const table = document.querySelector('[data-testid="TID-TLT-TABLE"]');
@@ -233,73 +247,125 @@
     
     table.innerHTML = '';
     
-    // Determine active zoom levels (what rows to show in header)
-    const activeZooms = Array.from(state.zoom);
-    const zoomOrder = ['years', 'quarters', 'months', 'weeks', 'days'];
-    const activeRows = zoomOrder.filter(z => state.zoom.has(z.replace(/s$/, '')));
+    // The base unit is DAYS - all other time periods merge day columns
+    const dayColumns = state.timelineDates.days;
+    const totalDayCols = dayColumns.length;
     
-    // Calculate total columns (2 fixed + timeline dates)
-    let maxTimelineCols = 0;
-    activeRows.forEach(zoomType => {
-      const count = state.timelineDates[zoomType].length;
-      if(count > maxTimelineCols) maxTimelineCols = count;
-    });
-    
-    // If no active zooms, use years as default
-    if(maxTimelineCols === 0){
-      maxTimelineCols = state.timelineDates.years.length;
-      activeRows.push('years');
+    if(totalDayCols === 0){
+      console.warn('[Timeline] No day columns to render');
+      return;
     }
     
     // Create header rows (5 rows for date headers)
     const thead = document.createElement('thead');
     
-    // Row 1-5: Create merged header cell for cols 1-2, then timeline date cells
-    for(let rowIdx = 0; rowIdx < 5; rowIdx++){
-      const tr = document.createElement('tr');
+    // Row 1: Year (merge day columns per year)
+    const row1 = document.createElement('tr');
+    // First row: create merged cell spanning all 5 header rows for fixed columns
+    const th = document.createElement('th');
+    th.className = 'merged-header';
+    th.rowSpan = 5;
+    th.colSpan = 2;
+    th.innerHTML = '<div>Project Descriptors</div><div style="margin-top:8px;">Project Progress</div>';
+    row1.appendChild(th);
+    
+    // Add year cells with proper colspan
+    state.timelineDates.years.forEach((yearInfo, yearIdx) => {
+      const yearStart = yearInfo.date;
+      const yearEnd = new Date(yearStart.getFullYear() + 1, 0, 1);
+      const colspan = calculateColspan(yearStart, yearEnd, dayColumns);
       
-      if(rowIdx === 0){
-        // First row: create merged cell spanning all 5 header rows
-        const th = document.createElement('th');
-        th.className = 'merged-header';
-        th.rowSpan = 5;
-        th.colSpan = 2;
-        th.innerHTML = '<div>Project Descriptors</div><div style="margin-top:8px;">Project Progress</div>';
-        tr.appendChild(th);
+      if(colspan > 0){
+        const thYear = document.createElement('th');
+        thYear.className = 'timeline-date-cell timeline-year';
+        thYear.textContent = yearInfo.label;
+        thYear.colSpan = colspan;
+        thYear.dataset.key = yearInfo.key;
+        thYear.dataset.zoomType = 'years';
+        row1.appendChild(thYear);
       }
+    });
+    thead.appendChild(row1);
+    
+    // Row 2: Quarter (merge day columns per quarter)
+    const row2 = document.createElement('tr');
+    state.timelineDates.quarters.forEach((quarterInfo, qIdx) => {
+      const qStart = quarterInfo.date;
+      const qEnd = new Date(qStart);
+      qEnd.setMonth(qStart.getMonth() + 3);
+      const colspan = calculateColspan(qStart, qEnd, dayColumns);
       
-      // Add timeline date cells for this row
-      if(rowIdx < activeRows.length){
-        const zoomType = activeRows[rowIdx];
-        const dates = state.timelineDates[zoomType];
-        
-        dates.forEach((dateInfo, colIdx) => {
-          const th = document.createElement('th');
-          th.className = 'timeline-date-cell';
-          th.textContent = dateInfo.label;
-          th.dataset.key = dateInfo.key;
-          th.dataset.zoomType = zoomType;
-          th.dataset.colIdx = colIdx;
-          
-          // Apply stored width if exists
-          const width = state.columnWidths[dateInfo.key] || state.defaultColumnWidth;
-          th.style.width = width + 'px';
-          th.style.minWidth = width + 'px';
-          
-          tr.appendChild(th);
-        });
-      } else {
-        // Empty row for visual structure
-        for(let i = 0; i < maxTimelineCols; i++){
-          const th = document.createElement('th');
-          th.className = 'timeline-date-cell';
-          th.innerHTML = '&nbsp;';
-          tr.appendChild(th);
-        }
+      if(colspan > 0){
+        const thQuarter = document.createElement('th');
+        thQuarter.className = 'timeline-date-cell timeline-quarter';
+        thQuarter.textContent = quarterInfo.label;
+        thQuarter.colSpan = colspan;
+        thQuarter.dataset.key = quarterInfo.key;
+        thQuarter.dataset.zoomType = 'quarters';
+        row2.appendChild(thQuarter);
       }
+    });
+    thead.appendChild(row2);
+    
+    // Row 3: Month (merge day columns per month)
+    const row3 = document.createElement('tr');
+    state.timelineDates.months.forEach((monthInfo, mIdx) => {
+      const mStart = monthInfo.date;
+      const mEnd = new Date(mStart);
+      mEnd.setMonth(mStart.getMonth() + 1);
+      const colspan = calculateColspan(mStart, mEnd, dayColumns);
       
-      thead.appendChild(tr);
-    }
+      if(colspan > 0){
+        const thMonth = document.createElement('th');
+        thMonth.className = 'timeline-date-cell timeline-month';
+        thMonth.textContent = monthInfo.label;
+        thMonth.colSpan = colspan;
+        thMonth.dataset.key = monthInfo.key;
+        thMonth.dataset.zoomType = 'months';
+        row3.appendChild(thMonth);
+      }
+    });
+    thead.appendChild(row3);
+    
+    // Row 4: Week (merge 7 day columns per week)
+    const row4 = document.createElement('tr');
+    state.timelineDates.weeks.forEach((weekInfo, wIdx) => {
+      const wStart = weekInfo.date;
+      const wEnd = new Date(wStart);
+      wEnd.setDate(wStart.getDate() + 7);
+      const colspan = calculateColspan(wStart, wEnd, dayColumns);
+      
+      if(colspan > 0){
+        const thWeek = document.createElement('th');
+        thWeek.className = 'timeline-date-cell timeline-week';
+        thWeek.textContent = weekInfo.label;
+        thWeek.colSpan = colspan;
+        thWeek.dataset.key = weekInfo.key;
+        thWeek.dataset.zoomType = 'weeks';
+        row4.appendChild(thWeek);
+      }
+    });
+    thead.appendChild(row4);
+    
+    // Row 5: Day (individual columns - NOT merged)
+    const row5 = document.createElement('tr');
+    dayColumns.forEach((dayInfo, dIdx) => {
+      const thDay = document.createElement('th');
+      thDay.className = 'timeline-date-cell timeline-day';
+      thDay.textContent = dayInfo.label;
+      thDay.dataset.key = dayInfo.key;
+      thDay.dataset.zoomType = 'days';
+      thDay.dataset.colIdx = dIdx;
+      
+      // Apply stored width if exists
+      const width = state.columnWidths[dayInfo.key] || state.defaultColumnWidth;
+      thDay.style.width = width + 'px';
+      thDay.style.minWidth = width + 'px';
+      
+      row5.appendChild(thDay);
+    });
+    thead.appendChild(row5);
+    
     table.appendChild(thead);
     
     // Create body rows (project items)
@@ -322,13 +388,12 @@
       tdProg.textContent = (row.progress || 0) + '%';
       tr.appendChild(tdProg);
       
-      // Timeline cells: use the finest zoom level for bar positioning
-      const finestZoom = activeRows[activeRows.length - 1] || 'years';
-      const timelineCells = state.timelineDates[finestZoom];
+      // Timeline cells: use day columns as the base (finest granularity)
+      const timelineCells = dayColumns;
       
-      // Calculate bar position
-      const startCol = getColumnForDate(row.start, finestZoom);
-      const endCol = getColumnForDate(row.end, finestZoom);
+      // Calculate bar position using days
+      const startCol = getColumnForDate(row.start, 'days');
+      const endCol = getColumnForDate(row.end, 'days');
       
       timelineCells.forEach((dateInfo, colIdx) => {
         const td = document.createElement('td');
@@ -501,6 +566,22 @@
       out.push('CRITICAL: Merged header cell has incorrect span (should be 5 rows x 2 cols)');
     }
     
+    // Check that we have 5 header rows
+    const headerRows = table?.querySelectorAll('thead tr');
+    if(headerRows && headerRows.length !== 5){
+      out.push('WARNING: Expected 5 header rows, found ' + headerRows.length);
+    }
+    
+    // Check that day columns are not merged (no colspan on day cells)
+    const dayCells = table?.querySelectorAll('th.timeline-day');
+    if(dayCells){
+      dayCells.forEach((cell, idx) => {
+        if(cell.colSpan && cell.colSpan > 1){
+          out.push('ERROR: Day column ' + idx + ' should not be merged (has colspan=' + cell.colSpan + ')');
+        }
+      });
+    }
+    
     // Display problems
     const p = document.querySelector('[data-testid="TID-TLT-PROBLEMS"]');
     if(p){
@@ -516,7 +597,8 @@
 
   // Bind toolbar controls
   function bindToolbar(){
-    // Zoom buttons toggle visibility
+    // Zoom buttons are now informational only - all levels always displayed
+    // But we can still highlight the selected zoom level for reference
     const map = [
       ['TID-TLT-Z-YEAR', 'year'],
       ['TID-TLT-Z-QUARTER', 'quarter'],
@@ -529,31 +611,21 @@
       const el = document.querySelector(`[data-testid="${tid}"]`);
       if(el && !el._bound){
         el.addEventListener('click', () => {
-          if(state.zoom.has(mode)) {
-            state.zoom.delete(mode);
-          } else {
-            state.zoom.add(mode);
-          }
-          
-          // Ensure at least one zoom level is active
-          if(state.zoom.size === 0) state.zoom.add('year');
-          
-          // Update visual state
-          el.classList.toggle('selected', state.zoom.has(mode));
-          
-          render();
+          // Remove selected from all
+          map.forEach(([t, m]) => {
+            const e = document.querySelector(`[data-testid="${t}"]`);
+            if(e) e.classList.remove('selected');
+          });
+          // Add selected to clicked
+          el.classList.add('selected');
         });
         el._bound = true;
       }
     });
     
-    // Initialize selected states
-    map.forEach(([tid, mode]) => {
-      const el = document.querySelector(`[data-testid="${tid}"]`);
-      if(el){
-        el.classList.toggle('selected', state.zoom.has(mode));
-      }
-    });
+    // Initialize with year selected by default
+    const yearBtn = document.querySelector('[data-testid="TID-TLT-Z-YEAR"]');
+    if(yearBtn) yearBtn.classList.add('selected');
     
     // View start date
     const vs = document.querySelector('[data-testid="TID-TLT-VIEW-START"]');
