@@ -1,7 +1,7 @@
 # QA Run Report
 
-**Generated:** 2025-11-20 10:24:22  
-**Duration:** 1.66 seconds  
+**Generated:** 2025-11-20 10:25:11  
+**Duration:** 1.43 seconds  
 **Overall Status:** AMBER
 
 ## Summary
@@ -9,9 +9,9 @@
 | Metric | Count |
 |--------|-------|
 | Total Checks | 23 |
-| Passed | 16 |
+| Passed | 17 |
 | Failed | 3 |
-| Skipped | 4 |
+| Skipped | 3 |
 
 ## Status Breakdown
 
@@ -84,7 +84,7 @@
 
 | ID | Name | Status | Severity |
 |----|------|--------|----------|
-| UNIT-001 | pytest tests exist | - SKIP | critical |
+| UNIT-001 | pytest tests exist | ✓ PASS | critical |
 | UNIT-002 | All pytest tests pass | - SKIP | critical |
 
 
@@ -131,9 +131,9 @@ According to the **True North** methodology:
 ## Metadata
 
 - **Strict Mode:** False
-- **Skip Tests:** True
+- **Skip Tests:** False
 - **Runner:** run-qa.ps1 v1.0.0
-- **Report Generated:** 2025-11-20T10:24:22.0823054+00:00
+- **Report Generated:** 2025-11-20T10:25:11.7889435+00:00
 
 ---
 *This report follows the True North Build Methodology - Architecture → QA → Implementation → GREEN*

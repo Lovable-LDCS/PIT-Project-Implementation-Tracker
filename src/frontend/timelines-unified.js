@@ -41,7 +41,7 @@
     if(!state.viewStart){ state.viewStart = new Date(state.projectStart); }
   }
 
-  // Build project hierarchy rows
+  // Build project hierarchy rows with proper numbering
   function buildRows(){
     const ps = fmt(state.projectStart), pe = fmt(state.projectEnd);
     
@@ -60,6 +60,7 @@
         state.rows.push({ 
           kind:'proj', 
           title: window.projectState.name || 'Project', 
+          number: '', // No number for project
           level:0, 
           start: window.projectState.start || ps, 
           end: window.projectState.end || pe, 
@@ -74,6 +75,7 @@
           state.rows.push({ 
             kind:'ms', 
             title: ms.title || ms.name || 'Milestone ' + (msIdx+1), 
+            number: `${msIdx + 1}`, // Milestone numbering: 1, 2, 3...
             level:1, 
             start: ms.start || ps, 
             end: ms.end || pe, 
@@ -90,6 +92,7 @@
               state.rows.push({ 
                 kind:'dl', 
                 title: dl.title || dl.name || 'Deliverable ' + (dlIdx+1), 
+                number: `${msIdx + 1}.${dlIdx + 1}`, // Deliverable numbering: 1.1, 1.2...
                 level:2, 
                 start: dl.start || ps, 
                 end: dl.end || pe, 
@@ -107,6 +110,7 @@
                   state.rows.push({ 
                     kind:'task', 
                     title: task.title || task.name || 'Task ' + (taskIdx+1), 
+                    number: `${msIdx + 1}.${dlIdx + 1}.${taskIdx + 1}`, // Task numbering: 1.1.1, 1.1.2...
                     level:3, 
                     start: task.start || ps, 
                     end: task.end || pe, 
@@ -124,10 +128,10 @@
       });
     } else {
       // Fallback to example rows for testing
-      if(fShowProj) state.rows.push({ kind:'proj', title: (window.projectState?.name || 'Project'), level:0, start: ps, end: pe, progress: 35 });
-      if(fShowMs) state.rows.push({ kind:'ms', title: 'M1', level:1, start: ps, end: pe, progress: 50 });
-      if(fShowDl) state.rows.push({ kind:'dl', title: 'D1.1', level:2, start: ps, end: pe, progress: 20 });
-      if(fShowTask) state.rows.push({ kind:'task', title: 'T1.1.1', level:3, start: ps, end: pe, progress: 10 });
+      if(fShowProj) state.rows.push({ kind:'proj', title: (window.projectState?.name || 'Project'), number: '', level:0, start: ps, end: pe, progress: 35 });
+      if(fShowMs) state.rows.push({ kind:'ms', title: 'M1', number: '1', level:1, start: ps, end: pe, progress: 50 });
+      if(fShowDl) state.rows.push({ kind:'dl', title: 'D1.1', number: '1.1', level:2, start: ps, end: pe, progress: 20 });
+      if(fShowTask) state.rows.push({ kind:'task', title: 'T1.1.1', number: '1.1.1', level:3, start: ps, end: pe, progress: 10 });
     }
   }
 
@@ -414,10 +418,17 @@
       tr.dataset.rowIdx = rowIdx;
       tr.dataset.kind = row.kind;
       
-      // Column 1: Project Descriptor
+      // Column 1: Project Descriptor with numbering
       const tdDesc = document.createElement('td');
       tdDesc.className = `col-descriptor lvl-${row.level}`;
-      tdDesc.textContent = row.title;
+      
+      // Add numbering if present, with proper indentation
+      if(row.number){
+        tdDesc.textContent = `${row.number}. ${row.title}`;
+      } else {
+        tdDesc.textContent = row.title;
+      }
+      
       tr.appendChild(tdDesc);
       
       // Column 2: Progress
@@ -510,7 +521,7 @@
     bindBarDrag();
   }
 
-  // Bind column resize functionality
+  // Bind column resize functionality - PROPORTIONAL RESIZING FOR ALL ROWS
   function bindColumnResize(){
     const table = document.querySelector('[data-testid="TID-TLT-TABLE"]');
     if(!table) return;
@@ -521,12 +532,12 @@
     let currentHeader = null;
     let affectedDayColumns = [];
     
-    // Add resize handles to all timeline header cells
+    // Add resize handles to all timeline header cells (ALL ROWS)
     table.querySelectorAll('th.timeline-date-cell').forEach(cell => {
       // Add a visual resize handle
       const handle = document.createElement('div');
       handle.className = 'column-resize-handle';
-      handle.title = 'Drag to resize column';
+      handle.title = 'Drag to resize column (affects all date rows proportionally)';
       cell.appendChild(handle);
       
       handle.addEventListener('mousedown', (e) => {
@@ -564,7 +575,7 @@
       const numCols = affectedDayColumns.length;
       const dxPerCol = dx / numCols; // Distribute the resize across all affected columns
       
-      // Update each affected day column
+      // Update each affected day column - this affects ALL date rows proportionally
       affectedDayColumns.forEach(colIdx => {
         const dayKey = state.dayColumns[colIdx].key;
         const oldWidth = startWidths[colIdx] || state.defaultColumnWidth;
@@ -572,7 +583,7 @@
         
         state.columnWidths[dayKey] = newWidth;
         
-        // Update all cells with this day key (header and body cells)
+        // Update all cells with this day key (affects ALL header rows AND body cells)
         table.querySelectorAll(`[data-key="${dayKey}"]`).forEach(cell => {
           cell.style.width = newWidth + 'px';
           cell.style.minWidth = newWidth + 'px';
@@ -591,11 +602,159 @@
     });
   }
 
-  // Bind bar drag functionality
+  // Bind bar drag functionality with auto-scroll and hover state
   function bindBarDrag(){
-    // TODO: Implement bar dragging for moving start/end dates
-    // This would involve detecting drag on .timeline-slider-bar and .resize-handle elements
-    console.log('[Timeline] Bar drag functionality to be implemented');
+    const table = document.querySelector('[data-testid="TID-TLT-TABLE"]');
+    const scrollContainer = document.querySelector('[data-testid="TID-TLT-TABLE-SCROLL"]');
+    if(!table || !scrollContainer) return;
+    
+    let dragging = false;
+    let dragType = null; // 'move', 'resize-left', 'resize-right'
+    let startX = 0;
+    let currentBar = null;
+    let currentRow = null;
+    let autoScrollInterval = null;
+    
+    // Helper: Start auto-scroll
+    function startAutoScroll(direction, speed){
+      if(autoScrollInterval) return;
+      autoScrollInterval = setInterval(() => {
+        scrollContainer.scrollLeft += direction * speed;
+      }, 16); // ~60fps
+    }
+    
+    // Helper: Stop auto-scroll
+    function stopAutoScroll(){
+      if(autoScrollInterval){
+        clearInterval(autoScrollInterval);
+        autoScrollInterval = null;
+      }
+    }
+    
+    // Helper: Check if near edge and trigger auto-scroll
+    function checkAutoScroll(e){
+      const rect = scrollContainer.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const threshold = 50;
+      
+      if(x < threshold){
+        const proximity = (threshold - x) / threshold;
+        const speed = 2 + (proximity * 8); // 2 to 10
+        startAutoScroll(-1, speed);
+      } else if(x > rect.width - threshold){
+        const proximity = (x - (rect.width - threshold)) / threshold;
+        const speed = 2 + (proximity * 8);
+        startAutoScroll(1, speed);
+      } else {
+        stopAutoScroll();
+      }
+    }
+    
+    // Helper: Get date from mouse position
+    function getDateFromX(clientX){
+      const rect = scrollContainer.getBoundingClientRect();
+      const relX = clientX - rect.left + scrollContainer.scrollLeft;
+      
+      // Find which day column this corresponds to
+      let accumulatedWidth = 0;
+      for(let i = 0; i < state.dayColumns.length; i++){
+        const dayKey = state.dayColumns[i].key;
+        const width = state.columnWidths[dayKey] || state.defaultColumnWidth;
+        if(relX < accumulatedWidth + width){
+          return state.dayColumns[i].date;
+        }
+        accumulatedWidth += width;
+      }
+      return state.dayColumns[state.dayColumns.length - 1]?.date || state.projectEnd;
+    }
+    
+    // Add hover state and drag handlers to bars
+    table.querySelectorAll('.timeline-slider-bar').forEach(bar => {
+      // Hover state: show date information
+      bar.addEventListener('mouseenter', (e) => {
+        if(dragging) return;
+        const rowIdx = parseInt(bar.dataset.rowIdx, 10);
+        const row = state.rows[rowIdx];
+        if(row){
+          bar.title = `${row.title}\nStart: ${row.start}\nEnd: ${row.end}\nProgress: ${row.progress}%`;
+        }
+      });
+      
+      // Click on bar body: move entire bar
+      bar.addEventListener('mousedown', (e) => {
+        // Check if clicking on resize handle
+        if(e.target.classList.contains('resize-handle')){
+          dragging = true;
+          dragType = e.target.classList.contains('left') ? 'resize-left' : 'resize-right';
+          startX = e.clientX;
+          currentBar = bar;
+          const rowIdx = parseInt(bar.dataset.rowIdx, 10);
+          currentRow = state.rows[rowIdx];
+          document.body.style.cursor = 'col-resize';
+          e.preventDefault();
+          e.stopPropagation();
+        } else {
+          dragging = true;
+          dragType = 'move';
+          startX = e.clientX;
+          currentBar = bar;
+          const rowIdx = parseInt(bar.dataset.rowIdx, 10);
+          currentRow = state.rows[rowIdx];
+          document.body.style.cursor = 'move';
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      });
+    });
+    
+    // Global mousemove: handle drag and auto-scroll
+    document.addEventListener('mousemove', (e) => {
+      if(!dragging || !currentBar || !currentRow) return;
+      
+      // Check for auto-scroll
+      checkAutoScroll(e);
+      
+      // Calculate new position
+      const newDate = getDateFromX(e.clientX);
+      
+      // Update row dates based on drag type
+      if(dragType === 'move'){
+        // Move both start and end
+        const dx = e.clientX - startX;
+        const daysToMove = Math.round(dx / (state.defaultColumnWidth || 60));
+        if(daysToMove !== 0){
+          // TODO: Update row.start and row.end by daysToMove days
+          // For now, show visual feedback
+          currentBar.style.opacity = '0.7';
+        }
+      } else if(dragType === 'resize-left'){
+        // Move start date only
+        // TODO: Update row.start to newDate
+        currentBar.style.opacity = '0.7';
+      } else if(dragType === 'resize-right'){
+        // Move end date only
+        // TODO: Update row.end to newDate
+        currentBar.style.opacity = '0.7';
+      }
+    });
+    
+    // Global mouseup: finish drag
+    document.addEventListener('mouseup', () => {
+      if(dragging){
+        dragging = false;
+        dragType = null;
+        stopAutoScroll();
+        if(currentBar){
+          currentBar.style.opacity = '';
+        }
+        currentBar = null;
+        currentRow = null;
+        document.body.style.cursor = '';
+        
+        // Re-render to apply changes
+        // render(); // Uncomment when date update logic is implemented
+      }
+    });
   }
 
   // Render function
