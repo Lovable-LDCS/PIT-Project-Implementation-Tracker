@@ -705,6 +705,40 @@
     if(tooltip) tooltip.style.display = 'none';
   }
 
+  // Show date hover indicator - vertical line across all header rows
+  function showDateHoverIndicator(colIdx){
+    // Remove any existing indicator
+    const existing = document.querySelector('.timeline-date-hover-indicator');
+    if(existing) existing.remove();
+    
+    // Find the hovered column in the day row (row 5)
+    const dayCell = document.querySelector(`th.timeline-day[data-col-idx="${colIdx}"]`);
+    if(!dayCell) return;
+    
+    // Create vertical line indicator
+    const indicator = document.createElement('div');
+    indicator.className = 'timeline-date-hover-indicator';
+    
+    // Position it over the column
+    const rect = dayCell.getBoundingClientRect();
+    const tableContainer = document.querySelector('[data-testid="TID-TLT-TABLE-SCROLL"]');
+    const containerRect = tableContainer?.getBoundingClientRect();
+    
+    if(containerRect){
+      indicator.style.left = (rect.left - containerRect.left + rect.width / 2) + 'px';
+      indicator.style.top = '0';
+      indicator.style.height = '100%';
+      
+      tableContainer.appendChild(indicator);
+    }
+  }
+
+  // Hide date hover indicator
+  function hideDateHoverIndicator(){
+    const indicator = document.querySelector('.timeline-date-hover-indicator');
+    if(indicator) indicator.remove();
+  }
+
   // Bind bar drag functionality with auto-scroll and hover state
   function bindBarDrag(){
     const table = document.querySelector('[data-testid="TID-TLT-TABLE"]');
