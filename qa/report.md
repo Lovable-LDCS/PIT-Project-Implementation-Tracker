@@ -1,7 +1,7 @@
 # QA Run Report
 
-**Generated:** 2025-11-20 13:25:53  
-**Duration:** 1.24 seconds  
+**Generated:** 2025-11-20 15:07:54  
+**Duration:** 3.05 seconds  
 **Overall Status:** AMBER
 
 ## Summary
@@ -22,7 +22,7 @@
 ✓ No critical issues
 
 ### High Severity Issues
-- **[DEPLOY-006]** Current branch deployment status: On branch 'copilot/fix-build-implementation-issues'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
+- **[DEPLOY-006]** Current branch deployment status: On branch 'copilot/fix-build-to-green-qa'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
 - **[DEPLOY-008]** Latest deployment workflow run succeeded: Could not retrieve workflow runs: 
 - **[DEPLOY-010]** Deployed application contains expected content: Missing expected content: PIT - Project Implementation Tracker
 
@@ -105,7 +105,7 @@ The following checks failed and must be addressed:
 
 #### [DEPLOY-006] Current branch deployment status
 - **Severity:** high
-- **Message:** On branch 'copilot/fix-build-implementation-issues'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
+- **Message:** On branch 'copilot/fix-build-to-green-qa'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
 
 
 #### [DEPLOY-008] Latest deployment workflow run succeeded
@@ -133,7 +133,7 @@ According to the **True North** methodology:
 - **Strict Mode:** False
 - **Skip Tests:** False
 - **Runner:** run-qa.ps1 v1.0.0
-- **Report Generated:** 2025-11-20T13:25:53.8921438+00:00
+- **Report Generated:** 2025-11-20T15:07:54.0401833+00:00
 
 ---
 *This report follows the True North Build Methodology - Architecture → QA → Implementation → GREEN*
