@@ -521,6 +521,34 @@
     bindBarDrag();
   }
 
+  // Create or update the date alignment indicator
+  function createDateAlignmentIndicator(){
+    let indicator = document.getElementById('timeline-date-alignment');
+    if(!indicator){
+      indicator = document.createElement('div');
+      indicator.id = 'timeline-date-alignment';
+      indicator.className = 'timeline-date-alignment';
+      indicator.style.cssText = 'position:fixed;width:2px;background:#0D2850;box-shadow:0 0 8px rgba(13,40,80,0.5);top:0;bottom:0;pointer-events:none;z-index:9999;display:none;';
+      document.body.appendChild(indicator);
+    }
+    return indicator;
+  }
+
+  // Show date alignment indicator at X position
+  function showDateAlignment(x){
+    const indicator = document.getElementById('timeline-date-alignment');
+    if(indicator){
+      indicator.style.left = x + 'px';
+      indicator.style.display = 'block';
+    }
+  }
+
+  // Hide date alignment indicator
+  function hideDateAlignment(){
+    const indicator = document.getElementById('timeline-date-alignment');
+    if(indicator) indicator.style.display = 'none';
+  }
+
   // Bind column resize functionality - PROPORTIONAL RESIZING FOR ALL ROWS
   function bindColumnResize(){
     const table = document.querySelector('[data-testid="TID-TLT-TABLE"]');
@@ -532,6 +560,9 @@
     let currentHeader = null;
     let affectedDayColumns = [];
     
+    // Create date alignment indicator
+    createDateAlignmentIndicator();
+    
     // Add resize handles to all timeline header cells (ALL ROWS)
     table.querySelectorAll('th.timeline-date-cell').forEach(cell => {
       // Add a visual resize handle
@@ -539,6 +570,37 @@
       handle.className = 'column-resize-handle';
       handle.title = 'Drag to resize column (affects all date rows proportionally)';
       cell.appendChild(handle);
+      
+      // Add hover effect to highlight the column AND show date alignment
+      cell.addEventListener('mouseenter', (e) => {
+        if(resizing) return;
+        
+        // Highlight all cells in this column
+        const colKey = cell.dataset.key;
+        if(colKey){
+          table.querySelectorAll(`[data-key="${colKey}"]`).forEach(c => {
+            c.classList.add('column-hover');
+          });
+        }
+        
+        // Show vertical alignment line
+        const rect = cell.getBoundingClientRect();
+        const centerX = rect.left + (rect.width / 2);
+        showDateAlignment(centerX);
+      });
+      
+      cell.addEventListener('mouseleave', (e) => {
+        // Remove highlight
+        const colKey = cell.dataset.key;
+        if(colKey){
+          table.querySelectorAll(`[data-key="${colKey}"]`).forEach(c => {
+            c.classList.remove('column-hover');
+          });
+        }
+        
+        // Hide alignment line
+        hideDateAlignment();
+      });
       
       handle.addEventListener('mousedown', (e) => {
         resizing = true;
@@ -602,6 +664,47 @@
     });
   }
 
+  // Create drag tooltip for showing dates during drag
+  function createDragTooltip(){
+    let tooltip = document.getElementById('timeline-drag-tooltip');
+    if(!tooltip){
+      tooltip = document.createElement('div');
+      tooltip.id = 'timeline-drag-tooltip';
+      tooltip.className = 'timeline-drag-tooltip';
+      tooltip.style.cssText = 'position:fixed;background:#0D2850;color:white;padding:12px 16px;border-radius:6px;font-size:14px;font-weight:600;pointer-events:none;z-index:10000;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.4);border:2px solid #006B92;min-width:200px;text-align:center;';
+      document.body.appendChild(tooltip);
+    }
+    return tooltip;
+  }
+
+  // Update drag tooltip position and content with enhanced formatting
+  function updateDragTooltip(x, y, text, type){
+    const tooltip = document.getElementById('timeline-drag-tooltip');
+    if(tooltip){
+      // Format tooltip with HTML for better display
+      let html = '';
+      if(type === 'move'){
+        html = `<div style="font-size:12px;opacity:0.8;margin-bottom:4px;">MOVING TIMELINE</div><div>${text}</div>`;
+      } else if(type === 'resize-left'){
+        html = `<div style="font-size:12px;opacity:0.8;margin-bottom:4px;">START DATE</div><div style="font-size:16px;">${text}</div>`;
+      } else if(type === 'resize-right'){
+        html = `<div style="font-size:12px;opacity:0.8;margin-bottom:4px;">END DATE</div><div style="font-size:16px;">${text}</div>`;
+      } else {
+        html = text;
+      }
+      tooltip.innerHTML = html;
+      tooltip.style.left = (x + 20) + 'px';
+      tooltip.style.top = (y - 40) + 'px'; // Position above cursor
+      tooltip.style.display = 'block';
+    }
+  }
+
+  // Hide drag tooltip
+  function hideDragTooltip(){
+    const tooltip = document.getElementById('timeline-drag-tooltip');
+    if(tooltip) tooltip.style.display = 'none';
+  }
+
   // Bind bar drag functionality with auto-scroll and hover state
   function bindBarDrag(){
     const table = document.querySelector('[data-testid="TID-TLT-TABLE"]');
@@ -613,7 +716,13 @@
     let startX = 0;
     let currentBar = null;
     let currentRow = null;
+    let currentRowIdx = -1;
     let autoScrollInterval = null;
+    let originalStart = null;
+    let originalEnd = null;
+    
+    // Create drag tooltip
+    createDragTooltip();
     
     // Helper: Start auto-scroll
     function startAutoScroll(direction, speed){
@@ -670,14 +779,21 @@
     
     // Add hover state and drag handlers to bars
     table.querySelectorAll('.timeline-slider-bar').forEach(bar => {
-      // Hover state: show date information
+      // Hover state: show date information with tooltip
       bar.addEventListener('mouseenter', (e) => {
         if(dragging) return;
         const rowIdx = parseInt(bar.dataset.rowIdx, 10);
         const row = state.rows[rowIdx];
         if(row){
-          bar.title = `${row.title}\nStart: ${row.start}\nEnd: ${row.end}\nProgress: ${row.progress}%`;
+          const tooltipText = `${row.title}\nStart: ${row.start}\nEnd: ${row.end}\nProgress: ${row.progress}%`;
+          bar.title = tooltipText;
+          // Add hover class for visual feedback
+          bar.classList.add('timeline-bar-hover');
         }
+      });
+      
+      bar.addEventListener('mouseleave', (e) => {
+        bar.classList.remove('timeline-bar-hover');
       });
       
       // Click on bar body: move entire bar
@@ -689,7 +805,10 @@
           startX = e.clientX;
           currentBar = bar;
           const rowIdx = parseInt(bar.dataset.rowIdx, 10);
+          currentRowIdx = rowIdx;
           currentRow = state.rows[rowIdx];
+          originalStart = currentRow.start;
+          originalEnd = currentRow.end;
           document.body.style.cursor = 'col-resize';
           e.preventDefault();
           e.stopPropagation();
@@ -699,7 +818,10 @@
           startX = e.clientX;
           currentBar = bar;
           const rowIdx = parseInt(bar.dataset.rowIdx, 10);
+          currentRowIdx = rowIdx;
           currentRow = state.rows[rowIdx];
+          originalStart = currentRow.start;
+          originalEnd = currentRow.end;
           document.body.style.cursor = 'move';
           e.preventDefault();
           e.stopPropagation();
@@ -714,26 +836,56 @@
       // Check for auto-scroll
       checkAutoScroll(e);
       
-      // Calculate new position
+      // Calculate new position/date
       const newDate = getDateFromX(e.clientX);
       
-      // Update row dates based on drag type
+      // Update row dates based on drag type and show tooltip with current date
       if(dragType === 'move'){
-        // Move both start and end
+        // Move both start and end by the same amount
         const dx = e.clientX - startX;
-        const daysToMove = Math.round(dx / (state.defaultColumnWidth || 60));
+        const avgColWidth = state.defaultColumnWidth || 60;
+        const daysToMove = Math.round(dx / avgColWidth);
+        
         if(daysToMove !== 0){
-          // TODO: Update row.start and row.end by daysToMove days
-          // For now, show visual feedback
+          // Calculate new dates
+          const startDate = parseLocal(originalStart);
+          const endDate = parseLocal(originalEnd);
+          startDate.setDate(startDate.getDate() + daysToMove);
+          endDate.setDate(endDate.getDate() + daysToMove);
+          
+          // Update state
+          currentRow.start = fmt(startDate);
+          currentRow.end = fmt(endDate);
+          
+          // Show tooltip with enhanced formatting
+          updateDragTooltip(e.clientX, e.clientY, `${currentRow.start} → ${currentRow.end}`, 'move');
+          
+          // Visual feedback
           currentBar.style.opacity = '0.7';
         }
       } else if(dragType === 'resize-left'){
         // Move start date only
-        // TODO: Update row.start to newDate
+        currentRow.start = fmt(newDate);
+        
+        // Ensure start doesn't go past end
+        if(parseLocal(currentRow.start) > parseLocal(currentRow.end)){
+          currentRow.start = currentRow.end;
+        }
+        
+        // Show tooltip with enhanced formatting
+        updateDragTooltip(e.clientX, e.clientY, currentRow.start, 'resize-left');
         currentBar.style.opacity = '0.7';
       } else if(dragType === 'resize-right'){
         // Move end date only
-        // TODO: Update row.end to newDate
+        currentRow.end = fmt(newDate);
+        
+        // Ensure end doesn't go before start
+        if(parseLocal(currentRow.end) < parseLocal(currentRow.start)){
+          currentRow.end = currentRow.start;
+        }
+        
+        // Show tooltip with enhanced formatting
+        updateDragTooltip(e.clientX, e.clientY, currentRow.end, 'resize-right');
         currentBar.style.opacity = '0.7';
       }
     });
@@ -744,15 +896,30 @@
         dragging = false;
         dragType = null;
         stopAutoScroll();
+        hideDragTooltip();
+        
         if(currentBar){
           currentBar.style.opacity = '';
         }
-        currentBar = null;
-        currentRow = null;
-        document.body.style.cursor = '';
         
         // Re-render to apply changes
-        // render(); // Uncomment when date update logic is implemented
+        if(currentRow && currentRowIdx >= 0){
+          // Update the underlying data source if it exists
+          if(currentRow.dataRef){
+            currentRow.dataRef.start = currentRow.start;
+            currentRow.dataRef.end = currentRow.end;
+          }
+          
+          // Re-render the timeline
+          render();
+        }
+        
+        currentBar = null;
+        currentRow = null;
+        currentRowIdx = -1;
+        originalStart = null;
+        originalEnd = null;
+        document.body.style.cursor = '';
       }
     });
   }
