@@ -1,7 +1,7 @@
 # QA Run Report
 
-**Generated:** 2025-11-19 13:19:07  
-**Duration:** 0.94 seconds  
+**Generated:** 2025-11-20 11:03:21  
+**Duration:** 1.24 seconds  
 **Overall Status:** AMBER
 
 ## Summary
@@ -9,9 +9,9 @@
 | Metric | Count |
 |--------|-------|
 | Total Checks | 23 |
-| Passed | 16 |
+| Passed | 17 |
 | Failed | 3 |
-| Skipped | 4 |
+| Skipped | 3 |
 
 ## Status Breakdown
 
@@ -22,7 +22,7 @@
 ✓ No critical issues
 
 ### High Severity Issues
-- **[DEPLOY-006]** Current branch deployment status: On branch 'copilot/fix-workflow-error'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
+- **[DEPLOY-006]** Current branch deployment status: On branch 'copilot/fix-timeline-page-rows'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
 - **[DEPLOY-008]** Latest deployment workflow run succeeded: Could not retrieve workflow runs: 
 - **[DEPLOY-010]** Deployed application contains expected content: Missing expected content: PIT - Project Implementation Tracker
 
@@ -84,7 +84,7 @@
 
 | ID | Name | Status | Severity |
 |----|------|--------|----------|
-| UNIT-001 | pytest tests exist | - SKIP | critical |
+| UNIT-001 | pytest tests exist | ✓ PASS | critical |
 | UNIT-002 | All pytest tests pass | - SKIP | critical |
 
 
@@ -105,7 +105,7 @@ The following checks failed and must be addressed:
 
 #### [DEPLOY-006] Current branch deployment status
 - **Severity:** high
-- **Message:** On branch 'copilot/fix-workflow-error'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
+- **Message:** On branch 'copilot/fix-timeline-page-rows'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
 
 
 #### [DEPLOY-008] Latest deployment workflow run succeeded
@@ -131,9 +131,9 @@ According to the **True North** methodology:
 ## Metadata
 
 - **Strict Mode:** False
-- **Skip Tests:** True
+- **Skip Tests:** False
 - **Runner:** run-qa.ps1 v1.0.0
-- **Report Generated:** 2025-11-19T13:19:07.9469689+00:00
+- **Report Generated:** 2025-11-20T11:03:21.8185102+00:00
 
 ---
 *This report follows the True North Build Methodology - Architecture → QA → Implementation → GREEN*
