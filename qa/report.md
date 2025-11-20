@@ -1,7 +1,7 @@
 # QA Run Report
 
-**Generated:** 2025-11-20 12:40:30  
-**Duration:** 1.18 seconds  
+**Generated:** 2025-11-20 13:14:39  
+**Duration:** 4.04 seconds  
 **Overall Status:** AMBER
 
 ## Summary
@@ -22,7 +22,7 @@
 ✓ No critical issues
 
 ### High Severity Issues
-- **[DEPLOY-006]** Current branch deployment status: On branch 'copilot/fix-timeline-column-width'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
+- **[DEPLOY-006]** Current branch deployment status: On branch 'copilot/fix-build-implementation-issues'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
 - **[DEPLOY-008]** Latest deployment workflow run succeeded: Could not retrieve workflow runs: 
 - **[DEPLOY-010]** Deployed application contains expected content: Missing expected content: PIT - Project Implementation Tracker
 
@@ -105,7 +105,7 @@ The following checks failed and must be addressed:
 
 #### [DEPLOY-006] Current branch deployment status
 - **Severity:** high
-- **Message:** On branch 'copilot/fix-timeline-column-width'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
+- **Message:** On branch 'copilot/fix-build-implementation-issues'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
 
 
 #### [DEPLOY-008] Latest deployment workflow run succeeded
@@ -133,7 +133,7 @@ According to the **True North** methodology:
 - **Strict Mode:** False
 - **Skip Tests:** False
 - **Runner:** run-qa.ps1 v1.0.0
-- **Report Generated:** 2025-11-20T12:40:30.8738505+00:00
+- **Report Generated:** 2025-11-20T13:14:39.3154844+00:00
 
 ---
 *This report follows the True North Build Methodology - Architecture → QA → Implementation → GREEN*
