@@ -700,7 +700,13 @@ if ($StrictMode -and $Global:FailedChecks -gt 0) {
 } elseif ($overallStatus -eq "RED") {
     Write-Host "Exiting with error code 1 (RED status - critical failures)" -ForegroundColor Red
     exit 1
+} elseif ($overallStatus -eq "AMBER" -and $Global:FailedChecks -gt 0) {
+    # AMBER with failures should also exit 1 per Build Philosophy
+    # Only hand over with 100% GREEN
+    Write-Host "Exiting with error code 1 (AMBER status - some checks failed)" -ForegroundColor Yellow
+    Write-Host "Build Philosophy: Only GREEN (100% pass) builds are acceptable for handover" -ForegroundColor Yellow
+    exit 1
 } else {
-    Write-Host "Exiting with code 0 (GREEN or AMBER status)" -ForegroundColor Green
+    Write-Host "Exiting with code 0 (GREEN status - all checks passed)" -ForegroundColor Green
     exit 0
 }
