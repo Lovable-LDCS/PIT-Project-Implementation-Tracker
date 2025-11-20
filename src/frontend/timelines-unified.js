@@ -127,11 +127,201 @@
         }
       });
     } else {
-      // Fallback to example rows for testing
-      if(fShowProj) state.rows.push({ kind:'proj', title: (window.projectState?.name || 'Project'), number: '', level:0, start: ps, end: pe, progress: 35 });
-      if(fShowMs) state.rows.push({ kind:'ms', title: 'M1', number: '1', level:1, start: ps, end: pe, progress: 50 });
-      if(fShowDl) state.rows.push({ kind:'dl', title: 'D1.1', number: '1.1', level:2, start: ps, end: pe, progress: 20 });
-      if(fShowTask) state.rows.push({ kind:'task', title: 'T1.1.1', number: '1.1.1', level:3, start: ps, end: pe, progress: 10 });
+      // Create comprehensive demo data to showcase all timeline features
+      // This ensures users can see the interactive timeline immediately
+      const today = todayLocal();
+      const projectStartDate = new Date(today);
+      projectStartDate.setDate(projectStartDate.getDate() - 30); // Start 30 days ago
+      const projectEndDate = new Date(today);
+      projectEndDate.setDate(projectEndDate.getDate() + 120); // End 120 days from now
+      
+      const pStart = fmt(projectStartDate);
+      const pEnd = fmt(projectEndDate);
+      
+      // Project row
+      if(fShowProj){
+        state.rows.push({ 
+          kind:'proj', 
+          title: 'Sample Project - Digital Transformation Initiative', 
+          number: '', 
+          level:0, 
+          start: pStart, 
+          end: pEnd, 
+          progress: 35 
+        });
+      }
+      
+      // Milestone 1
+      if(fShowMs){
+        const ms1Start = new Date(projectStartDate);
+        const ms1End = new Date(projectStartDate);
+        ms1End.setDate(ms1End.getDate() + 45);
+        state.rows.push({ 
+          kind:'ms', 
+          title: 'Phase 1: Requirements & Planning', 
+          number: '1', 
+          level:1, 
+          start: fmt(ms1Start), 
+          end: fmt(ms1End), 
+          progress: 75 
+        });
+      }
+      
+      // Deliverables for Milestone 1
+      if(fShowDl){
+        const dl11Start = new Date(projectStartDate);
+        const dl11End = new Date(projectStartDate);
+        dl11End.setDate(dl11End.getDate() + 15);
+        state.rows.push({ 
+          kind:'dl', 
+          title: 'Requirements Document', 
+          number: '1.1', 
+          level:2, 
+          start: fmt(dl11Start), 
+          end: fmt(dl11End), 
+          progress: 100 
+        });
+        
+        const dl12Start = new Date(projectStartDate);
+        dl12Start.setDate(dl12Start.getDate() + 15);
+        const dl12End = new Date(projectStartDate);
+        dl12End.setDate(dl12End.getDate() + 45);
+        state.rows.push({ 
+          kind:'dl', 
+          title: 'Architecture Design', 
+          number: '1.2', 
+          level:2, 
+          start: fmt(dl12Start), 
+          end: fmt(dl12End), 
+          progress: 60 
+        });
+      }
+      
+      // Tasks for Deliverable 1.1
+      if(fShowTask){
+        const t111Start = new Date(projectStartDate);
+        const t111End = new Date(projectStartDate);
+        t111End.setDate(t111End.getDate() + 5);
+        state.rows.push({ 
+          kind:'task', 
+          title: 'Stakeholder Interviews', 
+          number: '1.1.1', 
+          level:3, 
+          start: fmt(t111Start), 
+          end: fmt(t111End), 
+          progress: 100 
+        });
+        
+        const t112Start = new Date(projectStartDate);
+        t112Start.setDate(t112Start.getDate() + 5);
+        const t112End = new Date(projectStartDate);
+        t112End.setDate(t112End.getDate() + 15);
+        state.rows.push({ 
+          kind:'task', 
+          title: 'Document Requirements Specification', 
+          number: '1.1.2', 
+          level:3, 
+          start: fmt(t112Start), 
+          end: fmt(t112End), 
+          progress: 100 
+        });
+      }
+      
+      // Milestone 2
+      if(fShowMs){
+        const ms2Start = new Date(projectStartDate);
+        ms2Start.setDate(ms2Start.getDate() + 45);
+        const ms2End = new Date(projectStartDate);
+        ms2End.setDate(ms2End.getDate() + 90);
+        state.rows.push({ 
+          kind:'ms', 
+          title: 'Phase 2: Development & Testing', 
+          number: '2', 
+          level:1, 
+          start: fmt(ms2Start), 
+          end: fmt(ms2End), 
+          progress: 40 
+        });
+      }
+      
+      // Deliverable for Milestone 2
+      if(fShowDl){
+        const dl21Start = new Date(projectStartDate);
+        dl21Start.setDate(dl21Start.getDate() + 45);
+        const dl21End = new Date(projectStartDate);
+        dl21End.setDate(dl21End.getDate() + 75);
+        state.rows.push({ 
+          kind:'dl', 
+          title: 'MVP Application', 
+          number: '2.1', 
+          level:2, 
+          start: fmt(dl21Start), 
+          end: fmt(dl21End), 
+          progress: 45 
+        });
+      }
+      
+      // Tasks for Deliverable 2.1
+      if(fShowTask){
+        const t211Start = new Date(projectStartDate);
+        t211Start.setDate(t211Start.getDate() + 45);
+        const t211End = new Date(projectStartDate);
+        t211End.setDate(t211End.getDate() + 60);
+        state.rows.push({ 
+          kind:'task', 
+          title: 'Frontend Development', 
+          number: '2.1.1', 
+          level:3, 
+          start: fmt(t211Start), 
+          end: fmt(t211End), 
+          progress: 70 
+        });
+        
+        const t212Start = new Date(projectStartDate);
+        t212Start.setDate(t212Start.getDate() + 45);
+        const t212End = new Date(projectStartDate);
+        t212End.setDate(t212End.getDate() + 65);
+        state.rows.push({ 
+          kind:'task', 
+          title: 'Backend API Development', 
+          number: '2.1.2', 
+          level:3, 
+          start: fmt(t212Start), 
+          end: fmt(t212End), 
+          progress: 60 
+        });
+        
+        const t213Start = new Date(projectStartDate);
+        t213Start.setDate(t213Start.getDate() + 65);
+        const t213End = new Date(projectStartDate);
+        t213End.setDate(t213End.getDate() + 75);
+        state.rows.push({ 
+          kind:'task', 
+          title: 'Integration Testing', 
+          number: '2.1.3', 
+          level:3, 
+          start: fmt(t213Start), 
+          end: fmt(t213End), 
+          progress: 20 
+        });
+      }
+      
+      // Milestone 3 (future)
+      if(fShowMs){
+        const ms3Start = new Date(projectStartDate);
+        ms3Start.setDate(ms3Start.getDate() + 90);
+        const ms3End = new Date(projectStartDate);
+        ms3End.setDate(ms3End.getDate() + 120);
+        state.rows.push({ 
+          kind:'ms', 
+          title: 'Phase 3: Deployment & Training', 
+          number: '3', 
+          level:1, 
+          start: fmt(ms3Start), 
+          end: fmt(ms3End), 
+          progress: 5 
+        });
+      }
     }
   }
 
