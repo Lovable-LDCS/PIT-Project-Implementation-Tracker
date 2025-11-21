@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-20T15:16:13Z",
+  "timestamp": "2025-11-21T07:01:33Z",
   "checks": [
     {
       "id": "DEPLOY-007",
@@ -28,10 +28,10 @@
     {
       "id": "DEPLOY-010",
       "name": "Deployed application contains expected content",
-      "status": "FAIL",
+      "status": "PASS",
       "severity": "high",
-      "message": "Missing expected content: PIT - Project Implementation Tracker",
-      "details": "The deployed page does not contain all expected test IDs and content. This may indicate an incorrect artifact upload path or Jekyll processing issues."
+      "message": "All expected content found in deployed page",
+      "details": ""
     },
     {
       "id": "DEPLOY-011",
@@ -44,8 +44,8 @@
   ],
   "summary": {
     "total": 5,
-    "passed": 1,
-    "failed": 2,
+    "passed": 2,
+    "failed": 1,
     "skipped": 2
   }
 }
