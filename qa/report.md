@@ -1,7 +1,7 @@
 # QA Run Report
 
-**Generated:** 2025-11-21 07:50:10  
-**Duration:** 1.64 seconds  
+**Generated:** 2025-11-21 13:44:14  
+**Duration:** 3.73 seconds  
 **Overall Status:** AMBER
 
 ## Summary
@@ -22,7 +22,7 @@
 ✓ No critical issues
 
 ### High Severity Issues
-- **[DEPLOY-006]** Current branch deployment status: On branch 'copilot/fix-timeline-bar-functionality'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
+- **[DEPLOY-006]** Current branch deployment status: On branch 'copilot/fix-date-row-column-width'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
 - **[DEPLOY-008]** Latest deployment workflow run succeeded: Could not retrieve workflow runs: 
 
 
@@ -104,7 +104,7 @@ The following checks failed and must be addressed:
 
 #### [DEPLOY-006] Current branch deployment status
 - **Severity:** high
-- **Message:** On branch 'copilot/fix-timeline-bar-functionality'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
+- **Message:** On branch 'copilot/fix-date-row-column-width'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
 
 
 #### [DEPLOY-008] Latest deployment workflow run succeeded
@@ -124,7 +124,7 @@ According to the **True North** methodology:
 - **Strict Mode:** False
 - **Skip Tests:** False
 - **Runner:** run-qa.ps1 v1.0.0
-- **Report Generated:** 2025-11-21T07:50:10.5176499+00:00
+- **Report Generated:** 2025-11-21T13:44:14.4520300+00:00
 
 ---
 *This report follows the True North Build Methodology - Architecture → QA → Implementation → GREEN*
