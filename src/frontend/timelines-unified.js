@@ -894,7 +894,7 @@
     function isNearRightEdge(e, cell){
       const rect = cell.getBoundingClientRect();
       const x = e.clientX - rect.left;
-      const threshold = 24; // 24px from right edge (increased from 16px for easier interaction)
+      const threshold = 32; // 32px from right edge for easy interaction on narrow columns
       return x > rect.width - threshold;
     }
     
