@@ -1,7 +1,7 @@
 # QA Run Report
 
-**Generated:** 2025-11-21 07:04:40  
-**Duration:** 1.32 seconds  
+**Generated:** 2025-11-21 07:50:10  
+**Duration:** 1.64 seconds  
 **Overall Status:** AMBER
 
 ## Summary
@@ -9,9 +9,9 @@
 | Metric | Count |
 |--------|-------|
 | Total Checks | 23 |
-| Passed | 19 |
+| Passed | 18 |
 | Failed | 2 |
-| Skipped | 2 |
+| Skipped | 3 |
 
 ## Status Breakdown
 
@@ -22,7 +22,7 @@
 ✓ No critical issues
 
 ### High Severity Issues
-- **[DEPLOY-006]** Current branch deployment status: On branch 'copilot/fix-app-redesign-deployment'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
+- **[DEPLOY-006]** Current branch deployment status: On branch 'copilot/fix-timeline-bar-functionality'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
 - **[DEPLOY-008]** Latest deployment workflow run succeeded: Could not retrieve workflow runs: 
 
 
@@ -84,7 +84,7 @@
 | ID | Name | Status | Severity |
 |----|------|--------|----------|
 | UNIT-001 | pytest tests exist | ✓ PASS | critical |
-| UNIT-002 | All pytest tests pass | ✓ PASS | critical |
+| UNIT-002 | All pytest tests pass | - SKIP | critical |
 
 
 ### WIRING
@@ -104,7 +104,7 @@ The following checks failed and must be addressed:
 
 #### [DEPLOY-006] Current branch deployment status
 - **Severity:** high
-- **Message:** On branch 'copilot/fix-app-redesign-deployment'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
+- **Message:** On branch 'copilot/fix-timeline-bar-functionality'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
 
 
 #### [DEPLOY-008] Latest deployment workflow run succeeded
@@ -124,7 +124,7 @@ According to the **True North** methodology:
 - **Strict Mode:** False
 - **Skip Tests:** False
 - **Runner:** run-qa.ps1 v1.0.0
-- **Report Generated:** 2025-11-21T07:04:40.0234531+00:00
+- **Report Generated:** 2025-11-21T07:50:10.5176499+00:00
 
 ---
 *This report follows the True North Build Methodology - Architecture → QA → Implementation → GREEN*
