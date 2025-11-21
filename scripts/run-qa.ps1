@@ -694,13 +694,31 @@ Write-Host "✓ Saved human-readable report: $mdPath" -ForegroundColor Green
 # Exit with appropriate code
 # ============================================================================
 Write-Host ""
+
+# Get current branch to determine if AMBER is acceptable
+$currentBranch = git branch --show-current 2>$null
+$isMainBranch = $currentBranch -eq "main"
+
 if ($StrictMode -and $Global:FailedChecks -gt 0) {
     Write-Host "Exiting with error code 1 (strict mode enabled, failures detected)" -ForegroundColor Red
     exit 1
 } elseif ($overallStatus -eq "RED") {
     Write-Host "Exiting with error code 1 (RED status - critical failures)" -ForegroundColor Red
     exit 1
+} elseif ($overallStatus -eq "AMBER") {
+    if ($isMainBranch) {
+        # AMBER is NOT acceptable on main branch
+        Write-Host "Exiting with error code 1 (AMBER status on main branch - not acceptable)" -ForegroundColor Yellow
+        Write-Host "Build Philosophy: Only GREEN builds are acceptable for main branch" -ForegroundColor Yellow
+        exit 1
+    } else {
+        # AMBER is acceptable on feature branches (e.g., deployment checks on non-main branches)
+        Write-Host "Build Status: AMBER on feature branch '$currentBranch' - acceptable for PRs" -ForegroundColor Yellow
+        Write-Host "Note: Deployment checks are expected to fail on non-main branches" -ForegroundColor Yellow
+        Write-Host "Exiting with code 0 (AMBER acceptable for feature branch)" -ForegroundColor Yellow
+        exit 0
+    }
 } else {
-    Write-Host "Exiting with code 0 (GREEN or AMBER status)" -ForegroundColor Green
+    Write-Host "Exiting with code 0 (GREEN status - all checks passed)" -ForegroundColor Green
     exit 0
 }
