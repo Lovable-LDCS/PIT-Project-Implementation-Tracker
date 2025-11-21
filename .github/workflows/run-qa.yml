@@ -93,6 +93,19 @@ jobs:
           path: qa/last-result.json
           retention-days: 30
       
+      - name: Sync QA Results to Frontend
+        if: always()
+        run: |
+          Write-Host "Syncing QA results to frontend directory..."
+          if (Test-Path qa/last-result.json) {
+            New-Item -ItemType Directory -Force -Path src/frontend/qa | Out-Null
+            Copy-Item -Force qa/last-result.json src/frontend/qa/last-result.json
+            Write-Host "✅ QA results synced to src/frontend/qa/last-result.json"
+          } else {
+            Write-Host "⚠ QA results file not found, skipping sync"
+          }
+        shell: pwsh
+      
       - name: Display QA Summary
         if: always()
         run: |

@@ -621,10 +621,36 @@
       
       tr.appendChild(tdDesc);
       
-      // Column 2: Progress
+      // Column 2: Progress with visual bar
       const tdProg = document.createElement('td');
       tdProg.className = 'col-progress';
-      tdProg.textContent = (row.progress || 0) + '%';
+      
+      // Create progress bar container
+      const progContainer = document.createElement('div');
+      progContainer.className = 'progress-bar-container';
+      progContainer.style.cssText = 'display:flex;align-items:center;gap:8px;width:100%;';
+      
+      // Progress bar
+      const progBar = document.createElement('div');
+      progBar.className = 'progress-bar';
+      progBar.style.cssText = 'flex:1;height:20px;background:#e5e7eb;border-radius:4px;overflow:hidden;min-width:100px;';
+      
+      const progFill = document.createElement('div');
+      progFill.className = 'progress-fill';
+      const progValue = Math.max(0, Math.min(100, row.progress || 0));
+      progFill.style.cssText = `width:${progValue}%;height:100%;background:linear-gradient(90deg, #006B92, #4C95B0);transition:width 0.3s;border-radius:4px 0 0 4px;`;
+      progBar.appendChild(progFill);
+      
+      // Progress text
+      const progText = document.createElement('span');
+      progText.className = 'progress-text';
+      progText.textContent = progValue + '%';
+      progText.style.cssText = 'font-size:0.875rem;font-weight:600;color:#0D2850;min-width:40px;text-align:right;';
+      
+      progContainer.appendChild(progBar);
+      progContainer.appendChild(progText);
+      tdProg.appendChild(progContainer);
+      
       tr.appendChild(tdProg);
       
       // Timeline cells: use day columns as the base (finest granularity)

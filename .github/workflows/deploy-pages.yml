@@ -30,6 +30,11 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
       
+      - name: Copy QA results to frontend
+        run: |
+          mkdir -p ./src/frontend/qa
+          cp -f ./qa/last-result.json ./src/frontend/qa/last-result.json || echo "QA results not found, skipping..."
+      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
