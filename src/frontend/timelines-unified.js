@@ -57,9 +57,10 @@
         <div style="margin-bottom: 20px; padding: 16px; background: #f0f9ff; border-left: 4px solid #0D2850; border-radius: 4px;">
           <strong style="color: #0D2850; font-size: 16px; display: block; margin-bottom: 8px;">✨ Timeline Features:</strong>
           <ul style="margin: 8px 0; padding-left: 20px;">
+            <li><strong>Resize Columns:</strong> Hover over <span style="background: #ffc107; padding: 2px 6px; border-radius: 3px; color: #000;">RIGHT EDGE</span> of any date column header to see <span style="color: #ff9800; font-size: 18px;">⋮</span> resize handle, then drag</li>
+            <li><strong>Auto-fit Columns:</strong> <span style="background: #4CAF50; padding: 2px 6px; border-radius: 3px; color: white;">DOUBLE-CLICK</span> any column header to auto-resize to comfortable width</li>
             <li><strong>Drag Timeline Bars:</strong> Click handles on <span style="background: #ffc107; padding: 2px 6px; border-radius: 3px; color: #000;">LEFT</span> or <span style="background: #ff9800; padding: 2px 6px; border-radius: 3px; color: white;">RIGHT</span> edges to resize</li>
             <li><strong>Move Timeline Bars:</strong> Click and drag the bar body to move dates</li>
-            <li><strong>Resize Columns:</strong> Hover over column edges to see resize handles (⋮), then drag</li>
             <li><strong>Date Alignment:</strong> Hover over any date column to see vertical alignment line</li>
             <li><strong>Progress Bars:</strong> View completion % next to each item</li>
           </ul>
@@ -889,13 +890,33 @@
     // Create date alignment indicator
     createDateAlignmentIndicator();
     
+    // Helper function to check if mouse is near right edge of cell
+    function isNearRightEdge(e, cell){
+      const rect = cell.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const threshold = 24; // 24px from right edge (increased from 16px for easier interaction)
+      return x > rect.width - threshold;
+    }
+    
     // Add resize handles to all timeline header cells (ALL ROWS)
     table.querySelectorAll('th.timeline-date-cell').forEach(cell => {
       // Add a visual resize handle
       const handle = document.createElement('div');
       handle.className = 'column-resize-handle';
-      handle.title = 'Drag to resize column (affects all date rows proportionally)';
+      handle.title = 'Drag to resize column (affects all date rows proportionally)\nDouble-click to auto-fit';
       cell.appendChild(handle);
+      
+      // Update cursor based on mouse position
+      cell.addEventListener('mousemove', (e) => {
+        if(resizing) return;
+        if(isNearRightEdge(e, cell)){
+          cell.style.cursor = 'col-resize';
+          cell.setAttribute('title', 'Drag to resize column | Double-click to auto-fit');
+        } else {
+          cell.style.cursor = '';
+          cell.removeAttribute('title');
+        }
+      });
       
       // Add hover effect to highlight the column AND show date alignment
       cell.addEventListener('mouseenter', (e) => {
@@ -926,9 +947,13 @@
         
         // Hide alignment line
         hideDateAlignment();
+        
+        // Reset cursor
+        cell.style.cursor = '';
       });
       
-      handle.addEventListener('mousedown', (e) => {
+      // Allow resize from handle OR right edge of cell
+      const startResize = (e) => {
         resizing = true;
         startX = e.clientX;
         currentHeader = cell;
@@ -953,6 +978,44 @@
         document.body.style.cursor = 'col-resize';
         e.preventDefault();
         e.stopPropagation();
+      };
+      
+      handle.addEventListener('mousedown', startResize);
+      
+      // Also allow starting resize from cell if near right edge
+      cell.addEventListener('mousedown', (e) => {
+        if(e.target === handle) return; // Already handled
+        if(isNearRightEdge(e, cell)){
+          startResize(e);
+        }
+      });
+      
+      // Double-click to auto-fit column width
+      cell.addEventListener('dblclick', (e) => {
+        // Auto-fit: set to a comfortable width based on content
+        let autoWidth = 80; // Default comfortable width
+        
+        // Determine which day columns are affected
+        let dayColsToResize = [];
+        if(cell.dataset.dayColumns){
+          dayColsToResize = JSON.parse(cell.dataset.dayColumns);
+        } else if(cell.dataset.colIdx !== undefined){
+          dayColsToResize = [parseInt(cell.dataset.colIdx, 10)];
+        }
+        
+        // Update each affected day column
+        dayColsToResize.forEach(colIdx => {
+          const dayKey = state.dayColumns[colIdx].key;
+          state.columnWidths[dayKey] = autoWidth;
+          
+          // Update all cells with this day key
+          table.querySelectorAll(`[data-key="${dayKey}"]`).forEach(c => {
+            c.style.width = autoWidth + 'px';
+            c.style.minWidth = autoWidth + 'px';
+          });
+        });
+        
+        e.preventDefault();
       });
     });
     
