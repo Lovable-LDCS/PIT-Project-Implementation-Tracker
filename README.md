@@ -27,35 +27,30 @@ PIT (Project Implementation Tracker) is a static web application for tracking pr
 ### GitHub Pages (Recommended)
 Access the live application at: https://lovable-ldcs.github.io/PIT-Project-Implementation-Tracker/
 
+No installation needed! The app is a pure static web application that runs entirely in your browser.
+
 ### Local Development
 
-**One-Click Launcher:**
-1. Download [LAUNCH-APP.html](LAUNCH-APP.html)
-2. Save to your Desktop
-3. Double-click anytime to launch!
+Simply open `src/frontend/index.html` in your web browser, or use any static file server:
 
-**Using Python Server:**
-
-Windows:
 ```bash
-python server/serve_static.py --port 8080
-# Or use: start-server.bat 8080
-```
+# Using Python
+cd src/frontend
+python3 -m http.server 8080
 
-macOS/Linux:
-```bash
-python3 server/serve_static.py --port 8080
-# Or use: ./start-server.sh 8080
-```
+# Using Node.js
+npx serve src/frontend
 
-Access at: `http://localhost:8080`
+# Or just open the file directly
+open src/frontend/index.html
+```
 
 ## Technology Stack
 
-- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
-- **Server**: Python 3 (SimpleHTTPServer for development)
-- **Deployment**: GitHub Pages
-- **Testing**: pytest
+- **Frontend**: Pure HTML5, CSS3, JavaScript (Vanilla - no frameworks)
+- **Deployment**: GitHub Pages (static hosting)
+- **Testing**: pytest (for structure validation), Playwright (for E2E)
+- **Architecture**: 100% client-side, no backend required
 
 ## Architecture
 
