@@ -13,52 +13,52 @@ This is the easiest way to access your PM Platform:
 - ✅ No need to keep a local copy of files
 - ✅ No need to run a server on your computer
 
-### 🖱️ One-Click Desktop Launcher
+### 🖱️ Direct File Access
 
-For even easier access, save the launcher to your desktop:
+Since this is a static app, you can also:
 
-1. Download [LAUNCH-APP.html](LAUNCH-APP.html) from the repository
-2. Right-click → "Save link as" → Save to your Desktop
-3. Double-click the file anytime to:
-   - Open the app from GitHub Pages (instant)
-   - Or open localhost if you're running a local server
-   - Get quick instructions and help
+1. Download the repository as ZIP from GitHub
+2. Extract to your preferred location
+3. Open `src/frontend/index.html` directly in any web browser
+4. No server needed for basic functionality!
 
 ## 💻 Alternative: Run Locally (Optional)
 
 Only use this if you need to develop or customize the app. Otherwise, use GitHub Pages above!
 
-### Step 1: Start the Server
+### Quick Start - No Server Required!
 
-Open a terminal/command prompt in the project directory and run:
+The simplest way to run locally:
 
-**Windows (PowerShell or Command Prompt):**
 ```bash
-python server/serve_static.py --port 8080
+# Just open the HTML file directly!
+open src/frontend/index.html  # macOS
+xdg-open src/frontend/index.html  # Linux  
+start src/frontend/index.html  # Windows
 ```
 
-**macOS/Linux:**
+### Using a Local Server (Better for Development)
+
+For a better development experience with proper URLs:
+
+**Python (built-in to most systems):**
 ```bash
-python3 server/serve_static.py --port 8080
+cd src/frontend
+python3 -m http.server 8080
+# Windows: python -m http.server 8080
 ```
 
-**Or use the convenience script:**
-- **Windows**: Double-click `start-server.bat` or run `start-server.bat 8080`
-- **macOS/Linux**: Run `./start-server.sh 8080`
-
-You should see output like:
-```
-Serving /path/to/src/frontend at http://localhost:8080
+**Node.js:**
+```bash
+npx serve src/frontend -p 8080
 ```
 
-### Step 2: Access the Application
-
-Once the server is running, open your web browser and navigate to:
-```
-http://localhost:8080
+**PHP:**
+```bash
+php -S localhost:8080 -t src/frontend
 ```
 
-**Important**: Keep the terminal window open while using the application. Press `Ctrl+C` to stop the server when done.
+Then open: http://localhost:8080
 
 ## 📁 About File Management
 
@@ -122,42 +122,24 @@ http://localhost:8080
    - Templates - Reusable structures
    - Search - Find anything quickly
 
-## 🔧 Server Management
+## 🔧 Development Tips
 
-### Stop the Server
+### No Build Process
+- This is a **pure static app** - no compilation needed
+- Changes to HTML/CSS/JS are immediately visible
+- Just refresh your browser to see updates
 
-If you started the server in a terminal window, simply press `Ctrl+C` in that terminal.
+### Browser DevTools
+- Press F12 to open DevTools
+- Use Console tab to debug JavaScript
+- Use Network tab to verify all resources load
+- Use Application tab to inspect LocalStorage
 
-If the server is running in the background:
-```bash
-# Find the process
-ps aux | grep "python3.*serve_static"
-
-# Kill the process (replace PID with the actual process ID from above)
-kill <PID>
-```
-
-### Check if Server is Running
-```bash
-# Check if port 8080 is in use
-netstat -tulpn | grep 8080
-
-# Or test with curl
-curl -I http://localhost:8080
-
-# Or check for the process
-ps aux | grep "python3.*serve_static"
-```
-
-### Using a Different Port
-
-If port 8080 is already in use, you can use a different port:
-```bash
-# Use port 3000 instead
-python3 server/serve_static.py --port 3000
-
-# Then access at http://localhost:3000
-```
+### Data Storage
+- All data stored in browser's LocalStorage
+- Each browser/device has independent data
+- Clear browser data will reset the app
+- Export data before clearing browser storage
 
 ## 📚 Architecture & Documentation
 
@@ -177,11 +159,14 @@ The project includes comprehensive documentation:
 
 ## 🛠️ Development Notes
 
-- The frontend is built with vanilla HTML, CSS, and JavaScript
-- No build process required - changes are immediately visible
-- Static files served from `src/frontend/`
-- Port 8080 is configured as requested
-- All navigation uses hash-based routing (#/page)
+- **Pure Static**: HTML, CSS, and vanilla JavaScript only
+- **No Backend**: All logic runs in the browser
+- **No Build**: Changes are immediately visible
+- **Hash Routing**: Navigation uses `#/page` format
+- **LocalStorage**: Data persists in browser storage
+- **Test IDs**: Elements have `data-testid` attributes for QA
+
+See [docs/STATIC-ARCHITECTURE.md](docs/STATIC-ARCHITECTURE.md) for complete details.
 
 ## ⚡ Tips
 
