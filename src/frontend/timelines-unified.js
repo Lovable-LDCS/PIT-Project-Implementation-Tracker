@@ -14,8 +14,118 @@
       months: [],
       weeks: [],
       days: []
-    }
+    },
+    helpShown: localStorage.getItem('timeline-help-shown') === 'true'
   };
+
+  // Show interactive help overlay
+  function showInteractiveHelp(){
+    if(state.helpShown) return;
+    
+    const helpOverlay = document.createElement('div');
+    helpOverlay.id = 'timeline-help-overlay';
+    helpOverlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(13, 40, 80, 0.95);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease-in;
+    `;
+    
+    const helpContent = document.createElement('div');
+    helpContent.style.cssText = `
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      max-width: 700px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      animation: slideUp 0.4s ease-out;
+    `;
+    
+    helpContent.innerHTML = `
+      <h2 style="color: #0D2850; margin: 0 0 24px 0; font-size: 24px; display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 32px;">🎯</span>
+        Interactive Timeline Guide
+      </h2>
+      <div style="color: #334155; line-height: 1.7; font-size: 15px;">
+        <div style="margin-bottom: 20px; padding: 16px; background: #f0f9ff; border-left: 4px solid #0D2850; border-radius: 4px;">
+          <strong style="color: #0D2850; font-size: 16px; display: block; margin-bottom: 8px;">✨ Timeline Features:</strong>
+          <ul style="margin: 8px 0; padding-left: 20px;">
+            <li><strong>Drag Timeline Bars:</strong> Click handles on <span style="background: #ffc107; padding: 2px 6px; border-radius: 3px; color: #000;">LEFT</span> or <span style="background: #ff9800; padding: 2px 6px; border-radius: 3px; color: white;">RIGHT</span> edges to resize</li>
+            <li><strong>Move Timeline Bars:</strong> Click and drag the bar body to move dates</li>
+            <li><strong>Resize Columns:</strong> Hover over column edges to see resize handles (⋮), then drag</li>
+            <li><strong>Date Alignment:</strong> Hover over any date column to see vertical alignment line</li>
+            <li><strong>Progress Bars:</strong> View completion % next to each item</li>
+          </ul>
+        </div>
+        <div style="padding: 16px; background: #fef3c7; border-left: 4px solid #ffc107; border-radius: 4px;">
+          <strong style="color: #92400e; font-size: 16px; display: block; margin-bottom: 8px;">💡 Quick Tips:</strong>
+          <ul style="margin: 8px 0; padding-left: 20px; color: #78350f;">
+            <li>All timeline bars have <strong>YELLOW handles</strong> on hover - look for them!</li>
+            <li>Hierarchical numbering: Projects → Milestones (1) → Deliverables (1.1) → Tasks (1.1.1)</li>
+            <li>Column resizing affects all date rows proportionally for perfect alignment</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;">
+        <button id="timeline-help-close" style="
+          background: #0D2850;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 6px;
+          font-size: 15px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+        " onmouseover="this.style.background='#006B92'" onmouseout="this.style.background='#0D2850'">
+          Got it! Let's explore
+        </button>
+      </div>
+    `;
+    
+    helpOverlay.appendChild(helpContent);
+    document.body.appendChild(helpOverlay);
+    
+    // Add CSS animations
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes slideUp {
+        from { transform: translateY(30px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Close handler
+    document.getElementById('timeline-help-close').addEventListener('click', () => {
+      helpOverlay.style.animation = 'fadeOut 0.3s ease-out';
+      setTimeout(() => {
+        helpOverlay.remove();
+        style.remove();
+      }, 300);
+      state.helpShown = true;
+      localStorage.setItem('timeline-help-shown', 'true');
+    });
+    
+    // Add fadeOut animation
+    style.textContent += `
+      @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+      }
+    `;
+  }
 
   function todayLocal(){ const t=new Date(); return new Date(t.getFullYear(), t.getMonth(), t.getDate()); }
   function fmt(d){ const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; }
@@ -621,10 +731,36 @@
       
       tr.appendChild(tdDesc);
       
-      // Column 2: Progress
+      // Column 2: Progress with visual bar
       const tdProg = document.createElement('td');
       tdProg.className = 'col-progress';
-      tdProg.textContent = (row.progress || 0) + '%';
+      
+      // Create progress bar container
+      const progContainer = document.createElement('div');
+      progContainer.className = 'progress-bar-container';
+      progContainer.style.cssText = 'display:flex;align-items:center;gap:8px;width:100%;';
+      
+      // Progress bar
+      const progBar = document.createElement('div');
+      progBar.className = 'progress-bar';
+      progBar.style.cssText = 'flex:1;height:20px;background:#e5e7eb;border-radius:4px;overflow:hidden;min-width:100px;';
+      
+      const progFill = document.createElement('div');
+      progFill.className = 'progress-fill';
+      const progValue = Math.max(0, Math.min(100, row.progress || 0));
+      progFill.style.cssText = `width:${progValue}%;height:100%;background:linear-gradient(90deg, #006B92, #4C95B0);transition:width 0.3s;border-radius:4px 0 0 4px;`;
+      progBar.appendChild(progFill);
+      
+      // Progress text
+      const progText = document.createElement('span');
+      progText.className = 'progress-text';
+      progText.textContent = progValue + '%';
+      progText.style.cssText = 'font-size:0.875rem;font-weight:600;color:#0D2850;min-width:40px;text-align:right;';
+      
+      progContainer.appendChild(progBar);
+      progContainer.appendChild(progText);
+      tdProg.appendChild(progContainer);
+      
       tr.appendChild(tdProg);
       
       // Timeline cells: use day columns as the base (finest granularity)
@@ -1298,9 +1434,23 @@
     window.addEventListener('resize', () => { updateViewport(); });
     
     render();
+    
+    // Show interactive help overlay on first visit
+    setTimeout(() => {
+      showInteractiveHelp();
+    }, 500);
   }
 
-  document.addEventListener('DOMContentLoaded', init);
+  // Only initialize on the timelines page
+  function checkAndInit() {
+    const hash = window.location.hash;
+    if (hash === '#/timelines') {
+      init();
+    }
+  }
+  
+  document.addEventListener('DOMContentLoaded', checkAndInit);
+  window.addEventListener('hashchange', checkAndInit);
   
   // Expose to window
   window.tlRender = render;

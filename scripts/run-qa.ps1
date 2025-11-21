@@ -585,6 +585,14 @@ $jsonPath = "qa/last-result.json"
 $jsonReport | ConvertTo-Json -Depth 10 | Set-Content -Path $jsonPath -Encoding UTF8
 Write-Host "✓ Saved machine-readable results: $jsonPath" -ForegroundColor Green
 
+# Sync QA results to frontend directory for GitHub Pages deployment
+$frontendQaPath = "src/frontend/qa"
+if (-not (Test-Path $frontendQaPath)) {
+    New-Item -ItemType Directory -Path $frontendQaPath -Force | Out-Null
+}
+Copy-Item -Path $jsonPath -Destination "$frontendQaPath/last-result.json" -Force
+Write-Host "✓ Synced results to frontend: $frontendQaPath/last-result.json" -ForegroundColor Green
+
 # Generate human-readable Markdown report
 $mdReport = @"
 # QA Run Report
