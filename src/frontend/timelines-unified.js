@@ -1441,7 +1441,16 @@
     }, 500);
   }
 
-  document.addEventListener('DOMContentLoaded', init);
+  // Only initialize on the timelines page
+  function checkAndInit() {
+    const hash = window.location.hash;
+    if (hash === '#/timelines') {
+      init();
+    }
+  }
+  
+  document.addEventListener('DOMContentLoaded', checkAndInit);
+  window.addEventListener('hashchange', checkAndInit);
   
   // Expose to window
   window.tlRender = render;
