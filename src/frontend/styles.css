@@ -265,7 +265,7 @@ section[data-testid="TID-TL-PAGE"] .tl-grid { margin-left: 8px; margin-right: 8p
   min-width: 40px;
   white-space: nowrap;
   resize: horizontal;
-  overflow: hidden;
+  overflow: visible; /* Changed from hidden to allow resize handle visibility */
   position: relative;
 }
 

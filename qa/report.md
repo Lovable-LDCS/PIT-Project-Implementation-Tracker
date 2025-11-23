@@ -1,7 +1,7 @@
 # QA Run Report
 
-**Generated:** 2025-11-23 09:59:21  
-**Duration:** 1.06 seconds  
+**Generated:** 2025-11-23 11:48:17  
+**Duration:** 1.2 seconds  
 **Overall Status:** GREEN
 
 ## Summary
@@ -9,9 +9,9 @@
 | Metric | Count |
 |--------|-------|
 | Total Checks | 23 |
-| Passed | 18 |
+| Passed | 19 |
 | Failed | 2 |
-| Skipped | 3 |
+| Skipped | 2 |
 
 ## Status Breakdown
 
@@ -82,7 +82,7 @@
 | ID | Name | Status | Severity |
 |----|------|--------|----------|
 | UNIT-001 | pytest tests exist | ✓ PASS | critical |
-| UNIT-002 | All pytest tests pass | - SKIP | critical |
+| UNIT-002 | All pytest tests pass | ✓ PASS | critical |
 
 
 ### WIRING
@@ -102,7 +102,7 @@ The following checks failed and must be addressed:
 
 #### [DEPLOY-006] Current branch deployment status
 - **Severity:** medium
-- **Message:** On branch 'copilot/fix-date-row-column-width'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
+- **Message:** On branch 'copilot/fix-click-and-drag-functionality'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
 
 
 #### [DEPLOY-008] Latest deployment workflow run succeeded
@@ -122,7 +122,7 @@ According to the **True North** methodology:
 - **Strict Mode:** False
 - **Skip Tests:** False
 - **Runner:** run-qa.ps1 v1.0.0
-- **Report Generated:** 2025-11-23T09:59:21.9012473+00:00
+- **Report Generated:** 2025-11-23T11:48:17.8106442+00:00
 
 ---
 *This report follows the True North Build Methodology - Architecture → QA → Implementation → GREEN*
