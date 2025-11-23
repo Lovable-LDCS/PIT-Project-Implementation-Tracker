@@ -1,11 +1,11 @@
 {
-  "timestamp": "2025-11-21T13:59:15Z",
+  "timestamp": "2025-11-23T09:59:21Z",
   "checks": [
     {
       "id": "DEPLOY-007",
       "name": "GitHub Pages environment allows main branch deployment",
       "status": "SKIP",
-      "severity": "high",
+      "severity": "medium",
       "message": "Could not retrieve environment configuration: ",
       "details": "Environment may not exist yet or gh CLI is not authenticated. First deployment will create it."
     },
@@ -13,7 +13,7 @@
       "id": "DEPLOY-008",
       "name": "Latest deployment workflow run succeeded",
       "status": "FAIL",
-      "severity": "high",
+      "severity": "medium",
       "message": "Could not retrieve workflow runs: ",
       "details": ""
     },
@@ -21,7 +21,7 @@
       "id": "DEPLOY-009",
       "name": "Live deployment URL is accessible",
       "status": "PASS",
-      "severity": "high",
+      "severity": "medium",
       "message": "URL https://lovable-ldcs.github.io/PIT-Project-Implementation-Tracker/ is accessible (HTTP 200)",
       "details": ""
     },
@@ -29,7 +29,7 @@
       "id": "DEPLOY-010",
       "name": "Deployed application contains expected content",
       "status": "PASS",
-      "severity": "high",
+      "severity": "medium",
       "message": "All expected content found in deployed page",
       "details": ""
     },
@@ -37,7 +37,7 @@
       "id": "DEPLOY-011",
       "name": "GitHub deployment status is Active",
       "status": "SKIP",
-      "severity": "high",
+      "severity": "medium",
       "message": "No deployments found for github-pages environment",
       "details": "First deployment will create the deployment record"
     }

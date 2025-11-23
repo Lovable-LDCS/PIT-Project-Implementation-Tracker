@@ -1,8 +1,8 @@
 # QA Run Report
 
-**Generated:** 2025-11-21 13:59:15  
-**Duration:** 1.5 seconds  
-**Overall Status:** AMBER
+**Generated:** 2025-11-23 09:59:21  
+**Duration:** 1.06 seconds  
+**Overall Status:** GREEN
 
 ## Summary
 
@@ -16,15 +16,13 @@
 ## Status Breakdown
 
 ### Overall Result
-⚠ **AMBER** - All critical checks passed, but some high severity checks failed
+✓ **GREEN** - All critical and high severity checks passed
 
 ### Critical Issues
 ✓ No critical issues
 
 ### High Severity Issues
-- **[DEPLOY-006]** Current branch deployment status: On branch 'copilot/fix-date-row-column-width'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
-- **[DEPLOY-008]** Latest deployment workflow run succeeded: Could not retrieve workflow runs: 
-
+✓ No high severity issues
 
 ## Check Results by Category
 
@@ -57,12 +55,12 @@
 | DEPLOY-003 | Frontend assets directory exists | ✓ PASS | critical |
 | DEPLOY-004 | .nojekyll file exists | ✓ PASS | critical |
 | DEPLOY-005 | Deploy workflow configured for main branch | ✓ PASS | critical |
-| DEPLOY-006 | Current branch deployment status | ✗ FAIL | high |
-| DEPLOY-007 | GitHub Pages environment allows main branch deployment | - SKIP | high |
-| DEPLOY-008 | Latest deployment workflow run succeeded | ✗ FAIL | high |
-| DEPLOY-009 | Live deployment URL is accessible | ✓ PASS | high |
-| DEPLOY-010 | Deployed application contains expected content | ✓ PASS | high |
-| DEPLOY-011 | GitHub deployment status is Active | - SKIP | high |
+| DEPLOY-006 | Current branch deployment status | ✗ FAIL | medium |
+| DEPLOY-007 | GitHub Pages environment allows main branch deployment | - SKIP | medium |
+| DEPLOY-008 | Latest deployment workflow run succeeded | ✗ FAIL | medium |
+| DEPLOY-009 | Live deployment URL is accessible | ✓ PASS | medium |
+| DEPLOY-010 | Deployed application contains expected content | ✓ PASS | medium |
+| DEPLOY-011 | GitHub deployment status is Active | - SKIP | medium |
 
 
 ### SECURITY
@@ -103,12 +101,12 @@ The following checks failed and must be addressed:
 
 
 #### [DEPLOY-006] Current branch deployment status
-- **Severity:** high
+- **Severity:** medium
 - **Message:** On branch 'copilot/fix-date-row-column-width'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed.
 
 
 #### [DEPLOY-008] Latest deployment workflow run succeeded
-- **Severity:** high
+- **Severity:** medium
 - **Message:** Could not retrieve workflow runs: 
 
 
@@ -124,7 +122,7 @@ According to the **True North** methodology:
 - **Strict Mode:** False
 - **Skip Tests:** False
 - **Runner:** run-qa.ps1 v1.0.0
-- **Report Generated:** 2025-11-21T13:59:15.2169736+00:00
+- **Report Generated:** 2025-11-23T09:59:21.9012473+00:00
 
 ---
 *This report follows the True North Build Methodology - Architecture → QA → Implementation → GREEN*

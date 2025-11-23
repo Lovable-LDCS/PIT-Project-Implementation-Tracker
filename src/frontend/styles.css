@@ -634,6 +634,46 @@ section[data-testid="TID-TL-PAGE"] .tl-grid { margin-left: 8px; margin-right: 8p
   text-transform: uppercase;
 }
 
+/* Column Resize Help Banner */
+.column-resize-help-banner {
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: #000;
+  padding: 12px 20px;
+  margin: 12px 0;
+  border-radius: 8px;
+  border: 3px solid #ff6f00;
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.column-resize-help-banner .icon {
+  font-size: 24px;
+}
+
+.column-resize-help-banner .title {
+  font-size: 16px;
+}
+
+.column-resize-help-banner .edge-highlight {
+  background: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 2px solid #ff6f00;
+}
+
+.column-resize-help-banner .handle-symbol {
+  color: #fff;
+  font-size: 20px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.column-resize-help-banner .doubleclick-tip {
+  margin-left: 8px;
+}
+
 /* Sidebar Controls */
 .sidebar-controls {
   padding: 12px;
