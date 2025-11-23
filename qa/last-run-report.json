@@ -1,0 +1,1037 @@
+{
+  "timestamp": "2025-11-23T11:26:00.123804",
+  "strictMode": false,
+  "checks": {
+    "architecture": [
+      {
+        "id": "ARCH-001",
+        "name": "rules.md exists and is valid",
+        "severity": "critical",
+        "passed": true,
+        "message": "File exists: rules.md"
+      },
+      {
+        "id": "ARCH-002",
+        "name": "Architecture documents present",
+        "severity": "critical",
+        "passed": true,
+        "message": "Directory exists with 31 items: docs/architecture"
+      },
+      {
+        "id": "ARCH-003",
+        "name": "QA specifications present",
+        "severity": "critical",
+        "passed": true,
+        "message": "Directory exists with 12 items: docs/qa"
+      },
+      {
+        "id": "ARCH-004",
+        "name": "qa/requirements.json is valid JSON",
+        "severity": "critical",
+        "passed": true,
+        "message": "Valid JSON: qa/requirements.json"
+      }
+    ],
+    "environment": [
+      {
+        "id": "ENV-001",
+        "name": "Required environment variables documented",
+        "severity": "medium",
+        "passed": true,
+        "message": "Documentation contains pattern 'environment|configuration|setup' in README.md"
+      }
+    ],
+    "typeSafety": [
+      {
+        "id": "TYPE-001",
+        "name": "JavaScript files are syntactically valid",
+        "severity": "critical",
+        "passed": true,
+        "message": "All JS files valid: 5 files checked"
+      },
+      {
+        "id": "TYPE-002",
+        "name": "No console errors in static analysis",
+        "severity": "medium",
+        "passed": true,
+        "message": "Check type 'static_analysis' covered by E2E tests"
+      }
+    ],
+    "buildIntegrity": [
+      {
+        "id": "BUILD-001",
+        "name": "Frontend files are accessible",
+        "severity": "critical",
+        "passed": true,
+        "message": "File exists: src/frontend/index.html"
+      },
+      {
+        "id": "BUILD-002",
+        "name": "Required assets present",
+        "severity": "high",
+        "passed": true,
+        "message": "Directory exists: src/frontend/assets"
+      },
+      {
+        "id": "BUILD-003",
+        "name": "CSS stylesheet exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "File exists: src/frontend/styles.css"
+      }
+    ],
+    "unitTests": [
+      {
+        "id": "UNIT-001",
+        "name": "pytest tests exist",
+        "severity": "critical",
+        "passed": true,
+        "message": "Directory exists with 3 items: tests"
+      },
+      {
+        "id": "UNIT-002",
+        "name": "All pytest tests pass",
+        "severity": "critical",
+        "passed": true,
+        "message": "pytest passed: 6 tests"
+      }
+    ],
+    "e2eTests": [
+      {
+        "id": "E2E-001",
+        "name": "Navigation tests pass",
+        "severity": "critical",
+        "passed": true,
+        "message": "E2E tests not run (Playwright browser not available, manual testing required): tests/e2e/navigation.spec.js"
+      },
+      {
+        "id": "E2E-002",
+        "name": "Wiring tests pass",
+        "severity": "critical",
+        "passed": true,
+        "message": "E2E tests not run (Playwright browser not available, manual testing required): tests/e2e/wiring.spec.js"
+      },
+      {
+        "id": "E2E-003",
+        "name": "Admin functionality tests pass",
+        "severity": "high",
+        "passed": true,
+        "message": "E2E tests not run (Playwright browser not available, manual testing required): tests/e2e/admin.spec.js"
+      }
+    ],
+    "routeSmokeTests": [
+      {
+        "id": "ROUTE-001",
+        "name": "All primary routes are accessible",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'route_smoke' covered by E2E tests"
+      }
+    ],
+    "sidebarNavigation": [
+      {
+        "id": "NAV-001",
+        "name": "Projects renamed to Implementation",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: element_text_check"
+      },
+      {
+        "id": "NAV-002",
+        "name": "Obsolete navigation items removed",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: element_not_exists"
+      },
+      {
+        "id": "NAV-003",
+        "name": "Timelines route consolidated",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'route_check' covered by E2E tests"
+      },
+      {
+        "id": "NAV-004",
+        "name": "Quality Assurance navigation exists",
+        "severity": "high",
+        "passed": false,
+        "message": "Element with test ID 'a[href='#/qa']' not found"
+      }
+    ],
+    "projectsPageIndicators": [
+      {
+        "id": "PROJ-IND-001",
+        "name": "Project indicators container exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-PROJ-INDICATORS' exists"
+      },
+      {
+        "id": "PROJ-IND-002",
+        "name": "Duration indicator with progress bar",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-IND-DURATION' exists"
+      },
+      {
+        "id": "PROJ-IND-003",
+        "name": "Milestones count indicator",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-IND-MS-COUNT' exists"
+      },
+      {
+        "id": "PROJ-IND-004",
+        "name": "Deliverables count indicator",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-IND-DL-COUNT' exists"
+      },
+      {
+        "id": "PROJ-IND-005",
+        "name": "Tasks count indicator",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-IND-TASK-COUNT' exists"
+      },
+      {
+        "id": "PROJ-IND-006",
+        "name": "Team size indicator",
+        "severity": "high",
+        "passed": true,
+        "message": "Element with test ID 'TID-IND-TEAM-SIZE' exists"
+      },
+      {
+        "id": "PROJ-IND-007",
+        "name": "Progress vs Plan indicator",
+        "severity": "high",
+        "passed": true,
+        "message": "Element with test ID 'TID-IND-PROGRESS-VS-PLAN' exists"
+      },
+      {
+        "id": "PROJ-IND-008",
+        "name": "Overall progress indicator with bar",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-IND-OVERALL-PROGRESS' exists"
+      }
+    ],
+    "projectsPageFilters": [
+      {
+        "id": "PROJ-FILT-001",
+        "name": "Filter bar exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-FILTER-BAR' exists"
+      },
+      {
+        "id": "PROJ-FILT-002",
+        "name": "Project status dropdown",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-FILTER-STATUS' exists"
+      },
+      {
+        "id": "PROJ-FILT-003",
+        "name": "Start date filter",
+        "severity": "high",
+        "passed": true,
+        "message": "Element with test ID 'TID-FILTER-START' exists"
+      },
+      {
+        "id": "PROJ-FILT-004",
+        "name": "End date filter",
+        "severity": "high",
+        "passed": true,
+        "message": "Element with test ID 'TID-FILTER-END' exists"
+      },
+      {
+        "id": "PROJ-FILT-005",
+        "name": "Duration filter button",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-FILTER-DURATION-BTN' exists"
+      },
+      {
+        "id": "PROJ-FILT-006",
+        "name": "Responsible person filter",
+        "severity": "high",
+        "passed": true,
+        "message": "Element with test ID 'TID-FILTER-RESP' exists"
+      },
+      {
+        "id": "PROJ-FILT-007",
+        "name": "Progress filter button",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-FILTER-PROGRESS-BTN' exists"
+      },
+      {
+        "id": "PROJ-FILT-008",
+        "name": "Duration filter modal",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-DUR-MODAL' exists"
+      },
+      {
+        "id": "PROJ-FILT-009",
+        "name": "Progress filter modal",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-PROGRESS-MODAL' exists"
+      }
+    ],
+    "projectsPageModals": [
+      {
+        "id": "PROJ-MOD-001",
+        "name": "Project setup modal exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-PSETUP-MODAL' exists"
+      },
+      {
+        "id": "PROJ-MOD-002",
+        "name": "Project leader dropdown in project modal",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-PSETUP-LEADER' exists"
+      },
+      {
+        "id": "PROJ-MOD-003",
+        "name": "Invite member section in project modal",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-PSETUP-INVITE-SECTION' exists"
+      },
+      {
+        "id": "PROJ-MOD-004",
+        "name": "Milestone setup modal exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-MS-MODAL' exists"
+      },
+      {
+        "id": "PROJ-MOD-005",
+        "name": "Edit in Timelines button in milestone modal",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-MS-OPEN-TIMELINE' exists"
+      },
+      {
+        "id": "PROJ-MOD-006",
+        "name": "Milestone new text input",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-MS-NEW-TEXT' exists"
+      },
+      {
+        "id": "PROJ-MOD-007",
+        "name": "Deliverable setup modal exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-DL-MODAL' exists"
+      },
+      {
+        "id": "PROJ-MOD-008",
+        "name": "Task setup modal exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-TASK-MODAL' exists"
+      },
+      {
+        "id": "PROJ-MOD-009",
+        "name": "Task cluster toggle",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-TASK-CLUSTER-TOGGLE' exists"
+      },
+      {
+        "id": "PROJ-MOD-010",
+        "name": "Task linking dropdown",
+        "severity": "high",
+        "passed": true,
+        "message": "Element with test ID 'TID-TASK-LINK-DROPDOWN' exists"
+      },
+      {
+        "id": "PROJ-MOD-011",
+        "name": "Task offset calculation fields",
+        "severity": "high",
+        "passed": true,
+        "message": "Element with test ID 'TID-TASK-OFFSET-DAYS' exists"
+      },
+      {
+        "id": "PROJ-MOD-012",
+        "name": "Task duration calculation fields",
+        "severity": "high",
+        "passed": true,
+        "message": "Element with test ID 'TID-TASK-DUR-DAYS' exists"
+      },
+      {
+        "id": "PROJ-MOD-013",
+        "name": "Invite member sub-modal exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-INVITE-MODAL' exists"
+      },
+      {
+        "id": "PROJ-MOD-014",
+        "name": "Invite name input",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-INVITE-NAME' exists"
+      },
+      {
+        "id": "PROJ-MOD-015",
+        "name": "Invite email input",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-INVITE-EMAIL' exists"
+      }
+    ],
+    "projectsPageHierarchy": [
+      {
+        "id": "PROJ-HIER-001",
+        "name": "Project row with color coding exists",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: css_class_check"
+      },
+      {
+        "id": "PROJ-HIER-002",
+        "name": "Milestone row with color coding exists",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: css_class_check"
+      },
+      {
+        "id": "PROJ-HIER-003",
+        "name": "Deliverable row with color coding exists",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: css_class_check"
+      },
+      {
+        "id": "PROJ-HIER-004",
+        "name": "Task row exists",
+        "severity": "high",
+        "passed": false,
+        "message": "Unknown check type: css_class_check"
+      },
+      {
+        "id": "PROJ-HIER-005",
+        "name": "Hierarchical table has 6 columns",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: table_structure_check"
+      }
+    ],
+    "timelineMatrix": [
+      {
+        "id": "TL-001",
+        "name": "Timeline test page exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-TL-TEST-PAGE' exists"
+      },
+      {
+        "id": "TL-002",
+        "name": "Timeline calendar axes render",
+        "severity": "critical",
+        "passed": false,
+        "message": "Element with test ID '.tl-axes-row' not found"
+      },
+      {
+        "id": "TL-003",
+        "name": "Timeline axis filter toggles exist",
+        "severity": "critical",
+        "passed": false,
+        "message": "Element with test ID '.tl-axis-filter' not found"
+      },
+      {
+        "id": "TL-004",
+        "name": "Timeline slider bars are draggable",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: element_attribute_check"
+      },
+      {
+        "id": "TL-005",
+        "name": "Timeline bar has drag handles",
+        "severity": "critical",
+        "passed": false,
+        "message": "Element with test ID '.tl-bar-handle' not found"
+      },
+      {
+        "id": "TL-006",
+        "name": "Timeline date tooltip exists",
+        "severity": "critical",
+        "passed": false,
+        "message": "Element with test ID '#tl-date-tooltip' not found"
+      },
+      {
+        "id": "TL-007",
+        "name": "Timeline loads project data",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: javascript_check"
+      },
+      {
+        "id": "TL-008",
+        "name": "Timeline save function exists",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: javascript_check"
+      }
+    ],
+    "dataPersistence": [
+      {
+        "id": "DATA-001",
+        "name": "Project data persists to localStorage",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: localstorage_check"
+      },
+      {
+        "id": "DATA-002",
+        "name": "projectsUpsert function exists",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: javascript_check"
+      },
+      {
+        "id": "DATA-003",
+        "name": "renderProjectHierarchy function exists",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: javascript_check"
+      },
+      {
+        "id": "DATA-004",
+        "name": "saveMilestone function exists",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: javascript_check"
+      },
+      {
+        "id": "DATA-005",
+        "name": "saveDeliverable function exists",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: javascript_check"
+      },
+      {
+        "id": "DATA-006",
+        "name": "saveTask function exists",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: javascript_check"
+      }
+    ],
+    "wiringChecks": [
+      {
+        "id": "WIRE-001",
+        "name": "Header Preview toggle (Desktop/Mobile) is functional",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'wiring_runtime' covered by E2E tests"
+      },
+      {
+        "id": "WIRE-002",
+        "name": "Admin tab visibility when role is Admin",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'wiring_runtime' covered by E2E tests"
+      },
+      {
+        "id": "WIRE-003",
+        "name": "Admin functionality responds",
+        "severity": "high",
+        "passed": true,
+        "message": "Check type 'wiring_runtime' covered by E2E tests"
+      }
+    ],
+    "stateAndPersistence": [
+      {
+        "id": "STATE-001",
+        "name": "RoleContext persists to localStorage",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'state_persistence' covered by E2E tests"
+      },
+      {
+        "id": "STATE-002",
+        "name": "AuthContext persists to localStorage",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'state_persistence' covered by E2E tests"
+      },
+      {
+        "id": "STATE-003",
+        "name": "Reset session control available",
+        "severity": "high",
+        "passed": true,
+        "message": "Element with test ID 'TID-RESET-SESSION-BTN' exists"
+      },
+      {
+        "id": "STATE-004",
+        "name": "Admin gating logic works correctly",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'admin_gating' covered by E2E tests"
+      }
+    ],
+    "uiConsistency": [
+      {
+        "id": "UI-001",
+        "name": "Responsive layout works (Desktop)",
+        "severity": "high",
+        "passed": true,
+        "message": "Check type 'responsive_check' covered by E2E tests"
+      },
+      {
+        "id": "UI-002",
+        "name": "Responsive layout works (Mobile)",
+        "severity": "high",
+        "passed": true,
+        "message": "Check type 'responsive_check' covered by E2E tests"
+      },
+      {
+        "id": "UI-003",
+        "name": "Required test IDs present in UI",
+        "severity": "critical",
+        "passed": true,
+        "message": "All 6 required test IDs present"
+      }
+    ],
+    "security": [
+      {
+        "id": "SEC-001",
+        "name": "No sensitive keys in source code",
+        "severity": "critical",
+        "passed": true,
+        "message": "No secrets detected in: src/"
+      },
+      {
+        "id": "SEC-002",
+        "name": "Admin routes hidden from non-admin users",
+        "severity": "high",
+        "passed": true,
+        "message": "Check type 'access_control' covered by E2E tests"
+      }
+    ],
+    "healthChecker": [
+      {
+        "id": "HEALTH-001",
+        "name": "Health Checker tab exists in admin sidebar",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-NAV-HEALTH-CHECKER' exists"
+      },
+      {
+        "id": "HEALTH-002",
+        "name": "Health Checker page renders",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'route_check' covered by E2E tests"
+      },
+      {
+        "id": "HEALTH-003",
+        "name": "Run QA button exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-HEALTH-RUN-QA-BTN' exists"
+      },
+      {
+        "id": "HEALTH-004",
+        "name": "Health report display area exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "Element with test ID 'TID-HEALTH-REPORT-DISPLAY' exists"
+      },
+      {
+        "id": "HEALTH-005",
+        "name": "Strict mode toggle exists",
+        "severity": "high",
+        "passed": true,
+        "message": "Element with test ID 'TID-HEALTH-STRICT-MODE-TOGGLE' exists"
+      }
+    ],
+    "deployment": [
+      {
+        "id": "DEPLOY-001",
+        "name": "GitHub Pages workflow exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "File exists: .github/workflows/deploy-pages.yml"
+      },
+      {
+        "id": "DEPLOY-002",
+        "name": "Frontend index.html exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "File exists: src/frontend/index.html"
+      },
+      {
+        "id": "DEPLOY-003",
+        "name": "Frontend assets directory exists",
+        "severity": "critical",
+        "passed": true,
+        "message": "Directory exists: src/frontend/assets"
+      },
+      {
+        "id": "DEPLOY-004",
+        "name": ".nojekyll file exists (bypass Jekyll)",
+        "severity": "critical",
+        "passed": true,
+        "message": "File exists: src/frontend/.nojekyll"
+      },
+      {
+        "id": "DEPLOY-005",
+        "name": "Deploy workflow configured for main branch",
+        "severity": "critical",
+        "passed": true,
+        "message": "Workflow configured for branch 'main'"
+      },
+      {
+        "id": "DEPLOY-006",
+        "name": "Deploy workflow has environment configuration",
+        "severity": "critical",
+        "passed": true,
+        "message": "Deployment job 'deploy' has environment 'github-pages'"
+      },
+      {
+        "id": "DEPLOY-007",
+        "name": "GitHub Pages environment allows main branch deployment",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: github_environment_check"
+      },
+      {
+        "id": "DEPLOY-008",
+        "name": "Latest deployment workflow run succeeded",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: github_workflow_run_check"
+      },
+      {
+        "id": "DEPLOY-009",
+        "name": "Live deployment URL is accessible",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: url_accessibility_check"
+      },
+      {
+        "id": "DEPLOY-010",
+        "name": "Deployed application contains expected content",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: url_content_check"
+      },
+      {
+        "id": "DEPLOY-011",
+        "name": "GitHub deployment status is Active",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: github_deployment_status_check"
+      }
+    ],
+    "scriptIntegrity": [
+      {
+        "id": "SCRIPT-001",
+        "name": "HTML files are complete with closing tags",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: html_completeness"
+      },
+      {
+        "id": "SCRIPT-002",
+        "name": "No disabled script blocks with executable code",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: disabled_script_check"
+      },
+      {
+        "id": "SCRIPT-003",
+        "name": "Core JavaScript files load without errors",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: js_load_check"
+      },
+      {
+        "id": "SCRIPT-004",
+        "name": "Critical functions are defined in window scope",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: window_function_check"
+      }
+    ],
+    "timelinesCompliance": [
+      {
+        "id": "TL-001",
+        "name": "Timelines page route exists",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: route_exists"
+      },
+      {
+        "id": "TL-002",
+        "name": "Timeline toolbar with zoom controls present",
+        "severity": "critical",
+        "passed": false,
+        "message": "Element with test ID '' not found"
+      },
+      {
+        "id": "TL-003",
+        "name": "Timeline controls present",
+        "severity": "critical",
+        "passed": false,
+        "message": "Element with test ID '' not found"
+      },
+      {
+        "id": "TL-004",
+        "name": "Timeline canvas and grid render",
+        "severity": "critical",
+        "passed": false,
+        "message": "Element with test ID '' not found"
+      },
+      {
+        "id": "TL-005",
+        "name": "Timeline filter controls present",
+        "severity": "critical",
+        "passed": false,
+        "message": "Element with test ID '' not found"
+      },
+      {
+        "id": "TL-006",
+        "name": "Timeline axes render correctly",
+        "severity": "critical",
+        "passed": false,
+        "message": "Element with test ID '' not found"
+      },
+      {
+        "id": "TL-007",
+        "name": "Timeline resizers exist for column adjustment",
+        "severity": "high",
+        "passed": false,
+        "message": "Element with test ID '' not found"
+      },
+      {
+        "id": "TL-008",
+        "name": "Timeline navigation from modals works",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: integration_check"
+      },
+      {
+        "id": "TL-009",
+        "name": "Timeline project progress overlay visible",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: visual_check"
+      },
+      {
+        "id": "TL-010",
+        "name": "Date axis buttons toggle independently",
+        "severity": "critical",
+        "passed": false,
+        "message": "Element with test ID '' not found"
+      },
+      {
+        "id": "TL-011",
+        "name": "Timeline extends at least 10 years",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: visual_check"
+      },
+      {
+        "id": "TL-012",
+        "name": "Timeline start date picker functional",
+        "severity": "critical",
+        "passed": false,
+        "message": "Element with test ID '' not found"
+      },
+      {
+        "id": "TL-013",
+        "name": "Advanced filter dropdowns (future enhancement)",
+        "severity": "high",
+        "passed": false,
+        "message": "Element with test ID '' not found"
+      },
+      {
+        "id": "TL-014",
+        "name": "Proportional date column sizing (future enhancement)",
+        "severity": "high",
+        "passed": false,
+        "message": "Unknown check type: visual_check"
+      },
+      {
+        "id": "TL-015",
+        "name": "Zoom-to-fit controls (future enhancement)",
+        "severity": "medium",
+        "passed": false,
+        "message": "Element with test ID '' not found"
+      },
+      {
+        "id": "TL-016",
+        "name": "Row collapse/expand (future enhancement)",
+        "severity": "medium",
+        "passed": false,
+        "message": "Unknown check type: visual_check"
+      },
+      {
+        "id": "TL-017",
+        "name": "Apply button exists during project setup workflow",
+        "severity": "critical",
+        "passed": false,
+        "message": "Element with test ID '' not found"
+      },
+      {
+        "id": "TL-018",
+        "name": "Axes visibility matches filter selection",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: integration_check"
+      },
+      {
+        "id": "TL-019",
+        "name": "Axes alignment with Progress column",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: visual_check"
+      }
+    ],
+    "timelineEnhancements": [
+      {
+        "id": "TL-ENH-001",
+        "name": "Even date distribution across viewport",
+        "severity": "high",
+        "passed": false,
+        "message": "Unknown check type: visual_check"
+      },
+      {
+        "id": "TL-ENH-002",
+        "name": "Timeline visual overview purpose",
+        "severity": "high",
+        "passed": false,
+        "message": "Unknown check type: functional_check"
+      },
+      {
+        "id": "TL-ENH-003",
+        "name": "Auto-scroll during timeline bar dragging",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: interaction_check"
+      },
+      {
+        "id": "TL-ENH-004",
+        "name": "Date column resize handle exists and is functional",
+        "severity": "critical",
+        "passed": false,
+        "message": "Element with test ID '' not found"
+      },
+      {
+        "id": "TL-ENH-005",
+        "name": "Date axes aligned with Progress column",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: visual_check"
+      }
+    ],
+    "runtimeRenderingValidation": [
+      {
+        "id": "RUNTIME-001",
+        "name": "Timeline canvas renders actual content",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: runtime_dom_check"
+      },
+      {
+        "id": "RUNTIME-002",
+        "name": "Timeline functions execute successfully without errors",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: function_execution_check"
+      },
+      {
+        "id": "RUNTIME-003",
+        "name": "Navigation triggers proper page rendering",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: navigation_rendering_check"
+      },
+      {
+        "id": "RUNTIME-004",
+        "name": "No JavaScript runtime errors in console",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: console_error_check"
+      }
+    ],
+    "timingAndSequencing": [
+      {
+        "id": "TIMING-001",
+        "name": "Navigation waits for DOM ready",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: timing_check"
+      },
+      {
+        "id": "TIMING-002",
+        "name": "Script execution order is correct",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: sequence_check"
+      },
+      {
+        "id": "TIMING-003",
+        "name": "Timeline functions available before navigation",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: dependency_check"
+      },
+      {
+        "id": "TIMING-004",
+        "name": "querySelector calls only after DOM ready",
+        "severity": "critical",
+        "passed": true,
+        "message": "Check type 'static_analysis' covered by E2E tests"
+      }
+    ],
+    "completeWiringValidation": [
+      {
+        "id": "WIRE-001",
+        "name": "All routes map to functional pages",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: route_functional_check"
+      },
+      {
+        "id": "WIRE-002",
+        "name": "Timeline toolbar controls are wired",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: interaction_check"
+      },
+      {
+        "id": "WIRE-003",
+        "name": "Timeline filter checkboxes are functional",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: interaction_check"
+      },
+      {
+        "id": "WIRE-004",
+        "name": "Sidebar navigation links are wired",
+        "severity": "critical",
+        "passed": false,
+        "message": "Unknown check type: interaction_check"
+      }
+    ]
+  },
+  "summary": {
+    "total": 139,
+    "passed": 74,
+    "failed": 65,
+    "skipped": 0
+  }
+}
