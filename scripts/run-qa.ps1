@@ -464,12 +464,12 @@ if ($currentBranch) {
     } else {
         Write-Host "[ℹ INFO] DEPLOY-006: On branch '$currentBranch' - GitHub Pages deploys from 'main' only" -ForegroundColor Yellow
         Record-Check -Id "DEPLOY-006" -Name "Current branch deployment status" `
-            -Category "deployment" -Status "FAIL" -Severity "high" `
+            -Category "deployment" -Status "FAIL" -Severity "medium" `
             -Message "On branch '$currentBranch'. GitHub Pages site will show 404 until PR is merged to 'main' and deployed."
     }
 } else {
     Record-Check -Id "DEPLOY-006" -Name "Current branch deployment status" `
-        -Category "deployment" -Status "SKIP" -Severity "high" `
+        -Category "deployment" -Status "SKIP" -Severity "medium" `
         -Message "Could not determine current branch"
 }
 

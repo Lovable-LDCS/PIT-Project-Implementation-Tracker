@@ -689,7 +689,7 @@
           <div class="timeline-help-banner" data-testid="TID-TLT-HELP">
             <strong>📋 Interactive Timeline Features:</strong>
             <ul>
-              <li><strong>Resize Columns:</strong> Drag the right edge of any date column header to adjust width (affects all rows proportionally)</li>
+              <li><strong>Resize Columns:</strong> Hover over the RIGHT EDGE of any date column header (Year/Quarter/Month/Week/Day) to see the ⋮ resize handle, then drag to adjust width. Works on ALL date rows! Double-click to auto-fit.</li>
               <li><strong>Hover Alignment:</strong> Hover over any date column to see vertical alignment line across all date rows</li>
               <li><strong>Drag Timeline Bars:</strong> Click and drag the left or right handles on timeline bars to change start/end dates</li>
               <li><strong>View Zoom Levels:</strong> Use Year/Quarter/Month/Week/Day buttons to change granularity</li>
@@ -717,6 +717,17 @@
               <label><input type="checkbox" data-testid="TID-TLT-FSHOW-DL" checked /> Show deliverables</label>
               <label><input type="checkbox" data-testid="TID-TLT-FSHOW-TASK" checked /> Show tasks</label>
               <label>Responsible <select data-testid="TID-TLT-FRESP"><option>Any</option><option>Current User</option><option>Unassigned</option></select></label>
+            </div>
+          </div>
+          <!-- Column Resize Help Banner -->
+          <div class="column-resize-help-banner">
+            <span class="icon">👉</span>
+            <div>
+              <strong class="title">Column Resize is NOW ACTIVE!</strong> 
+              Hover over the <span class="edge-highlight">RIGHT EDGE</span> of ANY date column header (Year/Quarter/Month/Week/Day rows) to see the 
+              <span class="handle-symbol">⋮⋮</span> 
+              resize handle. Drag to resize all columns proportionally!
+              <strong class="doubleclick-tip">Or DOUBLE-CLICK any header to auto-fit.</strong>
             </div>
           </div>
           <!-- Unified Timeline Table Container -->
