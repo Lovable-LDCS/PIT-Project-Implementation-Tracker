@@ -1,6 +1,6 @@
 // Playwright configuration for E2E tests
 module.exports = {
-  testDir: './tests/e2e',
+  testDir: '.',
   timeout: 30000,
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
