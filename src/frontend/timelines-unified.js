@@ -15,7 +15,20 @@
       weeks: [],
       days: []
     },
-    helpShown: localStorage.getItem('timeline-help-shown') === 'true'
+    helpShown: localStorage.getItem('timeline-help-shown') === 'true',
+    // Track event handlers to prevent stacking
+    handlers: {
+      columnResize: {
+        mousemove: null,
+        mouseup: null,
+        bound: false
+      },
+      barDrag: {
+        mousemove: null,
+        mouseup: null,
+        bound: false
+      }
+    }
   };
 
   // Show interactive help overlay
@@ -881,6 +894,16 @@
     const table = document.querySelector('[data-testid="TID-TLT-TABLE"]');
     if(!table) return;
     
+    // Remove old event handlers if they exist
+    if(state.handlers.columnResize.bound){
+      if(state.handlers.columnResize.mousemove){
+        document.removeEventListener('mousemove', state.handlers.columnResize.mousemove);
+      }
+      if(state.handlers.columnResize.mouseup){
+        document.removeEventListener('mouseup', state.handlers.columnResize.mouseup);
+      }
+    }
+    
     let resizing = false;
     let startX = 0;
     let startWidths = {};
@@ -1019,7 +1042,8 @@
       });
     });
     
-    document.addEventListener('mousemove', (e) => {
+    // Define named functions for event handlers (for proper cleanup)
+    const handleMouseMove = (e) => {
       if(!resizing || !currentHeader || affectedDayColumns.length === 0) return;
       
       const dx = e.clientX - startX;
@@ -1040,9 +1064,9 @@
           cell.style.minWidth = newWidth + 'px';
         });
       });
-    });
+    };
     
-    document.addEventListener('mouseup', () => {
+    const handleMouseUp = () => {
       if(resizing){
         resizing = false;
         currentHeader = null;
@@ -1050,7 +1074,15 @@
         startWidths = {};
         document.body.style.cursor = '';
       }
-    });
+    };
+    
+    // Store references and add event listeners
+    state.handlers.columnResize.mousemove = handleMouseMove;
+    state.handlers.columnResize.mouseup = handleMouseUp;
+    state.handlers.columnResize.bound = true;
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
   }
 
   // Create drag tooltip for showing dates during drag
@@ -1133,6 +1165,16 @@
     const table = document.querySelector('[data-testid="TID-TLT-TABLE"]');
     const scrollContainer = document.querySelector('[data-testid="TID-TLT-TABLE-SCROLL"]');
     if(!table || !scrollContainer) return;
+    
+    // Remove old event handlers if they exist
+    if(state.handlers.barDrag.bound){
+      if(state.handlers.barDrag.mousemove){
+        document.removeEventListener('mousemove', state.handlers.barDrag.mousemove);
+      }
+      if(state.handlers.barDrag.mouseup){
+        document.removeEventListener('mouseup', state.handlers.barDrag.mouseup);
+      }
+    }
     
     let dragging = false;
     let dragType = null; // 'move', 'resize-left', 'resize-right'
@@ -1252,8 +1294,8 @@
       });
     });
     
-    // Global mousemove: handle drag and auto-scroll
-    document.addEventListener('mousemove', (e) => {
+    // Define named functions for event handlers (for proper cleanup)
+    const handleMouseMove = (e) => {
       if(!dragging || !currentBar || !currentRow) return;
       
       // Check for auto-scroll
@@ -1311,10 +1353,9 @@
         updateDragTooltip(e.clientX, e.clientY, currentRow.end, 'resize-right');
         currentBar.style.opacity = '0.7';
       }
-    });
+    };
     
-    // Global mouseup: finish drag
-    document.addEventListener('mouseup', () => {
+    const handleMouseUp = () => {
       if(dragging){
         dragging = false;
         dragType = null;
@@ -1344,7 +1385,15 @@
         originalEnd = null;
         document.body.style.cursor = '';
       }
-    });
+    };
+    
+    // Store references and add event listeners
+    state.handlers.barDrag.mousemove = handleMouseMove;
+    state.handlers.barDrag.mouseup = handleMouseUp;
+    state.handlers.barDrag.bound = true;
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
   }
 
   // Render function
