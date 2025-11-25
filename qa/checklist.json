@@ -1,0 +1,386 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "description": "Machine-readable QA checklist for PIT Project Implementation Tracker",
+  "lastUpdated": "2025-11-25",
+  "checklist": {
+    "architecture": {
+      "category": "Architecture Compliance",
+      "checks": [
+        {
+          "id": "CHK-ARCH-001",
+          "name": "rules.md exists",
+          "description": "Verify rules.md exists at repository root",
+          "type": "file_exists",
+          "target": "rules.md",
+          "severity": "critical",
+          "automated": true
+        },
+        {
+          "id": "CHK-ARCH-002",
+          "name": "architecture folder exists",
+          "description": "Verify architecture/ folder exists with required files",
+          "type": "directory_exists",
+          "target": "architecture/",
+          "severity": "critical",
+          "automated": true
+        },
+        {
+          "id": "CHK-ARCH-003",
+          "name": "architecture/rules.md exists",
+          "description": "Verify architecture rules document exists",
+          "type": "file_exists",
+          "target": "architecture/rules.md",
+          "severity": "critical",
+          "automated": true
+        },
+        {
+          "id": "CHK-ARCH-004",
+          "name": "architecture/components.md exists",
+          "description": "Verify component architecture document exists",
+          "type": "file_exists",
+          "target": "architecture/components.md",
+          "severity": "critical",
+          "automated": true
+        }
+      ]
+    },
+    "qa": {
+      "category": "QA Documentation",
+      "checks": [
+        {
+          "id": "CHK-QA-001",
+          "name": "qa/requirements.md exists",
+          "description": "Verify QA requirements document exists",
+          "type": "file_exists",
+          "target": "qa/requirements.md",
+          "severity": "critical",
+          "automated": true
+        },
+        {
+          "id": "CHK-QA-002",
+          "name": "qa/requirements.json valid",
+          "description": "Verify qa/requirements.json is valid JSON",
+          "type": "json_valid",
+          "target": "qa/requirements.json",
+          "severity": "critical",
+          "automated": true
+        },
+        {
+          "id": "CHK-QA-003",
+          "name": "qa/checklist.json valid",
+          "description": "Verify qa/checklist.json is valid JSON",
+          "type": "json_valid",
+          "target": "qa/checklist.json",
+          "severity": "critical",
+          "automated": true
+        }
+      ]
+    },
+    "docs": {
+      "category": "Documentation",
+      "checks": [
+        {
+          "id": "CHK-DOC-001",
+          "name": "docs folder exists",
+          "description": "Verify docs/ folder exists",
+          "type": "directory_exists",
+          "target": "docs/",
+          "severity": "critical",
+          "automated": true
+        },
+        {
+          "id": "CHK-DOC-002",
+          "name": "docs/roadmap.md exists",
+          "description": "Verify roadmap document exists",
+          "type": "file_exists",
+          "target": "docs/roadmap.md",
+          "severity": "high",
+          "automated": true
+        },
+        {
+          "id": "CHK-DOC-003",
+          "name": "docs/watchdog.json valid",
+          "description": "Verify watchdog configuration is valid JSON",
+          "type": "json_valid",
+          "target": "docs/watchdog.json",
+          "severity": "high",
+          "automated": true
+        },
+        {
+          "id": "CHK-DOC-004",
+          "name": "docs/architecture/ exists",
+          "description": "Verify architecture documentation folder exists",
+          "type": "directory_exists",
+          "target": "docs/architecture/",
+          "severity": "critical",
+          "automated": true
+        }
+      ]
+    },
+    "build": {
+      "category": "Build Integrity",
+      "checks": [
+        {
+          "id": "CHK-BUILD-001",
+          "name": "Frontend index.html exists",
+          "description": "Verify main HTML entry point exists",
+          "type": "file_exists",
+          "target": "src/frontend/index.html",
+          "severity": "critical",
+          "automated": true
+        },
+        {
+          "id": "CHK-BUILD-002",
+          "name": "Frontend styles.css exists",
+          "description": "Verify main stylesheet exists",
+          "type": "file_exists",
+          "target": "src/frontend/styles.css",
+          "severity": "critical",
+          "automated": true
+        },
+        {
+          "id": "CHK-BUILD-003",
+          "name": "Assets directory exists",
+          "description": "Verify assets folder exists",
+          "type": "directory_exists",
+          "target": "src/frontend/assets/",
+          "severity": "high",
+          "automated": true
+        },
+        {
+          "id": "CHK-BUILD-004",
+          "name": "JavaScript syntax valid",
+          "description": "All JavaScript files pass syntax validation",
+          "type": "js_syntax_check",
+          "target": "src/frontend/**/*.js",
+          "severity": "critical",
+          "automated": true
+        }
+      ]
+    },
+    "wiring": {
+      "category": "Component Wiring",
+      "checks": [
+        {
+          "id": "CHK-WIRE-001",
+          "name": "All routes accessible",
+          "description": "All navigation routes resolve to valid pages",
+          "type": "route_check",
+          "routes": [
+            "#/",
+            "#/projects",
+            "#/reports",
+            "#/permissions",
+            "#/evidence",
+            "#/gantt",
+            "#/timelines",
+            "#/audit",
+            "#/notify",
+            "#/import",
+            "#/templates",
+            "#/qa"
+          ],
+          "severity": "critical",
+          "automated": true
+        },
+        {
+          "id": "CHK-WIRE-002",
+          "name": "Core test IDs present",
+          "description": "Essential test IDs exist in DOM",
+          "type": "testid_check",
+          "testIds": [
+            "TID-SHELL-ROOT",
+            "TID-TOPBAR",
+            "TID-SIDEBAR",
+            "TID-CONTENT-AREA",
+            "TID-BREADCRUMBS"
+          ],
+          "severity": "critical",
+          "automated": true
+        },
+        {
+          "id": "CHK-WIRE-003",
+          "name": "Navigation functions available",
+          "description": "Required navigation functions exist in window scope",
+          "type": "function_check",
+          "functions": [
+            "navigateTo",
+            "appNavTo"
+          ],
+          "severity": "critical",
+          "automated": true
+        },
+        {
+          "id": "CHK-WIRE-004",
+          "name": "Timeline functions available",
+          "description": "Required timeline functions exist in window scope",
+          "type": "function_check",
+          "functions": [
+            "tlRender",
+            "tlInitFromStore"
+          ],
+          "severity": "critical",
+          "automated": true
+        }
+      ]
+    },
+    "ui": {
+      "category": "UI/UX Consistency",
+      "checks": [
+        {
+          "id": "CHK-UI-001",
+          "name": "Desktop layout responsive",
+          "description": "Layout renders correctly at 1920x1080",
+          "type": "viewport_check",
+          "viewport": { "width": 1920, "height": 1080 },
+          "severity": "high",
+          "automated": true
+        },
+        {
+          "id": "CHK-UI-002",
+          "name": "Mobile layout responsive",
+          "description": "Layout renders correctly at 375x667",
+          "type": "viewport_check",
+          "viewport": { "width": 375, "height": 667 },
+          "severity": "high",
+          "automated": true
+        },
+        {
+          "id": "CHK-UI-003",
+          "name": "Preview toggle functional",
+          "description": "Desktop/Mobile preview toggle works",
+          "type": "interaction_check",
+          "target": "TID-PREVIEW-TOGGLE",
+          "severity": "critical",
+          "automated": true
+        }
+      ]
+    },
+    "data": {
+      "category": "Data Persistence",
+      "checks": [
+        {
+          "id": "CHK-DATA-001",
+          "name": "Project state persists",
+          "description": "Project data saved to localStorage",
+          "type": "storage_check",
+          "key": "projectState",
+          "severity": "critical",
+          "automated": true
+        },
+        {
+          "id": "CHK-DATA-002",
+          "name": "Role context persists",
+          "description": "Role context saved to localStorage",
+          "type": "storage_check",
+          "key": "roleContext",
+          "severity": "critical",
+          "automated": true
+        },
+        {
+          "id": "CHK-DATA-003",
+          "name": "Auth context persists",
+          "description": "Auth context saved to localStorage",
+          "type": "storage_check",
+          "key": "authContext",
+          "severity": "critical",
+          "automated": true
+        }
+      ]
+    },
+    "security": {
+      "category": "Security",
+      "checks": [
+        {
+          "id": "CHK-SEC-001",
+          "name": "No secrets in source",
+          "description": "No API keys or secrets in source code",
+          "type": "secret_scan",
+          "target": "src/",
+          "patterns": ["api[_-]?key", "secret", "password", "token"],
+          "severity": "critical",
+          "automated": true
+        },
+        {
+          "id": "CHK-SEC-002",
+          "name": "Admin routes protected",
+          "description": "Admin routes hidden from non-admin users",
+          "type": "access_check",
+          "routes": [
+            "#/invite-members",
+            "#/settings",
+            "#/security-dashboard",
+            "#/health-checker"
+          ],
+          "severity": "high",
+          "automated": true
+        }
+      ]
+    },
+    "deployment": {
+      "category": "Deployment",
+      "checks": [
+        {
+          "id": "CHK-DEPLOY-001",
+          "name": "Deploy workflow exists",
+          "description": "GitHub Pages deployment workflow present",
+          "type": "file_exists",
+          "target": ".github/workflows/deploy-pages.yml",
+          "severity": "critical",
+          "automated": true
+        },
+        {
+          "id": "CHK-DEPLOY-002",
+          "name": ".nojekyll exists",
+          "description": "Jekyll bypass file present",
+          "type": "file_exists",
+          "target": "src/frontend/.nojekyll",
+          "severity": "critical",
+          "automated": true
+        },
+        {
+          "id": "CHK-DEPLOY-003",
+          "name": "Live URL accessible",
+          "description": "Deployed application returns HTTP 200",
+          "type": "url_check",
+          "target": "https://lovable-ldcs.github.io/PIT-Project-Implementation-Tracker/",
+          "expectedStatus": 200,
+          "severity": "critical",
+          "automated": true
+        }
+      ]
+    }
+  },
+  "evaluation": {
+    "green": {
+      "description": "All checks pass",
+      "criteria": "All CRITICAL and HIGH severity checks pass"
+    },
+    "amber": {
+      "description": "Minor issues",
+      "criteria": "All CRITICAL pass, some HIGH fail"
+    },
+    "red": {
+      "description": "Blocking issues",
+      "criteria": "Any CRITICAL check fails"
+    }
+  },
+  "handover": {
+    "requirements": [
+      "All CRITICAL checks must pass",
+      "All HIGH checks must pass (or have documented exceptions)",
+      "QA status must be GREEN",
+      "Deployment verification complete",
+      "No JavaScript console errors",
+      "All routes accessible"
+    ],
+    "blockers": [
+      "Any CRITICAL check failure",
+      "Wiring failures",
+      "Routes returning 404",
+      "Console errors present",
+      "Data loss risk"
+    ]
+  }
+}
