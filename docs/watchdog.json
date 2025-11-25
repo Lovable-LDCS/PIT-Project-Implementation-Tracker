@@ -1,0 +1,310 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "description": "Watchdog configuration for drift detection and compliance monitoring",
+  "lastUpdated": "2025-11-25",
+  "driftDetection": {
+    "enabled": true,
+    "checkInterval": "daily",
+    "rules": [
+      {
+        "id": "DRIFT-001",
+        "name": "Architecture file integrity",
+        "description": "Detect unauthorized changes to architecture files",
+        "targets": [
+          "rules.md",
+          "architecture/rules.md",
+          "architecture/components.md"
+        ],
+        "action": "alert",
+        "severity": "high"
+      },
+      {
+        "id": "DRIFT-002",
+        "name": "QA specification integrity",
+        "description": "Detect changes to QA requirements without corresponding code changes",
+        "targets": [
+          "qa/requirements.json",
+          "qa/requirements.md",
+          "qa/checklist.json"
+        ],
+        "action": "alert",
+        "severity": "high"
+      },
+      {
+        "id": "DRIFT-003",
+        "name": "Route consistency",
+        "description": "Detect routes in code not defined in architecture",
+        "comparison": {
+          "source": "architecture/components.md",
+          "target": "src/frontend/**/*.js"
+        },
+        "action": "flag",
+        "severity": "critical"
+      },
+      {
+        "id": "DRIFT-004",
+        "name": "Test ID consistency",
+        "description": "Detect test IDs in code not defined in architecture",
+        "comparison": {
+          "source": "architecture/components.md",
+          "target": "src/frontend/**/*.html"
+        },
+        "action": "flag",
+        "severity": "high"
+      },
+      {
+        "id": "DRIFT-005",
+        "name": "Legacy code detection",
+        "description": "Detect code referencing removed/legacy components",
+        "patterns": [
+          "#/workitem",
+          "#/search",
+          "#/exports",
+          "TID-LEGACY-"
+        ],
+        "action": "alert",
+        "severity": "medium"
+      }
+    ]
+  },
+  "minimumBehaviorExpectations": {
+    "routing": {
+      "allDefinedRoutesResolve": true,
+      "noOrphanRoutes": true,
+      "deepLinkingWorks": true
+    },
+    "navigation": {
+      "sidebarFunctional": true,
+      "breadcrumbsUpdate": true,
+      "browserHistoryMaintained": true
+    },
+    "dataManagement": {
+      "localStoragePersistence": true,
+      "stateConsistency": true,
+      "noDataLossOnNavigation": true
+    },
+    "userFeedback": {
+      "loadingIndicatorsPresent": true,
+      "errorMessagesDisplayed": true,
+      "successConfirmationsShown": true
+    },
+    "accessibility": {
+      "keyboardNavigable": true,
+      "ariaLabelsPresent": true,
+      "focusManaged": true
+    }
+  },
+  "aiBehavioralNotes": {
+    "purpose": "Guidelines for AI agents working on this codebase",
+    "principles": [
+      {
+        "id": "AI-001",
+        "rule": "Architecture first",
+        "description": "Always check architecture documents before making changes"
+      },
+      {
+        "id": "AI-002",
+        "rule": "No legacy creation",
+        "description": "Never add code not defined in architecture without updating architecture first"
+      },
+      {
+        "id": "AI-003",
+        "rule": "QA awareness",
+        "description": "All changes must consider QA validation requirements"
+      },
+      {
+        "id": "AI-004",
+        "rule": "Minimal changes",
+        "description": "Make smallest possible changes to achieve goals"
+      },
+      {
+        "id": "AI-005",
+        "rule": "No orphan code",
+        "description": "Never leave unwired or unused code in the codebase"
+      },
+      {
+        "id": "AI-006",
+        "rule": "Document changes",
+        "description": "Update architecture and QA documents when making changes"
+      }
+    ],
+    "prohibitions": [
+      "Do not modify existing source code without explicit instruction",
+      "Do not remove or relocate existing files without approval",
+      "Do not bypass QA checks",
+      "Do not create components not in architecture",
+      "Do not hardcode secrets or API keys"
+    ]
+  },
+  "complianceMonitoring": {
+    "categories": [
+      {
+        "id": "COMP-001",
+        "name": "Code Quality",
+        "checks": [
+          "ESLint passes",
+          "No syntax errors",
+          "Consistent formatting"
+        ],
+        "frequency": "per-commit"
+      },
+      {
+        "id": "COMP-002",
+        "name": "Architecture Alignment",
+        "checks": [
+          "All routes in architecture exist in code",
+          "All test IDs in architecture exist in DOM",
+          "No legacy components remain"
+        ],
+        "frequency": "daily"
+      },
+      {
+        "id": "COMP-003",
+        "name": "QA Status",
+        "checks": [
+          "All critical checks pass",
+          "QA status is GREEN",
+          "No regression from previous build"
+        ],
+        "frequency": "per-build"
+      },
+      {
+        "id": "COMP-004",
+        "name": "Deployment Health",
+        "checks": [
+          "Deployment workflow succeeds",
+          "Live URL accessible",
+          "No console errors on deployed site"
+        ],
+        "frequency": "daily"
+      }
+    ]
+  },
+  "securityMonitoring": {
+    "popiCompliance": {
+      "enabled": true,
+      "description": "Protection of Personal Information Act (South Africa)",
+      "requirements": [
+        {
+          "id": "POPI-001",
+          "requirement": "Data minimization",
+          "description": "Collect only necessary personal data",
+          "status": "placeholder"
+        },
+        {
+          "id": "POPI-002",
+          "requirement": "Consent management",
+          "description": "Track and manage user consent",
+          "status": "placeholder"
+        },
+        {
+          "id": "POPI-003",
+          "requirement": "Data subject rights",
+          "description": "Enable access, correction, deletion requests",
+          "status": "placeholder"
+        },
+        {
+          "id": "POPI-004",
+          "requirement": "Data breach notification",
+          "description": "Process for breach notification within 72 hours",
+          "status": "placeholder"
+        }
+      ]
+    },
+    "generalSecurity": {
+      "checks": [
+        {
+          "id": "SEC-MON-001",
+          "name": "Secret scanning",
+          "description": "Scan for exposed secrets in code",
+          "frequency": "per-commit"
+        },
+        {
+          "id": "SEC-MON-002",
+          "name": "Dependency vulnerabilities",
+          "description": "Check for known vulnerabilities in dependencies",
+          "frequency": "daily"
+        },
+        {
+          "id": "SEC-MON-003",
+          "name": "Access control verification",
+          "description": "Verify admin routes are protected",
+          "frequency": "per-build"
+        }
+      ]
+    }
+  },
+  "internationalStandards": {
+    "placeholders": [
+      {
+        "id": "INTL-001",
+        "standard": "ISO 27001",
+        "description": "Information Security Management",
+        "status": "planned",
+        "notes": "To be implemented in future phase"
+      },
+      {
+        "id": "INTL-002",
+        "standard": "GDPR",
+        "description": "General Data Protection Regulation (EU)",
+        "status": "planned",
+        "notes": "Aligned with POPI requirements"
+      },
+      {
+        "id": "INTL-003",
+        "standard": "WCAG 2.2 AA",
+        "description": "Web Content Accessibility Guidelines",
+        "status": "in_progress",
+        "notes": "Accessibility requirements being implemented"
+      },
+      {
+        "id": "INTL-004",
+        "standard": "SOC 2 Type II",
+        "description": "Service Organization Control",
+        "status": "planned",
+        "notes": "For enterprise deployment consideration"
+      }
+    ]
+  },
+  "alerting": {
+    "channels": [
+      {
+        "type": "github_issue",
+        "enabled": true,
+        "triggerOn": ["critical", "high"]
+      },
+      {
+        "type": "email",
+        "enabled": false,
+        "triggerOn": ["critical"]
+      },
+      {
+        "type": "slack",
+        "enabled": false,
+        "triggerOn": ["critical", "high", "medium"]
+      }
+    ],
+    "escalation": {
+      "critical": {
+        "timeout": "1 hour",
+        "action": "Block deployment"
+      },
+      "high": {
+        "timeout": "24 hours",
+        "action": "Flag for review"
+      },
+      "medium": {
+        "timeout": "1 week",
+        "action": "Add to backlog"
+      }
+    }
+  },
+  "versionHistory": [
+    {
+      "version": "1.0.0",
+      "date": "2025-11-25",
+      "changes": "Initial watchdog configuration"
+    }
+  ]
+}
